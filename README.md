@@ -1,19 +1,26 @@
 # crypto-dca
 Server that executes balanced DCA against a portfolio of cryptocurrency
 
-##
-Distributed as a docker-compose file pulling down an app, a cron job runner, and a DB. The app will host the web front-end and handle setting and retrieving settings, as well as enabling or disabling the cron job scheduler. The scheduler will execute the job on-time and needs to be extremely crash resistant. The database needs to be able to store sensitive credentials securely. The DB should never be exposed to the host network.
+## Overview
+Distributed as a docker-compose file pulling down an app, a cron job runner, and a DB. The app will host the web front-end and handle setting and retrieving settings, as well as enabling or disabling the cron job scheduler. The scheduler will execute the job on-time and needs to be extremely crash resistant. The database needs to be able to store sensitive credentials securely. The DB contains sensitive information and should be stored securely.
 
-The front-end needs to collect the following information and store it in a secure manner:
+##Chron job
+The chron job, once enabled, executes automatic trades based on a variety of criteria, on a set interval.
 
-1. API credentials to Bittrex
-2. Wallet address for local storage of cryptocurrency
-
-Requirements for chron job:
-1. Scheduled once per execution cycle
+###Requirements
+1. Scheduled once per interval
 2. If the cron job server crashes, when it is restarted it should check the interval and calculate the remaining time from the current time. If more than a single interval has passed, it should immediately execute and then schedule the next execution for the difference between the current time and the intended next interval time.
 
-Procedure:
+###Tech stack
+1. Node script using setTimeout for scheduling
+2. PM2 to keep it alive in container
+3. Alpine docker image as base
+4. ??? for tests
+5. Bittrex node SDK for API requests
+6. Sequelize for ORM
+7. Configured by environment variables in the .env-chron file
+
+###Procedure
 1. Query Bittrex for the current amount and price of each coin held on Bittrex (/getbalances)
 3. Query market cap data (coinmarketcap) for all interested coins
 2. For each coin:
@@ -31,20 +38,43 @@ Procedure:
     9. Poll until order has resolved (/getopenorders)
     10. Log buy to transaction log, set coin spend amount to 0
 
-Database:
+## Database
+The database is a bog-standard pgsql database, pulled in from the common docker image.
+
+###Tech stack
+1. Postgres DB
+2. Just use standard pgsql image
+3. HMAC for storing API credentials?
+4. Configured by .env-db file
+
+### Stored data
 1. Bittrex API credentials
 2. Local wallet address
 3. Remote wallet address
 5. Transaction log
 6. Requested interval and execution time
-7. Current locally held coins
-8. Current coin spend amounts
-9. Fee tolerance for each coin
-10. Portfolio distribution
-11. Whether to manually or automatically distribute portfolio
+7. Interval spend
+8. Current locally held coins
+9. Current coin spend amounts
+10. Fee tolerance for each coin
+11. Portfolio distribution
+12. Whether to manually or automatically distribute portfolio
 
-Frontend:
-1. Add all credentials
+*TODO: Draw up schema*
+
+##App/Frontend
+The app contains a webserver for hosting the frontend, a little business logic for updating the DB with settings, and the migrations for the DB.
+
+###Tech stack
+1. Express server for serving frontend/assets
+2. Standard WebPack/TypeScript/React/Redux/SCSS stack for building frontend
+3. Sequelize for ORM/migrations
+4. Alpine docker image as base
+5. ChartJS or D3 for pretty graphs
+6. Configured by .env-app file
+
+###Capabilities
+1. Add Bittrex credentials
 2. View current local (logged - not actually inspecting blockchain) and remote holdings
 3. Set, update, and enable interval
 4. View transaction log
