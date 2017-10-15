@@ -18,7 +18,7 @@ Procedure:
 3. Query market cap data (coinmarketcap) for all interested coins
 2. For each coin:
     1. Query Bittrex for the current transaction fee, minimum order amount for USDT-coin pair (/getcurrencies)
-    2. If 1 - (amount - tx fees) / amount <= withdraw fee tolerance, withdraw that coin to local address (/withdraw)
+    2. If 1 - (amount - tx fees) / amount <= fee tolerance, withdraw that coin to local address (/withdraw)
     3. Log withdrawal to transaction log
     4. Calculate investment amount for each coin (automatic: interval spend * coin market cap / sum all market caps, manual: interval spend * manual % allocation)
     5. Increment each coin's current spend amount
@@ -38,16 +38,16 @@ Database:
 5. Transaction log
 6. Requested interval and execution time
 7. Current locally held coins
-8. Current remotely held coins
-9. Current coin spend amounts
-10. Fee tolerance for each coin
-11. Portfolio distribution
-12. Whether to manually or automatically distribute portfolio
+8. Current coin spend amounts
+9. Fee tolerance for each coin
+10. Portfolio distribution
+11. Whether to manually or automatically distribute portfolio
 
 Frontend:
 1. Add all credentials
-2. View current local and remote holdings
+2. View current local (logged - not actually inspecting blockchain) and remote holdings
 3. Set, update, and enable interval
 4. View transaction log
-5. Set and update portfolio distribution preference, actual distribution, and fee tolerance
-6. Pretty graphs about portfolio performance?
+5. Add local wallet address and fee tolerance
+6. Set and update portfolio distribution preference and actual distribution if manual
+7. Pretty graphs about portfolio performance?
