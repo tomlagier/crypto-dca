@@ -17,13 +17,16 @@ Procedure:
 1. Query Bittrex for the current amount and price of each coin held on Bittrex (/getbalances)
 3. Query market cap data (coinmarketcap) for all interested coins
 2. For each coin:
-    1. Query Bittrex for the current transaction fee, minimum order amount (/getcurrencies)
+    1. Query Bittrex for the current transaction fee, minimum order amount for USDT-coin pair (/getcurrencies)
     2. If 1 - (amount - tx fees) / amount <= withdraw fee tolerance, withdraw that coin to local address (/withdraw)
     3. Log withdrawal to transaction log
     4. Calculate investment amount for each coin (automatic: interval spend * coin market cap / sum all market caps, manual: interval spend * manual % allocation)
     5. Increment each coin's current spend amount
     6. Check if the coin has an outstanding order. If it does, cancel it
-    7. Check if the coin buy is valid (> than minimum transaction +/- some fuzzing and some sanity check (what?) about ask price)
+    7. Check if the coin buy is valid
+        1. > than minimum transaction +/- some fuzzing
+        2. some sanity check (what?) about ask price
+        3. enough USDT in Bittrex to support it
     8. If valid, execute order with coins full spend amount (/buylimit)
     9. Poll until order has resolved (/getopenorders)
     10. Log buy to transaction log, set coin spend amount to 0
