@@ -2,7 +2,7 @@
 Server that executes balanced DCA against a portfolio of cryptocurrency
 
 ## Overview
-Distributed as a docker-compose file pulling down an app, a cron job runner, and a DB. The app will host the web front-end and handle setting and retrieving settings, as well as enabling or disabling the cron job scheduler. The scheduler will execute the job on-time and needs to be extremely crash resistant. The database needs to be able to store sensitive credentials securely. The DB contains sensitive information and should be stored securely.
+Distributed as a docker-compose file pulling down an app, a cron job runner, and a DB. The app will host the web front-end and handle setting and retrieving settings, as well as enabling or disabling the cron job scheduler. The scheduler will execute the job on-time and needs to be extremely crash resistant. The database needs to be able to store sensitive credentials securely.
 
 ## Chron job
 The chron job, once enabled, executes automatic trades based on a variety of criteria, on a set interval.
