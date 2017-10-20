@@ -2,16 +2,16 @@
 Server that executes balanced DCA against a portfolio of cryptocurrency
 
 ## Overview
-Distributed as a docker-compose file pulling down an app, a cron job runner, and a DB. The app will host the web front-end and handle setting and retrieving settings, as well as enabling or disabling the cron job scheduler. The scheduler will execute the job on-time and needs to be extremely crash resistant. The database needs to be able to store sensitive credentials securely. The DB contains sensitive information and should be stored securely.
+Distributed as a docker-compose file pulling down an app, a cron job runner, and a DB. The app will host the web front-end and handle setting and retrieving settings, as well as enabling or disabling the cron job scheduler. The scheduler will execute the job on-time and needs to be extremely crash resistant. The database needs to be able to store sensitive credentials securely.
 
-##Chron job
+## Chron job
 The chron job, once enabled, executes automatic trades based on a variety of criteria, on a set interval.
 
-###Requirements
+### Requirements
 1. Scheduled once per interval
 2. If the cron job server crashes, when it is restarted it should check the interval and calculate the remaining time from the current time. If more than a single interval has passed, it should immediately execute and then schedule the next execution for the difference between the current time and the intended next interval time.
 
-###Tech stack
+### Tech stack
 1. Node script using setTimeout for scheduling
 2. PM2 to keep it alive in container
 3. Alpine docker image as base
@@ -20,7 +20,7 @@ The chron job, once enabled, executes automatic trades based on a variety of cri
 6. Sequelize for ORM
 7. Configured by environment variables in the .env-chron file
 
-###Procedure
+### Procedure
 1. Query Bittrex for the current amount and price of each coin held on Bittrex (/getbalances)
 3. Query market cap data (coinmarketcap) for all interested coins
 2. For each coin:
@@ -41,7 +41,7 @@ The chron job, once enabled, executes automatic trades based on a variety of cri
 ## Database
 The database is a bog-standard pgsql database, pulled in from the common docker image.
 
-###Tech stack
+### Tech stack
 1. Postgres DB
 2. Just use standard pgsql image
 3. HMAC for storing API credentials?
@@ -62,10 +62,10 @@ The database is a bog-standard pgsql database, pulled in from the common docker 
 
 *TODO: Draw up schema*
 
-##App/Frontend
+## App/Frontend
 The app contains a webserver for hosting the frontend, a little business logic for updating the DB with settings, and the migrations for the DB.
 
-###Tech stack
+### Tech stack
 1. Express server for serving frontend/assets
 2. Standard WebPack/TypeScript/React/Redux/SCSS stack for building frontend
 3. Sequelize for ORM/migrations
@@ -73,7 +73,7 @@ The app contains a webserver for hosting the frontend, a little business logic f
 5. ChartJS or D3 for pretty graphs
 6. Configured by .env-app file
 
-###Capabilities
+### Capabilities
 1. Add Bittrex credentials
 2. View current local (logged - not actually inspecting blockchain) and remote holdings
 3. Set, update, and enable interval
