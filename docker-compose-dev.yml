@@ -10,10 +10,14 @@ services:
   #     - 8087:8087
 
   app:
-    build: ./app
+    build:
+      context: ./app
+      dockerfile: Dockerfile-dev
     image: crypt-dca-app:latest
     container_name: crypto-dca-app
     env_file: .env-app
+    volumes:
+      - ./app:/www
     ports:
       - 8087:8087
 

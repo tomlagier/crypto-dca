@@ -1,0 +1,28 @@
+{
+  "name": "crypto-dca",
+  "version": "0.0.1",
+  "description": "Dollar Cost Averaging bot for a portfolio of cryptocurrency",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tomlagier/crypto-dca.git"
+  },
+  "author": "Tom Lagier <tom@gliffy.com> (http://gliffy.com)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tomlagier/crypto-dca/issues"
+  },
+  "homepage": "https://github.com/tomlagier/crypto-dca#readme",
+  "dependencies": {
+    "apollo-server-express": "^1.1.7",
+    "body-parser": "^1.18.2",
+    "express": "^4.16.2",
+    "graphql": "^0.11.7"
+  },
+  "devDependencies": {
+    "nodemon": "^1.12.1"
+  }
+}
