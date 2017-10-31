@@ -11,16 +11,25 @@ services:
 
   app:
     build: ./app
-    image: crypt-dca-app:latest
+    image: crypto-dca-app:latest
     container_name: crypto-dca-app
-    env_file: .env-app
+    env_file: config/.env-app
     ports:
       - 8087:8087
 
+  api:
+    build: ./api
+    image: crypto-dca-api:latest
+    container_name: crypto-dca-api
+    env_file: config/.env-api
+    ports:
+      - 8088:8088
+
   db:
-    image: postgres:10.0-alpine
+    build: ./db
+    image: crypto-dca-db:latest
     container_name: crypto-dca-db
-    env_file: .env-db
+    env_file: config/.env-db
     volumes:
       - crypto-dca-db:/var/lib/postgresql/data
     ports:

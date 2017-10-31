@@ -1,0 +1,32 @@
+{
+  "name": "crypto-dca-db",
+  "version": "0.0.1",
+  "description": "Database for crypto-dca",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tomlagier/crypto-dca.git"
+  },
+  "author": "Tom Lagier <tom@gliffy.com> (http://gliffy.com)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tomlagier/crypto-dca/issues"
+  },
+  "homepage": "https://github.com/tomlagier/crypto-dca#readme",
+  "dependencies": {
+    "apollo-server-express": "^1.1.7",
+    "body-parser": "^1.18.2",
+    "express": "^4.16.2",
+    "graphql": "^0.11.7",
+    "graphql-sequelize": "^5.5.0",
+    "sequelize": "^4.20.1"
+  },
+  "devDependencies": {
+    "graphql-relay": "^0.5.3",
+    "nodemon": "^1.12.1",
+    "sequelize-cli": "^3.0.0"
+  }
+}
