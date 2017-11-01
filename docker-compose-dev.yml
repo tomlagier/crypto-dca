@@ -15,7 +15,7 @@ services:
       dockerfile: Dockerfile-dev
     image: crypt-dca-app:latest
     container_name: crypto-dca-app
-    env_file: config/.env-app
+    env_file: config/.env
     volumes:
       - ./app:/www
     ports:
@@ -27,7 +27,7 @@ services:
       dockerfile: Dockerfile-dev
     image: crypt-dca-api:latest
     container_name: crypto-dca-api
-    env_file: config/.env-api
+    env_file: config/.env
     volumes:
       - ./api:/www
     ports:
@@ -37,7 +37,7 @@ services:
     build: ./db
     image: crypto-dca-db:latest
     container_name: crypto-dca-db
-    env_file: .env-db
+    env_file: config/.env
     volumes:
       - crypto-dca-db:/var/lib/postgresql/data
     ports:
