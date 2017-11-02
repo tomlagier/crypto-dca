@@ -11,4 +11,3 @@ app.get('/graphiql', graphiqlExpress({ endpointURL: '/graphql' })); // if you wa
 
 app.listen(PORT);
 console.log(`Running a GraphQL API server at localhost:${PORT}/graphql`);
-

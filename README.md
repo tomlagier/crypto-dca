@@ -81,3 +81,13 @@ The app contains a webserver for hosting the frontend, a little business logic f
 5. Add local wallet address and fee tolerance
 6. Set and update portfolio distribution preference and actual distribution if manual
 7. Pretty graphs about portfolio performance?
+
+### To-do
+* Make omnicored RPC server more secure
+    * Cert based auth
+    * No open allowed IPs
+* Publish omnicored docker images
+* Create client actions as a part of the API
+    * Create wallet
+    * Check wallet balance
+    * Send local Tether to Bittrex
