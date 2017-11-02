@@ -13,11 +13,15 @@ describe('wallet model', () => {
       password: 'Test'
     })
     .then(user => Wallet.create({
+      name: 'Bitcoin wallet',
       address: 'some address',
+      local: false,
       UserId: user.id
     }))
     .then(wallet => {
       expect(wallet.address).to.equal('some address');
+      expect(wallet.name).to.equal('Bitcoin wallet');
+      expect(wallet.local).to.be.false;
       return wallet.getUser();
     })
     .then(user => {

@@ -2,8 +2,14 @@ const bcrypt = require('bcrypt-nodejs');
 
 module.exports = (sequelize, DataTypes) => {
   const User = sequelize.define('User', {
-    username: DataTypes.STRING,
-    password: DataTypes.STRING
+    username: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    password: {
+      type: DataTypes.STRING,
+      allowNull: false
+    }
   }, {
     hooks: {
       beforeCreate(user) {
@@ -14,8 +20,17 @@ module.exports = (sequelize, DataTypes) => {
     }
   });
 
-  User.associate = function({User, Wallet}) {
+  User.associate = function ({
+    User,
+    Option,
+    Wallet,
+    Transaction,
+    Coin
+  }) {
     User.hasMany(Wallet);
+    User.hasMany(Option);
+    User.hasMany(Transaction);
+    User.hasMany(Coin);
   }
 
   User.prototype.checkPassword = function(password) {
