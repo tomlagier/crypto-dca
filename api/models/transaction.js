@@ -5,12 +5,21 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       references: { model: 'Coin', key: 'id' }
     },
+    startWallet: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: { model: 'Wallet', key: 'id' }
+    },
     endCurrency: {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: { model: 'Coin', key: 'id' }
     },
-    //String to prevent precision loss
+    endWallet: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: { model: 'Wallet', key: 'id' }
+    },
     amount: {
       type: DataTypes.STRING,
       defaultValue: "0"

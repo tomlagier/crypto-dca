@@ -22,23 +22,20 @@ module.exports = (sequelize, DataTypes) => {
 
   User.associate = function ({
     User,
+    Coin,
     Option,
-    Wallet,
-    Transaction,
-    Coin
+    Wallet
   }) {
+    User.hasMany(Coin);
     User.hasMany(Wallet);
     User.hasMany(Option);
-    User.hasMany(Transaction);
-    User.hasMany(Coin);
   }
 
   User.prototype.checkPassword = function(password) {
     return new Promise((res, rej) =>
       bcrypt.compare(password, this.password, (err, resp) => {
-        console.log(err, resp);
         if (err) return rej(err);
-        return resp ? res(resp) : rej(resp);
+        return res(resp);
       })
     );
   }

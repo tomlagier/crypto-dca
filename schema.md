@@ -39,6 +39,8 @@ Options:
 * Fee tolerance
 * Active
 * Percentage of portfolio
+* Local wallet
+* Remote wallet
 * Amount held locally
 * Amount held on exchange
 * Amount saved towards next purchase

@@ -3,32 +3,29 @@ const { describe, it } = require('mocha');
 const { User, Option } = require('../../helpers/db');
 
 describe('option model', () => {
-  it('should be able to create the table', done => {
-    Option.sync({ force: true }).then(() => done())
+  before(async () => {
+    await Option.sync({ force: true });
   });
 
-  it('should be able to create an option with a user', done => {
-    User.create({
+  it('should be able to create an option with a user', async () => {
+    const user = await User.create({
       username: 'Test',
       password: 'Test'
     })
-    .then(user => Option.create({
+
+    const option = await Option.create({
       name: 'some option',
       value: 'some value',
       UserId: user.id
-    }))
-    .then(option => {
-      expect(option.name).to.equal('some option');
-      expect(option.value).to.equal('some value');
-      return option.getUser();
     })
-    .then(user => {
-      expect(user.username).to.equal('Test');
-      return user.getOptions();
-    })
-    .then(([option]) => {
-      expect(option.name).to.equal('some option');
-      done();
-    })
+
+    expect(option.name).to.equal('some option');
+    expect(option.value).to.equal('some value');
+
+    const optionUser = await option.getUser();
+    expect(optionUser.username).to.equal('Test');
+
+    const [userOption] = await user.getOptions();
+    expect(userOption.name).to.equal('some option');
   });
 });

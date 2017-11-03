@@ -1,36 +1,33 @@
 const { expect } = require('chai');
 const { describe, it } = require('mocha');
-const { User, Wallet } = require('../../helpers/db');
+const { User, Coin, Wallet } = require('../../helpers/db');
 
 describe('wallet model', () => {
-  it('should be able to create the table', done => {
-    Wallet.sync({ force: true }).then(() => done())
+  before(async () => {
+    await User.sync({ force: true });
+    await Wallet.sync({ force: true });
+    await Coin.sync({ force: true });
   });
 
-  it('should be able to create a wallet with a user', done => {
-    User.create({
+  it('should be able to create a wallet with a user', async () => {
+    const user = await User.create({
       username: 'Test',
       password: 'Test'
     })
-    .then(user => Wallet.create({
+    const wallet = await Wallet.create({
       name: 'Bitcoin wallet',
       address: 'some address',
       local: false,
       UserId: user.id
-    }))
-    .then(wallet => {
-      expect(wallet.address).to.equal('some address');
-      expect(wallet.name).to.equal('Bitcoin wallet');
-      expect(wallet.local).to.be.false;
-      return wallet.getUser();
     })
-    .then(user => {
-      expect(user.username).to.equal('Test');
-      return user.getWallets();
-    })
-    .then(([wallet]) => {
-      expect(wallet.address).to.equal('some address');
-      done();
-    })
+    expect(wallet.address).to.equal('some address');
+    expect(wallet.name).to.equal('Bitcoin wallet');
+    expect(wallet.local).to.be.false;
+
+    const walletUser = await wallet.getUser();
+    expect(walletUser.username).to.equal('Test');
+
+    const [userWallet] = await walletUser.getWallets();
+    expect(userWallet.address).to.equal('some address');
   });
 });

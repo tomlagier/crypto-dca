@@ -91,3 +91,26 @@ The app contains a webserver for hosting the frontend, a little business logic f
     * Create wallet
     * Check wallet balance
     * Send local Tether to Bittrex
+* Figure out better test running situation
+* Fatten up my models
+* Finish model tests
+
+### User stories
+
+As a user, I want to...
+* be able to create an account
+* be able to log in
+* be able to add some coins to invest in
+    * set a fee tolerance
+    * set a percentage of the portfolio
+    * associate a local and remote wallet to the coin
+    * enable or disable a coin
+    * change wallets
+* set my purchase amount
+* set my purchase interval
+* start or stop the purchases
+* see my portfolio
+    * the amount of each coin on the exchange
+    * the amount of each coin that has been transferred locally
+    * the amount on each coin waiting to be spent
+* see all transactions that have happened

@@ -16,13 +16,9 @@ module.exports = (sequelize, DataTypes) => {
 
   Wallet.associate = function ({
     User,
-    Wallet,
-    Transaction,
-    Coin
+    Wallet
   }) {
     Wallet.belongsTo(User);
-    Wallet.hasOne(Coin);
-    Wallet.hasMany(Transaction);
   }
 
   return Wallet;

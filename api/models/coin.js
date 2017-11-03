@@ -18,7 +18,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     portfolioWeight: {
       type: DataTypes.INTEGER,
-      defaultValue: 1
+      defaultValue: 0
     },
     localAmount: {
       type: DataTypes.STRING,
@@ -36,11 +36,16 @@ module.exports = (sequelize, DataTypes) => {
 
   Coin.associate = function ({
     User,
-    Transaction,
+    Wallet,
     Coin
   }) {
     Coin.belongsTo(User);
-    Coin.hasMany(Transaction);
+    Coin.belongsTo(Wallet, {
+      as: 'localWallet'
+    });
+    Coin.belongsTo(Wallet, {
+      as: 'exchangeWallet'
+    });
   }
 
   return Coin;
