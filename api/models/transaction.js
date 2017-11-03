@@ -1,25 +1,5 @@
 module.exports = (sequelize, DataTypes) => {
   const Transaction = sequelize.define('Transaction', {
-    startCurrency: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      references: { model: 'Coin', key: 'id' }
-    },
-    startWallet: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      references: { model: 'Wallet', key: 'id' }
-    },
-    endCurrency: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      references: { model: 'Coin', key: 'id' }
-    },
-    endWallet: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      references: { model: 'Wallet', key: 'id' }
-    },
     amount: {
       type: DataTypes.STRING,
       defaultValue: "0"
@@ -30,9 +10,25 @@ module.exports = (sequelize, DataTypes) => {
     }
   });
 
-  Transaction.associate = function ({ User, Wallet, Transaction }) {
+  Transaction.associate = function ({
+    User,
+    Coin,
+    Wallet,
+    Transaction
+  }) {
     Transaction.belongsTo(User);
-    Transaction.belongsTo(Wallet);
+    Transaction.belongsTo(Wallet, {
+      as: 'startWallet'
+    });
+    Transaction.belongsTo(Wallet, {
+      as: 'endWallet'
+    });
+    Transaction.belongsTo(Coin, {
+      as: 'startCoin'
+    });
+    Transaction.belongsTo(Coin, {
+      as: 'endCoin'
+    });
   }
 
   return Transaction;
