@@ -1,5 +1,4 @@
 const {
-  buildSchema,
   GraphQLObjectType,
   GraphQLSchema,
   GraphQLNonNull,

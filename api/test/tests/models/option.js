@@ -1,5 +1,5 @@
 const { expect } = require('chai');
-const { describe, it } = require('mocha');
+const { describe, it, before } = require('mocha');
 const { User, Option } = require('../../helpers/db');
 
 describe('option model', () => {
@@ -9,7 +9,7 @@ describe('option model', () => {
 
   it('should be able to create an option with a user', async () => {
     const user = await User.create({
-      username: 'Test',
+      name: 'Test',
       password: 'Test'
     })
 
@@ -23,7 +23,7 @@ describe('option model', () => {
     expect(option.value).to.equal('some value');
 
     const optionUser = await option.getUser();
-    expect(optionUser.username).to.equal('Test');
+    expect(optionUser.name).to.equal('Test');
 
     const [userOption] = await user.getOptions();
     expect(userOption.name).to.equal('some option');

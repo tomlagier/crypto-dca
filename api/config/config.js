@@ -12,20 +12,23 @@ module.exports = {
     password: POSTGRES_PASSWORD,
     database: POSTGRES_DEV_DB,
     host: 'db',
-    dialect: 'postgres'
+    dialect: 'postgres',
+    logging: true
   },
   test: {
-    username: 'crypto-dca-db',
-    password: 'crypto-dca-db',
-    database: 'crypto-dca-db_test',
-    host: 'localhost',
-    dialect: 'postgres'
+    username: POSTGRES_USER,
+    password: POSTGRES_PASSWORD,
+    database: POSTGRES_TEST_DB,
+    host: 'db',
+    dialect: 'postgres',
+    logging: false
   },
   production: {
     username: POSTGRES_USER,
     password: POSTGRES_PASSWORD,
     database: POSTGRES_PROD_DB,
     host: 'db',
-    dialect: 'postgres'
+    dialect: 'postgres',
+    logging: false
   }
 }

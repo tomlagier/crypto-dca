@@ -1,5 +1,5 @@
 const { expect } = require('chai');
-const { describe, it } = require('mocha');
+const { describe, it, before } = require('mocha');
 const { User } = require('../../helpers/db');
 
 describe('user model', () => {
@@ -7,13 +7,13 @@ describe('user model', () => {
   before(async () => {
     await User.sync({ force: true });
     user = await User.create({
-      username: 'Tester',
+      name: 'Tester',
       password: 'Yerherp'
     });
   });
 
   it('should be able to create a new user', async () => {
-    expect(user.username).to.equal('Tester');
+    expect(user.name).to.equal('Tester');
     expect(user.password).to.be.ok;
     expect(user.password).not.to.equal('Yerherp');
   });

@@ -1,5 +1,5 @@
 const { expect } = require('chai');
-const { describe, it } = require('mocha');
+const { describe, it, before } = require('mocha');
 const { User, Coin, Wallet } = require('../../helpers/db');
 
 describe('wallet model', () => {
@@ -11,7 +11,7 @@ describe('wallet model', () => {
 
   it('should be able to create a wallet with a user', async () => {
     const user = await User.create({
-      username: 'Test',
+      name: 'Test',
       password: 'Test'
     })
     const wallet = await Wallet.create({
@@ -25,7 +25,7 @@ describe('wallet model', () => {
     expect(wallet.local).to.be.false;
 
     const walletUser = await wallet.getUser();
-    expect(walletUser.username).to.equal('Test');
+    expect(walletUser.name).to.equal('Test');
 
     const [userWallet] = await walletUser.getWallets();
     expect(userWallet.address).to.equal('some address');

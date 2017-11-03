@@ -1,5 +1,5 @@
 const { expect } = require('chai');
-const { describe, it } = require('mocha');
+const { describe, it, before, beforeEach } = require('mocha');
 const {
   User,
   Coin,
@@ -44,7 +44,8 @@ describe('user model', () => {
     ]);
 
     transaction = await Transaction.create({
-      amount: '20',
+      startAmout: '20',
+      endAmount: '0.0001',
       success: true,
       startCoinId: startCoin.id,
       endCoinId: endCoin.id,
@@ -54,7 +55,8 @@ describe('user model', () => {
   });
 
   it('should be able to create a new transaction', async () => {
-    expect(transaction.amount).to.equal('20');
+    expect(transaction.startAmout).to.equal('20');
+    expect(transaction.endAmount).to.equal('0.0001');
     expect(transaction.success).to.be.true;
 
     const [

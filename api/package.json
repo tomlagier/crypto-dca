@@ -4,7 +4,8 @@
   "description": "Database for crypto-dca",
   "main": "index.js",
   "scripts": {
-    "test": "mocha --exit ./test/tests/**/*.js"
+    "test": "mocha --exit ./test/tests/**/*.js",
+    "watch-tests": "mocha --exit --watch ./test/tests/**/*.js"
   },
   "repository": {
     "type": "git",

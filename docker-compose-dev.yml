@@ -33,6 +33,17 @@ services:
     ports:
       - 8088:8088
 
+  api-test:
+    build:
+      context: ./api
+      dockerfile: Dockerfile-dev
+    image: crypt-dca-api:latest
+    container_name: crypto-dca-api-test
+    env_file: config/.env
+    entrypoint: npm run watch-tests
+    volumes:
+      - ./api:/www
+
   db:
     build: ./db
     image: crypto-dca-db:latest

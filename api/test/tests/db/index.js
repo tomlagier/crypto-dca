@@ -1,4 +1,3 @@
-const { expect } = require('chai');
 const { describe, it } = require('mocha');
 const db = require('../../helpers/db');
 

@@ -1,9 +1,9 @@
 const { expect } = require('chai');
-const { describe, it } = require('mocha');
-const { User, Coin, Wallet, Transaction } = require('../../helpers/db');
+const { describe, it, before, beforeEach } = require('mocha');
+const { User, Coin, Wallet } = require('../../helpers/db');
 
 describe('coin model', () => {
-  let user, wallets, coin;
+  let user, wallets;
 
   before(async () => {
     await User.sync({ force: true });
@@ -13,7 +13,7 @@ describe('coin model', () => {
 
   beforeEach(async () => {
     user = await User.create({
-      username: 'Test',
+      name: 'Test',
       password: 'Test'
     })
     wallets = await Promise.all([
@@ -82,6 +82,6 @@ describe('coin model', () => {
 
     expect(localWallet.name).to.equal('local btc');
     expect(exchangeWallet.name).to.equal('remote btc');
-    expect(coinUser.username).to.equal('Test');
+    expect(coinUser.name).to.equal('Test');
   })
 });

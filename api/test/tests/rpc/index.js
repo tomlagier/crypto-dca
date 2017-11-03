@@ -1,12 +1,11 @@
 const { expect } = require('chai');
 const { describe, it } = require('mocha');
 
-
 const Client = require('bitcoin-core');
 
-
+//Should we even include the RPC client v1?
 describe('rpc client', () => {
-  it('should be able to connect', done => {
+  it.skip('should be able to connect', done => {
     const client = new Client({
       port: 8032,
       username: 'rpc',

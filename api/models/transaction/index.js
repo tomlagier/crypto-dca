@@ -1,6 +1,10 @@
 module.exports = (sequelize, DataTypes) => {
   const Transaction = sequelize.define('Transaction', {
-    amount: {
+    startAmount: {
+      type: DataTypes.STRING,
+      defaultValue: "0"
+    },
+    endAmount: {
       type: DataTypes.STRING,
       defaultValue: "0"
     },
