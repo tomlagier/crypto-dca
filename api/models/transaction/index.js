@@ -20,17 +20,17 @@ module.exports = (sequelize, DataTypes) => {
     Wallet,
     Transaction
   }) {
-    Transaction.belongsTo(User);
-    Transaction.belongsTo(Wallet, {
+    Transaction.User = Transaction.belongsTo(User);
+    Transaction.StartWallet = Transaction.belongsTo(Wallet, {
       as: 'startWallet'
     });
-    Transaction.belongsTo(Wallet, {
+    Transaction.EndWallet = Transaction.belongsTo(Wallet, {
       as: 'endWallet'
     });
-    Transaction.belongsTo(Coin, {
+    Transaction.StartCoin = Transaction.belongsTo(Coin, {
       as: 'startCoin'
     });
-    Transaction.belongsTo(Coin, {
+    Transaction.EndCoin = Transaction.belongsTo(Coin, {
       as: 'endCoin'
     });
   }

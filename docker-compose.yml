@@ -22,6 +22,8 @@ services:
     image: crypto-dca-api:latest
     container_name: crypto-dca-api
     env_file: config/.env
+    environment:
+      - NODE_ENV=production
     ports:
       - 8088:8088
 

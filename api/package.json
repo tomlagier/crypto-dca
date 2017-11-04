@@ -4,7 +4,11 @@
   "description": "Database for crypto-dca",
   "main": "index.js",
   "scripts": {
+    "start": "npx sequelize db:migrate && nodemon index.js",
     "test": "mocha --exit ./test/tests/**/*.js",
+    "migrate": "sequelize db:migrate",
+    "create-dump": "node helpers/create-dump.js",
+    "seed": "npx sequelize db:seed:all",
     "watch-tests": "mocha --exit --watch ./test/tests/**/*.js"
   },
   "repository": {
@@ -32,7 +36,7 @@
     "graphql-relay": "^0.5.3",
     "mocha": "^4.0.1",
     "nodemon": "^1.12.1",
-    "pg": "^7.3.0",
+    "pg": "~6.4.2",
     "sequelize-cli": "^3.0.0"
   }
 }

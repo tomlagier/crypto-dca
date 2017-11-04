@@ -94,6 +94,8 @@ The app contains a webserver for hosting the frontend, a little business logic f
 * Figure out better test running situation
 * Fatten up my models
 * Finish model tests
+* Transaction search
+* Badly need to implement https://github.com/mickhansen/dataloader-sequelize
 
 ### User stories
 

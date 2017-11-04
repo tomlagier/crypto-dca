@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
   });
 
   Option.associate = function ({ User, Option }) {
-    Option.belongsTo(User);
+    Option.User = Option.belongsTo(User);
   }
 
   return Option;

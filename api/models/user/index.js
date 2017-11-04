@@ -27,10 +27,10 @@ module.exports = (sequelize, DataTypes) => {
     Wallet,
     Transaction
   }) {
-    User.hasMany(Coin);
-    User.hasMany(Wallet);
-    User.hasMany(Option);
-    User.hasMany(Transaction);
+    User.Coins = User.hasMany(Coin);
+    User.Wallets = User.hasMany(Wallet);
+    User.Options = User.hasMany(Option);
+    User.Transactions = User.hasMany(Transaction);
   }
 
   User.prototype.checkPassword = function(password) {

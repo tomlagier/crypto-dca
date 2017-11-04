@@ -1,21 +1,29 @@
 const {
   GraphQLObjectType,
   GraphQLSchema,
-  GraphQLNonNull,
-  GraphQLList,
-  GraphQLString
 } = require('graphql');
-const { resolver } = require('graphql-sequelize')
+
+const fields = require('./models/fields');
+
+// const {
+//   User,
+//   Coin,
+//   Wallet,
+//   Option,
+//   Transaction,
+//   types: {
+//     User: userType,
+//     Coin: coinType,
+//     Wallet: walletType,
+//     Option: optionType,
+//     Transaction: transactionType
+//   }
+// } = require('./models');
+
 
 module.exports = new GraphQLSchema({
   query: new GraphQLObjectType({
     name: 'RootQueryType',
-    fields: {
-      hello: {
-        type: GraphQLString,
-        description: 'Maybe this will return world',
-        resolve: () => 'World'
-      }
-    }
+    fields
   })
 });

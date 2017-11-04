@@ -39,11 +39,11 @@ module.exports = (sequelize, DataTypes) => {
     Wallet,
     Coin
   }) {
-    Coin.belongsTo(User);
-    Coin.belongsTo(Wallet, {
+    Coin.User = Coin.belongsTo(User);
+    Coin.LocalWallet = Coin.belongsTo(Wallet, {
       as: 'localWallet'
     });
-    Coin.belongsTo(Wallet, {
+    Coin.ExchangeWallet = Coin.belongsTo(Wallet, {
       as: 'exchangeWallet'
     });
   }

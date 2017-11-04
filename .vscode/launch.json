@@ -6,6 +6,16 @@
   "configurations": [
     {
       "type": "node",
+      "request": "attach",
+      "name": "Attach",
+      "protocol": "inspector",
+      "address": "localhost",
+      "port": 9001,
+      "localRoot": "${workspaceRoot}/api/",
+      "remoteRoot": "/www/"
+    },
+    {
+      "type": "node",
       "request": "launch",
       "name": "Mocha Tests",
       "program": "${workspaceRoot}/api/node_modules/.bin/_mocha",

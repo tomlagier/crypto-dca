@@ -3,4 +3,4 @@ RUN mkdir www/
 WORKDIR www/
 ADD . .
 RUN npm install
-CMD node index.js
+CMD npm run start

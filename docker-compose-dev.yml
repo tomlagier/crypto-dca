@@ -28,6 +28,8 @@ services:
     image: crypt-dca-api:latest
     container_name: crypto-dca-api
     env_file: config/.env
+    environment:
+      - NODE_ENV=development
     volumes:
       - ./api:/www
     ports:
@@ -40,9 +42,26 @@ services:
     image: crypt-dca-api:latest
     container_name: crypto-dca-api-test
     env_file: config/.env
+    environment:
+      - NODE_ENV=test
     entrypoint: npm run watch-tests
     volumes:
       - ./api:/www
+
+  api-debug:
+    build:
+      context: ./api
+      dockerfile: Dockerfile-dev
+    image: crypt-dca-api:latest
+    container_name: crypto-dca-api-debug
+    env_file: config/.env
+    environment:
+      - NODE_ENV=development
+    entrypoint: npx nodemon --inspect-brk=0.0.0.0:9001 ./index.js
+    volumes:
+      - ./api:/www
+    ports:
+      - 9001:9001
 
   db:
     build: ./db
