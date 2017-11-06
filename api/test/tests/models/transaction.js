@@ -1,6 +1,6 @@
 const { expect } = require('chai');
 const { describe, it, before, beforeEach, after } = require('mocha');
-const { up, down } = require('../../helpers/db');
+const { up, down } = require('../../../helpers/db');
 
 describe('transaction model', () => {
   let User, Coin, Transaction, Wallet, db;
@@ -80,7 +80,7 @@ describe('transaction model', () => {
     expect(endWallet.name).to.equal('remote bitcoin');
   });
 
-  after(() => {
-    down();
+  after(async () => {
+    await down();
   })
 })

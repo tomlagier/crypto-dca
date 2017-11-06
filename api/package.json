@@ -5,11 +5,11 @@
   "main": "index.js",
   "scripts": {
     "start": "npx sequelize db:migrate && nodemon index.js",
-    "test": "mocha --exit ./test/tests/**/*.js",
+    "test": "NODE_ENV=test mocha --exit ./test/tests/**/*.js",
     "migrate": "sequelize db:migrate",
     "create-dump": "node helpers/create-dump.js",
     "seed": "npx sequelize db:seed:all",
-    "watch-tests": "mocha --exit --watch ./test/tests/**/*.js"
+    "watch-tests": "NODE_ENV=test mocha --exit --watch ./test/tests/**/*.js"
   },
   "repository": {
     "type": "git",

@@ -1,6 +1,6 @@
 const { expect } = require('chai');
 const { describe, it, before, beforeEach, after } = require('mocha');
-const { up, down } = require('../../helpers/db');
+const { up, down } = require('../../../helpers/db');
 
 describe('coin model', () => {
   let user, wallets, db;
@@ -90,7 +90,7 @@ describe('coin model', () => {
     expect(coinUser.name).to.equal('Test');
   })
 
-  after(() => {
-    down()
+  after(async () => {
+    await down()
   });
 });

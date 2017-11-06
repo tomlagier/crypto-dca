@@ -1,4 +1,2 @@
-const buildDb = require('../helpers/build-db');
-const decorateDb = require('../helpers/decorate-db');
-
-module.exports = decorateDb(buildDb());
+//Convenience to avoid crazy pathing from within models
+module.exports = require('../helpers/db').up();

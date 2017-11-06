@@ -1,6 +1,6 @@
 const { expect } = require('chai');
 const { describe, it, before, after } = require('mocha');
-const { up, down } = require('../../helpers/db');
+const { up, down } = require('../../../helpers/db');
 
 describe('user model', () => {
   let User, db, user;
@@ -31,7 +31,7 @@ describe('user model', () => {
     expect(isValid).to.be.false;
   })
 
-  after(() => {
-    down();
+  after(async () => {
+    await down();
   })
 })
