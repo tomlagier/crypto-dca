@@ -1,15 +1,17 @@
 const buildDb = require('./build-db');
 const decorateDb = require('./decorate-db');
 
+let db;
 module.exports = {
   up: () => {
-    return this.db ?
-      this.db :
-      this.db = decorateDb(buildDb());
+    if (!db) {
+      db = decorateDb(buildDb());
+    }
+
+    return db;
   },
   down: async () => {
-    await this.db.sequelize.close();
-    this.db = null;
-  },
-  db: null
+    await db.sequelize.close();
+    db = null;
+  }
 };

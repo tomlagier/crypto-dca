@@ -3,11 +3,11 @@ const {
   GraphQLSchema,
 } = require('graphql');
 
-const fields = require('./models/fields');
+const createFields = require('./models/fields');
 
-module.exports = new GraphQLSchema({
+module.exports = db => new GraphQLSchema({
   query: new GraphQLObjectType({
     name: 'RootQueryType',
-    fields
+    fields: createFields(db)
   })
 });

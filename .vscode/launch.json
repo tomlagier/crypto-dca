@@ -20,6 +20,9 @@
       "name": "Mocha Tests",
       "program": "${workspaceRoot}/api/node_modules/.bin/_mocha",
       "cwd": "${workspaceRoot}/api/test",
+      "env": {
+        "NODE_ENV": "test"
+      },
       "args": [
         "-u",
         "tdd",

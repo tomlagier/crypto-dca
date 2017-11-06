@@ -1,22 +1,29 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const schema = require('../schema');
+const createSchema = require('../schema');
 const { graphqlExpress, graphiqlExpress } = require('apollo-server-express');
 const logger = require('./logger');
 
 module.exports = {
-  start(port = 8088) {
+  start({
+    port = 8088,
+    db = require('../models')
+  } = {}) {
     const app = express();
 
-    app.use('/graphql', bodyParser.json(), graphqlExpress({ schema }));
+    app.use('/graphql', bodyParser.json(), graphqlExpress({
+      schema: createSchema(db)
+    }));
     app.get('/graphiql', graphiqlExpress({ endpointURL: '/graphql' })); // if you want GraphiQL enabled
 
-    app.listen(port);
     logger.info(`Running a GraphQL API server at localhost:${port}/graphql`);
-
-    return this.app = app;
+    this.app = app;
+    let resolve;
+    const listeningPromise = new Promise(res => resolve = res);
+    this.server = app.listen(port, () => resolve());
+    return listeningPromise;
   },
   stop() {
-    this.app.close();
+    this.server.close();
   }
 }
