@@ -1,3 +1,5 @@
+const logger = require('../helpers/logger');
+
 const {
   POSTGRES_USER,
   POSTGRES_PASSWORD,
@@ -6,6 +8,8 @@ const {
   POSTGRES_PROD_DB
 } = process.env
 
+const logging = message => logger.verbose(message);
+
 module.exports = {
   development:{
     username: POSTGRES_USER,
@@ -13,7 +17,7 @@ module.exports = {
     database: POSTGRES_DEV_DB,
     host: 'db',
     dialect: 'postgres',
-    logging: true
+    logging
   },
   test: {
     username: POSTGRES_USER,
@@ -21,7 +25,7 @@ module.exports = {
     database: POSTGRES_TEST_DB,
     host: 'db',
     dialect: 'postgres',
-    logging: false
+    logging
   },
   production: {
     username: POSTGRES_USER,
@@ -29,6 +33,6 @@ module.exports = {
     database: POSTGRES_PROD_DB,
     host: 'db',
     dialect: 'postgres',
-    logging: false
+    logging
   }
 }
