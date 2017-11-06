@@ -1,11 +1,16 @@
 const { expect } = require('chai');
-const { describe, it, before, beforeEach } = require('mocha');
-const { User, Coin, Wallet } = require('../../helpers/db');
+const { describe, it, before, beforeEach, after } = require('mocha');
+const { up, down } = require('../../helpers/db');
 
 describe('coin model', () => {
-  let user, wallets;
-
+  let user, wallets, db;
+  let User, Wallet, Coin;
   before(async () => {
+    db = up();
+    User = db.User;
+    Wallet = db.Wallet;
+    Coin = db.Coin;
+
     await User.sync({ force: true });
     await Wallet.sync({ force: true });
     await Coin.sync({ force: true });
@@ -84,4 +89,8 @@ describe('coin model', () => {
     expect(exchangeWallet.name).to.equal('remote btc');
     expect(coinUser.name).to.equal('Test');
   })
+
+  after(() => {
+    down()
+  });
 });

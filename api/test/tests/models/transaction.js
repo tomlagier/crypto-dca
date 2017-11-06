@@ -1,14 +1,17 @@
 const { expect } = require('chai');
-const { describe, it, before, beforeEach } = require('mocha');
-const {
-  User,
-  Coin,
-  Transaction,
-  Wallet
- } = require('../../helpers/db');
+const { describe, it, before, beforeEach, after } = require('mocha');
+const { up, down } = require('../../helpers/db');
 
-describe('user model', () => {
+describe('transaction model', () => {
+  let User, Coin, Transaction, Wallet, db;
+
   before(async () => {
+    db = up();
+    User = db.User;
+    Coin = db.Coin;
+    Transaction = db.Transaction;
+    Wallet = db.Wallet;
+
     await User.sync({ force: true });
     await Wallet.sync({ force: true });
     await Coin.sync({ force: true });
@@ -43,8 +46,8 @@ describe('user model', () => {
       })
     ]);
 
-    transaction = await Transaction.create({
-      startAmout: '20',
+    return transaction = await Transaction.create({
+      startAmount: '20',
       endAmount: '0.0001',
       success: true,
       startCoinId: startCoin.id,
@@ -55,7 +58,7 @@ describe('user model', () => {
   });
 
   it('should be able to create a new transaction', async () => {
-    expect(transaction.startAmout).to.equal('20');
+    expect(transaction.startAmount).to.equal('20');
     expect(transaction.endAmount).to.equal('0.0001');
     expect(transaction.success).to.be.true;
 
@@ -76,4 +79,8 @@ describe('user model', () => {
     expect(startWallet.name).to.equal('remote tether');
     expect(endWallet.name).to.equal('remote bitcoin');
   });
+
+  after(() => {
+    down();
+  })
 })
