@@ -1,86 +1,114 @@
 const { expect } = require('chai');
 const { describe, it, before, after } = require('mocha');
 const fetch = require('node-fetch');
-const { start, stop } = require('../../helpers/server');
+const runFileMigration = require('../../../helpers/run-file-migration');
 
-describe('user model', () => {
+describe('coin query', () => {
+  let migrate, db;
   before(async () => {
-    await start();
+    db = require('../setup')();
+    migrate = runFileMigration('test-data.sql', db);
+    await migrate.up();
   });
 
-  it('should be able to query the user', async () => {
-    const query = encodeURIComponent(`
-      {
-        users {
-          id,
-          name
+  it('should be able to query all coins', async () => {
+    const query = encodeURIComponent(`{
+      coins {
+        id
+        name
+        code
+        active
+        localAmount
+        localWallet {
+          id
         }
+        exchangeAmount
+        exchangeWallet {
+          id
+        }
+        purchaseAmount
+        feeTolerance
+        portfolioWeight
       }
-    `);
+    }`);
     const resp = await fetch(`http://localhost:8088/graphql?query=${query}`)
-    const result = await resp.json();
-    expect(result.data.users.length).to.equal(2);
-    expect(result.data.users[0]).to.deep.equal({
-      id: 1,
-      name: 'tomlagier'
+    const { data: { coins }} = await resp.json();
+    expect(coins).to.deep.equal([
+      {
+        "id": 1,
+        "name": "BitCoin",
+        "code": "BTC",
+        "active": true,
+        "localAmount": "3.341",
+        "localWallet": {
+          "id": 1
+        },
+        "exchangeAmount": "0.023",
+        "exchangeWallet": {
+          "id": 2
+        },
+        "purchaseAmount": "0.001",
+        "feeTolerance": "0",
+        "portfolioWeight": 50
+      },
+      {
+        "id": 2,
+        "name": "Tether",
+        "code": "USDT",
+        "active": true,
+        "localAmount": "0",
+        "localWallet": null,
+        "exchangeAmount": "524",
+        "exchangeWallet": {
+          "id": 3
+        },
+        "purchaseAmount": "0",
+        "feeTolerance": "0",
+        "portfolioWeight": 0
+      }
+    ])
+  });
+
+  it('should be able to look a coin up by ID', async () => {
+    const query = encodeURIComponent(`{
+      coin(id:1) {
+        code
+      }
+    }`);
+    const resp = await fetch(`http://localhost:8088/graphql?query=${query}`)
+    const {data: {coin}} = await resp.json();
+    expect(coin).to.deep.equal({
+      "code": "BTC"
     })
-    expect(result.data.users[1]).to.deep.equal({
-      id: 2,
-      name: 'marylagier'
-    })
   });
 
-  it('should be able to look a user up by ID', async () => {
-    const query = encodeURIComponent(`
-      {
-        user(id:1) {
-          name
-        }
+  it('should be able to search for a coin by name', async () => {
+    const query = encodeURIComponent(`{
+      coinSearch(query:"bit") {
+        code
       }
-    `);
+    }`);
     const resp = await fetch(`http://localhost:8088/graphql?query=${query}`)
-    const result = await resp.json();
-    expect(result.data.user).to.deep.equal({
-      name: 'tomlagier'
-    })
+    const {data: {coinSearch}} = await resp.json();
+    expect(coinSearch).to.deep.equal([
+      { "code": "BTC" }
+    ])
   });
 
-  it('should be able to search for a username', async () => {
-    const query = encodeURIComponent(`
-      {
-        userSearch(query:"mary") {
-          name
-        }
+  it('should be able to search for a coin by code', async () => {
+    const query = encodeURIComponent(`{
+      coinSearch(query:"US") {
+        code
       }
-    `);
+    }`);
     const resp = await fetch(`http://localhost:8088/graphql?query=${query}`)
-    const result = await resp.json();
-    expect(result.data.userSearch).to.deep.equal([{
-      name: 'marylagier'
-    }])
-  });
-
-  it('should be able to look up wallets by user', async () => {
-    const query = encodeURIComponent(`
-      {
-        user(id:1) {
-          wallets {
-            name
-          }
-        }
-      }
-    `);
-    const resp = await fetch(`http://localhost:8088/graphql?query=${query}`)
-    const result = await resp.json();
-    console.log(result);
-    expect(result.data.user.wallets).to.deep.equal([
-      { name: 'local btc' },
-      { name: 'remote btc' },
-      { name: 'remote usdt' }
-    ]);
+    const {data: {coinSearch}} = await resp.json();
+    expect(coinSearch).to.deep.equal([
+      { "code": "USDT" }
+    ])
   });
 
   after(async () => {
-    await stop();
+    await migrate.down();
   })
 })

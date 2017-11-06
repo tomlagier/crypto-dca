@@ -28,6 +28,7 @@
     "body-parser": "^1.18.2",
     "express": "^4.16.2",
     "graphql": "^0.11.7",
+    "graphql-date": "^1.0.3",
     "graphql-sequelize": "^5.5.0",
     "node-fetch": "^1.7.3",
     "sequelize": "^4.20.1",

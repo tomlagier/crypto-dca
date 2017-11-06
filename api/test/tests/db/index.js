@@ -1,18 +1,13 @@
-const { describe, it, before, after } = require('mocha');
-const { up, down } = require('../../../helpers/db');
+const { describe, it, before } = require('mocha');
 
 describe('db connection', () => {
   let db;
   before(() => {
-    db = up();
+    db = require('../setup')();
   })
 
   it('should be able to connect to the database', done => {
     db.sequelize.authenticate()
       .then(() => done());
   });
-
-  after(async () => {
-    await down();
-  })
 })

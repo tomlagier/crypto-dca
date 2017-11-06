@@ -1,11 +1,10 @@
 const { expect } = require('chai');
-const { describe, it, before, after } = require('mocha');
-const { up, down } = require('../../../helpers/db');
+const { describe, it, before } = require('mocha');
 
 describe('option model', () => {
   let User, Option, db;
   before(async () => {
-    db = up();
+    db = require('../setup')();
     User = db.User;
     Option = db.Option;
 
@@ -32,9 +31,5 @@ describe('option model', () => {
 
     const [userOption] = await user.getOptions();
     expect(userOption.name).to.equal('some option');
-  });
-
-  after(async () => {
-    await down();
   });
 });

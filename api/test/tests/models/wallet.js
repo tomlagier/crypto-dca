@@ -1,11 +1,10 @@
 const { expect } = require('chai');
-const { describe, it, before, after } = require('mocha');
-const { up, down } = require('../../../helpers/db');
+const { describe, it, before } = require('mocha');
 
 describe('wallet model', () => {
   let User, Coin, Wallet, db;
   before(async () => {
-    db = up();
+    db = require('../setup')();
     User = db.User;
     Coin = db.Coin;
     Wallet = db.Wallet;
@@ -36,8 +35,4 @@ describe('wallet model', () => {
     const [userWallet] = await walletUser.getWallets();
     expect(userWallet.address).to.equal('some address');
   });
-
-  after(async () => {
-    await down();
-  })
 });

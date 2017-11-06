@@ -11,15 +11,15 @@ module.exports = new GraphQLObjectType({
   fields: {
     id: {
       type: new GraphQLNonNull(GraphQLInt),
-      description: 'The id of the user',
+      description: 'The id of the option',
     },
     name: {
       type: new GraphQLNonNull(GraphQLString),
-      description: 'The name of the user',
+      description: 'The name of the option',
     },
     value: {
       type: new GraphQLNonNull(GraphQLString),
-      description: 'The name of the user',
+      description: 'The name of the option',
     }
   }
 })

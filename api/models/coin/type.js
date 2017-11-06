@@ -59,10 +59,14 @@ module.exports = new GraphQLObjectType({
         description: 'Wallet on exchange associated with coin',
         resolve: resolver(Coin.ExchangeWallet)
       },
-      transactions: {
-        type: new GraphQLList(Transaction),
-        description: 'Transactions associated with this coin'
-      }
+      feeTolerance: {
+        type: new GraphQLNonNull(GraphQLString),
+        description: 'Maximum percentage of a transaction allowed to be lost in fees'
+      },
+      // transactions: {
+      //   type: new GraphQLList(Transaction),
+      //   description: 'Transactions associated with this coin'
+      // }
     }
   }
 })

@@ -1,11 +1,10 @@
 const { expect } = require('chai');
-const { describe, it, before, after } = require('mocha');
-const { up, down } = require('../../../helpers/db');
+const { describe, it, before } = require('mocha');
 
 describe('user model', () => {
   let User, db, user;
   before(async () => {
-    db = up();
+    db = require('../setup')();
     User = db.User;
 
     await User.sync({ force: true });
@@ -29,9 +28,5 @@ describe('user model', () => {
   it('should not verify an incorrect password', async () => {
     const isValid = await user.checkPassword('blargle');
     expect(isValid).to.be.false;
-  })
-
-  after(async () => {
-    await down();
   })
 })

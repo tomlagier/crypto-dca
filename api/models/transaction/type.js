@@ -6,6 +6,8 @@ const {
   GraphQLBoolean
 } = require('graphql');
 
+const GraphQLDate = require('graphql-date');
+
 const { resolver } = require('graphql-sequelize');
 
 module.exports = new GraphQLObjectType({
@@ -51,6 +53,14 @@ module.exports = new GraphQLObjectType({
         type: Coin,
         description: 'Ending coin',
         resolve: resolver(Transaction.EndCoin)
+      },
+      createdAt: {
+        type: GraphQLDate,
+        description: 'Transaction initiation time'
+      },
+      updatedAt: {
+        type: GraphQLDate,
+        description: 'Transaction resolution time'
       }
     }
   }
