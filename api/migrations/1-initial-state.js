@@ -14,7 +14,7 @@ module.exports = {
         });
     })
   },
-  down: ({ dropAllTables }) => {
-    return dropAllTables();
+  down: (migration) => {
+    return migration.dropAllTables();
   }
 }

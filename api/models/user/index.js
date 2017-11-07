@@ -4,6 +4,7 @@ module.exports = (sequelize, DataTypes) => {
   const User = sequelize.define('User', {
     name: {
       type: DataTypes.STRING,
+      unique: true,
       allowNull: false
     },
     password: {
@@ -31,6 +32,12 @@ module.exports = (sequelize, DataTypes) => {
     User.Wallets = User.hasMany(Wallet);
     User.Options = User.hasMany(Option);
     User.Transactions = User.hasMany(Transaction);
+  }
+
+  User.checkPassword = async function (name, password) {
+    const user = await User.findOne({ name })
+    const validLogin = await user.checkPassword(password);
+    return { user, validLogin };
   }
 
   User.prototype.checkPassword = function(password) {

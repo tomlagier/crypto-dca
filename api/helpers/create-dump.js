@@ -14,6 +14,7 @@ async function createTables() {
     'User',
     'Wallet',
     'Coin',
+    'Session',
     'Transaction',
     'Option'
   ];

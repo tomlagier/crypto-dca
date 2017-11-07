@@ -60,7 +60,7 @@ The database is a bog-standard pgsql database, pulled in from the common docker 
 11. Portfolio distribution
 12. Whether to manually or automatically distribute portfolio
 
-*TODO: Draw up schema*
+[Schema](./schema.md)
 
 ## App/Frontend
 The app contains a webserver for hosting the frontend, a little business logic for updating the DB with settings, and the migrations for the DB.
@@ -97,8 +97,17 @@ The app contains a webserver for hosting the frontend, a little business logic f
 * Transaction search
 * Badly need to implement https://github.com/mickhansen/dataloader-sequelize
 
-### User stories
+### Authentication
+* Handled through passport.js
+* Just using Local strategy for now
+* User context passed to resolvers
 
+### Authorization
+* All objects should have UserID attached
+* Prevent read/write unless userID matches
+* Can be done in a resolver wrapper
+
+### User stories
 As a user, I want to...
 * be able to create an account
 * be able to log in
