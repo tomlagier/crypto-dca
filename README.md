@@ -96,6 +96,8 @@ The app contains a webserver for hosting the frontend, a little business logic f
 * Finish model tests
 * Transaction search
 * Badly need to implement https://github.com/mickhansen/dataloader-sequelize
+* Need to think about authorization - can only query your own data? Maybe create some roles?
+* Also need logout
 
 ### Authentication
 * Handled through passport.js
