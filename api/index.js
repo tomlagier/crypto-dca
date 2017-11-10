@@ -1,5 +1,5 @@
-const { start } = require('./helpers/server');
+const server = require('./helpers/server');
 const { up } = require('./helpers/db');
 
 up();
-start();
+server.start();

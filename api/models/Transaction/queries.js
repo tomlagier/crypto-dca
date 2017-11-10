@@ -6,13 +6,12 @@ const {
 
 // const { Op: {like} } = require('sequelize');
 const { resolver } = require('graphql-sequelize');
-const { Transaction } = require('../');
 const transactionType = require('./type');
 // const sort = require('../../helpers/sort');
 
-module.exports = {
+module.exports = Transaction => ({
   transaction: {
-    type: transactionType,
+    type: new GraphQLList(transactionType),
     args: {
       id: {
         description: 'ID of transactions',
@@ -46,4 +45,4 @@ module.exports = {
   //     after: sort
   //   })
   // }
-}
+})

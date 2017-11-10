@@ -3,8 +3,7 @@ const {
   GraphQLNonNull,
   GraphQLInt,
   GraphQLString,
-  GraphQLBoolean,
-  GraphQLList
+  GraphQLBoolean
 } = require('graphql');
 
 const { resolver } = require('graphql-sequelize');
@@ -14,8 +13,7 @@ module.exports = new GraphQLObjectType({
   description: 'A cryptocurrency to be traded',
   fields: () => {
     const { Coin } = require('../');
-    const Wallet = require('../wallet/type');
-    const Transaction = require('../transaction/type');
+    const Wallet = require('../Wallet/type');
     return {
       id: {
         type: new GraphQLNonNull(GraphQLInt),

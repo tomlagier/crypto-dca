@@ -3,15 +3,13 @@ const {
   GraphQLNonNull,
   GraphQLInt,
   GraphQLBoolean,
-  GraphQLString,
-  GraphQLList
+  GraphQLString
 } = require('graphql');
 
 module.exports = new GraphQLObjectType({
   name: 'Wallet',
   description: 'A wallet address',
   fields: () => {
-    const Transaction = require('../transaction/type');
     return {
       id: {
         type: new GraphQLNonNull(GraphQLInt),

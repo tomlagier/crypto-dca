@@ -1,11 +1,16 @@
+const db = require('./');
+
 const fields = [
-  'user',
-  'wallet',
-  'coin',
-  'transaction',
-  'option'
-].reduce((all, model) => {
-  return Object.assign({}, all, require(`./${model}/fields`));
-  }, {});
+  'User',
+  'Wallet',
+  'Coin',
+  'Transaction',
+  'Option'
+].reduce((all, model) => ({
+  //Splat all queries and mutations on the top level
+  ...require(`./${model}/queries`)(db[model]),
+  // ...require(`./${model}/mutations`),
+  ...all
+}), {});
 
 module.exports = () => fields;

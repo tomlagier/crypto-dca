@@ -4,7 +4,10 @@
   "description": "Database for crypto-dca",
   "main": "index.js",
   "scripts": {
-    "start": "npx sequelize db:migrate && nodemon index.js",
+    "clean": "rm -rf build && mkdir build",
+    "build": "npm run migrate",
+    "start": "node index.js",
+    "watch": "npm run migrate && nodemon index.js",
     "test": "NODE_ENV=test mocha --exit ./test/tests/**/*.js",
     "migrate": "sequelize db:migrate",
     "create-dump": "node helpers/create-dump.js",
@@ -24,7 +27,6 @@
   "dependencies": {
     "apollo-server-express": "^1.1.7",
     "bcrypt-nodejs": "0.0.3",
-    "bitcoin-core": "^1.2.0",
     "body-parser": "^1.18.2",
     "connect-session-sequelize": "^5.0.1",
     "express": "^4.16.2",

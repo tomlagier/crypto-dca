@@ -7,34 +7,33 @@ const {
 
 const { Op: {iLike} } = require('sequelize');
 const { resolver } = require('graphql-sequelize');
-const { Wallet } = require('../');
-const walletType = require('./type');
+const userType = require('./type');
 const sort = require('../../helpers/sort');
 
-module.exports = {
-  wallet: {
-    type: walletType,
+module.exports = User => ({
+  user: {
+    type: userType,
     args: {
       id: {
-        description: 'ID of wallet',
+        description: 'ID of user',
         type: new GraphQLNonNull(GraphQLInt)
       }
     },
-    resolve: resolver(Wallet)
+    resolve: resolver(User)
   },
-  wallets: {
-    type: new GraphQLList(walletType),
-    resolve: resolver(Wallet)
+  users: {
+    type: new GraphQLList(userType),
+    resolve: resolver(User)
   },
-  walletSearch: {
-    type: new GraphQLList(walletType),
+  userSearch: {
+    type: new GraphQLList(userType),
     args: {
       query: {
-        description: 'Fuzzy-matched name of wallet',
+        description: 'Fuzzy-matched name of user',
         type: new GraphQLNonNull(GraphQLString)
       }
     },
-    resolve: resolver(Wallet, {
+    resolve: resolver(User, {
       before: (findOptions, args) => {
         findOptions.where = {
           name: { [iLike]: `%${args.query}%` },
@@ -45,4 +44,4 @@ module.exports = {
       after: sort
     })
   }
-}
+})

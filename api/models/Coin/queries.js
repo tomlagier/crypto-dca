@@ -7,41 +7,40 @@ const {
 
 const { Op: {or, iLike} } = require('sequelize');
 const { resolver } = require('graphql-sequelize');
-const { Option } = require('../');
-const optionType = require('./type');
+const coinType = require('./type');
 const sort = require('../../helpers/sort');
 
-module.exports = {
-  option: {
-    type: optionType,
+module.exports = Coin => ({
+  coin: {
+    type: new GraphQLList(coinType),
     args: {
       id: {
-        description: 'ID of option',
+        description: 'ID of coin',
         type: new GraphQLNonNull(GraphQLInt)
       }
     },
-    resolve: resolver(Option)
+    resolve: resolver(Coin)
   },
-  options: {
-    type: new GraphQLList(optionType),
-    resolve: resolver(Option)
+  coins: {
+    type: new GraphQLList(coinType),
+    resolve: resolver(Coin)
   },
-  optionSearch: {
-    type: new GraphQLList(optionType),
+  coinSearch: {
+    type: new GraphQLList(coinType),
     args: {
       query: {
-        description: 'Fuzzy-matched name of option key or value',
+        description: 'Fuzzy-matched name or key of coin',
         type: new GraphQLNonNull(GraphQLString)
       }
     },
-    resolve: resolver(Option, {
+    resolve: resolver(Coin, {
       before: (findOptions, { query }) => {
         findOptions.where = {
           [or]: [{
             name: { [iLike]: `%${query}%` }
           },
           {
-            value: { [iLike]: `%${query}%` }
+            code: { [iLike]: `%${query}%` }
           }
           ]
         };
@@ -51,4 +50,4 @@ module.exports = {
       after: sort
     })
   }
-}
+})

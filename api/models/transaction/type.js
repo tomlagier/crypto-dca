@@ -15,8 +15,8 @@ module.exports = new GraphQLObjectType({
   description: 'A transaction of cryptocurrency',
   fields: () => {
     const { Transaction } = require('../');
-    const Wallet = require('../wallet/type');
-    const Coin = require('../coin/type');
+    const Wallet = require('../Wallet/type');
+    const Coin = require('../Coin/type');
     return {
       id: {
         type: new GraphQLNonNull(GraphQLInt),
