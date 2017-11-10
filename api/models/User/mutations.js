@@ -15,18 +15,16 @@ module.exports = User => ({
         type: new GraphQLNonNull(GraphQLString)
       },
       password: {
-        description: 'Unique username',
+        description: 'Password',
         type: new GraphQLNonNull(GraphQLString)
       }
     },
-    resolve: async function(...args){
-      const [, {name, password}] = args
-      console.log('here');
-      await User.create({
+    resolve: async function(root, {name, password}, context, info){
+      const user = await User.create({
         name,
         password
       })
-      return resolver(User)(args);
+      return await resolver(User)(root, {id: user.id}, context, info);
     }
   }
 });
