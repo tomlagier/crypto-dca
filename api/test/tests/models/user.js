@@ -1,5 +1,5 @@
 const { expect } = require('chai');
-const { describe, it, before } = require('mocha');
+const { describe, it, before, afterEach } = require('mocha');
 
 describe('user model', () => {
   let User, db, user;
@@ -28,5 +28,9 @@ describe('user model', () => {
   it('should not verify an incorrect password', async () => {
     const isValid = await user.checkPassword('blargle');
     expect(isValid).to.be.false;
+  })
+
+  afterEach(async () => {
+    return await user.destroy();
   })
 })

@@ -1,5 +1,5 @@
 const { expect } = require('chai');
-const { describe, it, before } = require('mocha');
+const { describe, it, before, beforeEach, afterEach } = require('mocha');
 
 describe('wallet model', () => {
   let User, Coin, Wallet, db;
@@ -14,17 +14,21 @@ describe('wallet model', () => {
     await Coin.sync({ force: true });
   });
 
-  it('should be able to create a wallet with a user', async () => {
-    const user = await User.create({
+  let user, wallet
+  beforeEach(async () => {
+    user = await User.create({
       name: 'Test',
       password: 'Test'
     })
-    const wallet = await Wallet.create({
+    wallet = await Wallet.create({
       name: 'Bitcoin wallet',
       address: 'some address',
       local: false,
       UserId: user.id
     })
+  })
+
+  it('should be able to create a wallet with a user', async () => {
     expect(wallet.address).to.equal('some address');
     expect(wallet.name).to.equal('Bitcoin wallet');
     expect(wallet.local).to.be.false;
@@ -35,4 +39,8 @@ describe('wallet model', () => {
     const [userWallet] = await walletUser.getWallets();
     expect(userWallet.address).to.equal('some address');
   });
+
+  afterEach(async () => {
+    return await user.destroy();
+  })
 });

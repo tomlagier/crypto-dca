@@ -1,5 +1,5 @@
 const { expect } = require('chai');
-const { describe, it, before } = require('mocha');
+const { describe, it, before, beforeEach, afterEach } = require('mocha');
 
 describe('option model', () => {
   let User, Option, db;
@@ -11,18 +11,21 @@ describe('option model', () => {
     await Option.sync({ force: true });
   });
 
-  it('should be able to create an option with a user', async () => {
-    const user = await User.create({
+  let user, option
+  beforeEach(async () => {
+    user = await User.create({
       name: 'Test',
       password: 'Test'
     })
 
-    const option = await Option.create({
+    option = await Option.create({
       name: 'some option',
       value: 'some value',
       UserId: user.id
     })
+  })
 
+  it('should be able to create an option with a user', async () => {
     expect(option.name).to.equal('some option');
     expect(option.value).to.equal('some value');
 
@@ -32,4 +35,8 @@ describe('option model', () => {
     const [userOption] = await user.getOptions();
     expect(userOption.name).to.equal('some option');
   });
+
+  afterEach(async () => {
+    return await user.destroy();
+  })
 });

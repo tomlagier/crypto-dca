@@ -6,6 +6,8 @@ const {
   GraphQLString
 } = require('graphql');
 
+console.log(new Error('fired from here'));
+
 module.exports = new GraphQLObjectType({
   name: 'Wallet',
   description: 'A wallet address',

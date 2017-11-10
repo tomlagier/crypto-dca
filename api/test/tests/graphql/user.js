@@ -102,7 +102,7 @@ describe('user query', () => {
       { name: 'BitCoin' },
       { name: 'Tether' }
     ]);
-    expect(options, 'Options',).to.deep.equal([
+    expect(options, 'Options').to.deep.equal([
       { name: 'invest_interval' },
       { name: 'auto_rebalance' }
     ]);

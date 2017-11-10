@@ -1,5 +1,5 @@
 const { expect } = require('chai');
-const { describe, it, before, beforeEach } = require('mocha');
+const { describe, it, before, beforeEach, afterEach } = require('mocha');
 
 describe('coin model', () => {
   let user, wallets, db;
@@ -20,6 +20,7 @@ describe('coin model', () => {
       name: 'Test',
       password: 'Test'
     })
+    console.log('unique error');
     wallets = await Promise.all([
       Wallet.create({
         name: 'local btc',
@@ -87,5 +88,9 @@ describe('coin model', () => {
     expect(localWallet.name).to.equal('local btc');
     expect(exchangeWallet.name).to.equal('remote btc');
     expect(coinUser.name).to.equal('Test');
+  })
+
+  afterEach(async () => {
+    return await user.destroy();
   })
 });

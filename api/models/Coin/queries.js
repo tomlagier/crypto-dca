@@ -12,7 +12,7 @@ const sort = require('../../helpers/sort');
 
 module.exports = Coin => ({
   coin: {
-    type: new GraphQLList(coinType),
+    type: coinType,
     args: {
       id: {
         description: 'ID of coin',
