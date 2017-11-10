@@ -19,7 +19,9 @@ module.exports = Option => ({
         type: new GraphQLNonNull(GraphQLInt)
       }
     },
-    resolve: resolver(Option)
+    resolve: resolver(Option, {
+      after: result => result.length ? result[0] : result
+    })
   },
   options: {
     type: new GraphQLList(optionType),
@@ -34,8 +36,8 @@ module.exports = Option => ({
       }
     },
     resolve: resolver(Option, {
-      before: (findOptions, { query }) => {
-        findOptions.where = {
+      before: (findOptions, { query }) => ({
+        where: {
           [or]: [{
             name: { [iLike]: `%${query}%` }
           },
@@ -43,10 +45,9 @@ module.exports = Option => ({
             value: { [iLike]: `%${query}%` }
           }
           ]
-        };
-        findOptions.order = [['name', 'ASC']];
-        return findOptions;
-      },
+        },
+        order: [['name', 'ASC']]
+      }),
       after: sort
     })
   }

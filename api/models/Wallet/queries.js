@@ -12,14 +12,16 @@ const sort = require('../../helpers/sort');
 
 module.exports = Wallet => ({
   wallet: {
-    type: new GraphQLList(walletType),
+    type: walletType,
     args: {
       id: {
         description: 'ID of wallet',
         type: new GraphQLNonNull(GraphQLInt)
       }
     },
-    resolve: resolver(Wallet)
+    resolve: resolver(Wallet, {
+      after: result => result.length ? result[0] : result
+    })
   },
   wallets: {
     type: new GraphQLList(walletType),
@@ -34,13 +36,14 @@ module.exports = Wallet => ({
       }
     },
     resolve: resolver(Wallet, {
-      before: (findOptions, args) => {
-        findOptions.where = {
+      dataLoader: false,
+      before: (findOptions, args) => ({
+        where: {
           name: { [iLike]: `%${args.query}%` },
-        };
-        findOptions.order = [['name', 'ASC']];
-        return findOptions;
-      },
+        },
+        order: [['name', 'ASC']],
+        ...findOptions
+      }),
       after: sort
     })
   }

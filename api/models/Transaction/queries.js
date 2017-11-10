@@ -11,14 +11,16 @@ const transactionType = require('./type');
 
 module.exports = Transaction => ({
   transaction: {
-    type: new GraphQLList(transactionType),
+    type: transactionType,
     args: {
       id: {
         description: 'ID of transactions',
         type: new GraphQLNonNull(GraphQLInt)
       }
     },
-    resolve: resolver(Transaction)
+    resolve: resolver(Transaction, {
+      after: result => result.length ? result[0] : result
+    })
   },
   transactions: {
     type: new GraphQLList(transactionType),

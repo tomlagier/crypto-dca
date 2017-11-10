@@ -61,6 +61,7 @@ services:
     volumes:
       - ./api:/www
     ports:
+      - 8090:8088
       - 9001:9001
 
   db:

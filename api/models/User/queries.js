@@ -19,7 +19,9 @@ module.exports = User => ({
         type: new GraphQLNonNull(GraphQLInt)
       }
     },
-    resolve: resolver(User)
+    resolve: resolver(User, {
+      after: result => result.length ? result[0] : result
+    })
   },
   users: {
     type: new GraphQLList(userType),
@@ -34,13 +36,13 @@ module.exports = User => ({
       }
     },
     resolve: resolver(User, {
-      before: (findOptions, args) => {
-        findOptions.where = {
+      before: (findOptions, args) => ({
+        where: {
           name: { [iLike]: `%${args.query}%` },
-        };
-        findOptions.order = [['name', 'ASC']];
-        return findOptions;
-      },
+        },
+        order: [['name', 'ASC']],
+        ...findOptions
+      }),
       after: sort
     })
   }

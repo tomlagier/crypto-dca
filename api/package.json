@@ -34,7 +34,7 @@
     "express-session": "^1.15.6",
     "graphql": "^0.11.7",
     "graphql-date": "^1.0.3",
-    "graphql-sequelize": "^5.5.0",
+    "graphql-sequelize": "file:../../graphql-sequelize",
     "node-fetch": "^1.7.3",
     "passport": "^0.4.0",
     "passport-local": "^1.0.0",

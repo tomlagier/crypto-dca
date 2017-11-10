@@ -19,7 +19,9 @@ module.exports = Coin => ({
         type: new GraphQLNonNull(GraphQLInt)
       }
     },
-    resolve: resolver(Coin)
+    resolve: resolver(Coin, {
+      after: result => result.length ? result[0] : result
+    })
   },
   coins: {
     type: new GraphQLList(coinType),
@@ -34,19 +36,18 @@ module.exports = Coin => ({
       }
     },
     resolve: resolver(Coin, {
-      before: (findOptions, { query }) => {
-        findOptions.where = {
+      before: (findOptions, { query }) => ({
+        where: {
           [or]: [{
             name: { [iLike]: `%${query}%` }
           },
           {
             code: { [iLike]: `%${query}%` }
-          }
-          ]
-        };
-        findOptions.order = [['name', 'ASC']];
-        return findOptions;
-      },
+          }]
+        },
+        order: [['name', 'ASC']],
+        ...findOptions
+      }),
       after: sort
     })
   }

@@ -10,7 +10,6 @@ module.exports = new GraphQLObjectType({
   description: 'A user',
   fields: () => {
     const { User } = require('../');
-
     return {
       id: {
         type: new GraphQLNonNull(GraphQLInt),
