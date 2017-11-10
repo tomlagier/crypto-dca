@@ -1,7 +1,6 @@
 const {
   GraphQLObjectType,
   GraphQLNonNull,
-  GraphQLInt,
   GraphQLString
 } = require('graphql');
 
@@ -10,7 +9,7 @@ module.exports = new GraphQLObjectType({
   description: 'An option key/value pair',
   fields: {
     id: {
-      type: new GraphQLNonNull(GraphQLInt),
+      type: new GraphQLNonNull(GraphQLString),
       description: 'The id of the option',
     },
     name: {

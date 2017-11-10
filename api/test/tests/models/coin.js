@@ -20,20 +20,20 @@ describe('coin model', () => {
       name: 'Test',
       password: 'Test'
     })
-    console.log('unique error');
-    wallets = await Promise.all([
-      Wallet.create({
+
+    wallets = await Wallet.bulkCreate([
+      {
         name: 'local btc',
         address: 'abcdefg',
         local: true,
         userId: user.id
-      }),
-      Wallet.create({
+      },
+      {
         name: 'remote btc',
         address: 'abcdefg',
         local: false,
         userId: user.id
-      })
+      }
     ])
   })
 

@@ -1,6 +1,6 @@
 const {
   GraphQLNonNull,
-  GraphQLInt,
+  GraphQLString,
   GraphQLList
 } = require('graphql');
 
@@ -15,7 +15,7 @@ module.exports = Transaction => ({
     args: {
       id: {
         description: 'ID of transactions',
-        type: new GraphQLNonNull(GraphQLInt)
+        type: new GraphQLNonNull(GraphQLString)
       }
     },
     resolve: resolver(Transaction, {

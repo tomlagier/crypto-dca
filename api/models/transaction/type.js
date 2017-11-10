@@ -1,7 +1,6 @@
 const {
   GraphQLObjectType,
   GraphQLNonNull,
-  GraphQLInt,
   GraphQLString,
   GraphQLBoolean
 } = require('graphql');
@@ -19,7 +18,7 @@ module.exports = new GraphQLObjectType({
     const Coin = require('../Coin/type');
     return {
       id: {
-        type: new GraphQLNonNull(GraphQLInt),
+        type: new GraphQLNonNull(GraphQLString),
         description: 'The id of the user',
       },
       startAmount: {

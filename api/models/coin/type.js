@@ -16,7 +16,7 @@ module.exports = new GraphQLObjectType({
     const Wallet = require('../Wallet/type');
     return {
       id: {
-        type: new GraphQLNonNull(GraphQLInt),
+        type: new GraphQLNonNull(GraphQLString),
         description: 'The id of the coin',
       },
       name: {

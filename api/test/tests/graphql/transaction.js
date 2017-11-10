@@ -40,100 +40,100 @@ describe('transaction query', () => {
     const { data: { transactions }} = await resp.json();
     expect(transactions).to.deep.equal([
       {
-        "id": 1,
+        "id": "1",
         "startCoin": {
-          "id": 2
+          "id": "2"
         },
         "startAmount": "500",
         "startWallet": {
-          "id": 3
+          "id": "3"
         },
         "endCoin": {
-          "id": 1
+          "id": "1"
         },
         "endAmount": "0.153",
         "endWallet": {
-          "id": 2
+          "id": "2"
         },
         "success": true,
         "createdAt": "2017-11-04T01:31:30.706Z",
         "updatedAt": "2017-11-04T01:31:30.706Z"
       },
       {
-        "id": 2,
+        "id": "2",
         "startCoin": {
-          "id": 2
+          "id": "2"
         },
         "startAmount": "500",
         "startWallet": {
-          "id": 3
+          "id": "3"
         },
         "endCoin": {
-          "id": 1
+          "id": "1"
         },
         "endAmount": "0.167",
         "endWallet": {
-          "id": 2
+          "id": "2"
         },
         "success": true,
         "createdAt": "2017-11-04T01:31:30.706Z",
         "updatedAt": "2017-11-04T01:31:30.706Z"
       },
       {
-        "id": 3,
+        "id": "3",
         "startCoin": {
-          "id": 2
+          "id": "2"
         },
         "startAmount": "500",
         "startWallet": {
-          "id": 3
+          "id": "3"
         },
         "endCoin": {
-          "id": 1
+          "id": "1"
         },
         "endAmount": "0.091",
         "endWallet": {
-          "id": 2
+          "id": "2"
         },
         "success": true,
         "createdAt": "2017-11-04T01:31:30.706Z",
         "updatedAt": "2017-11-04T01:31:30.706Z"
       },
       {
-        "id": 4,
+        "id": "4",
         "startCoin": {
-          "id": 2
+          "id": "2"
         },
         "startAmount": ".472",
         "startWallet": {
-          "id": 2
+          "id": "2"
         },
         "endCoin": {
-          "id": 2
+          "id": "2"
         },
         "endAmount": "0.091",
         "endWallet": {
-          "id": 1
+          "id": "1"
         },
         "success": false,
         "createdAt": "2017-11-04T01:31:30.706Z",
         "updatedAt": "2017-11-04T01:31:30.706Z"
       },
       {
-        "id": 5,
+        "id": "5",
         "startCoin": {
-          "id": 2
+          "id": "2"
         },
         "startAmount": ".472",
         "startWallet": {
-          "id": 2
+          "id": "2"
         },
         "endCoin": {
-          "id": 2
+          "id": "2"
         },
         "endAmount": "0.091",
         "endWallet": {
-          "id": 1
+          "id": "1"
         },
         "success": true,
         "createdAt": "2017-11-04T01:31:30.706Z",
@@ -145,7 +145,7 @@ describe('transaction query', () => {
   it('should be able to look a transaction up by ID', async () => {
     const query = encodeURIComponent(`
       {
-        transaction(id:1) {
+        transaction(id:"1") {
           startAmount
           endAmount
         }
@@ -161,7 +161,7 @@ describe('transaction query', () => {
 
   it('should be able to look up the start and end coin and wallets', async () => {
     const query = encodeURIComponent(`{
-      transaction(id:1) {
+      transaction(id:"1") {
         startWallet{
           name
         }

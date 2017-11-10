@@ -1,7 +1,6 @@
 const {
   GraphQLObjectType,
   GraphQLNonNull,
-  GraphQLInt,
   GraphQLString
 } = require('graphql');
 
@@ -12,7 +11,7 @@ module.exports = new GraphQLObjectType({
     const { User } = require('../');
     return {
       id: {
-        type: new GraphQLNonNull(GraphQLInt),
+        type: new GraphQLNonNull(GraphQLString),
         description: 'The id of the user',
       },
       name: {

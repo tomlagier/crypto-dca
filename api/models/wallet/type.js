@@ -1,12 +1,9 @@
 const {
   GraphQLObjectType,
   GraphQLNonNull,
-  GraphQLInt,
   GraphQLBoolean,
   GraphQLString
 } = require('graphql');
-
-console.log(new Error('fired from here'));
 
 module.exports = new GraphQLObjectType({
   name: 'Wallet',
@@ -14,7 +11,7 @@ module.exports = new GraphQLObjectType({
   fields: () => {
     return {
       id: {
-        type: new GraphQLNonNull(GraphQLInt),
+        type: new GraphQLNonNull(GraphQLString),
         description: 'The id of the wallet',
       },
       name: {

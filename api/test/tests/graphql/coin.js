@@ -35,24 +35,24 @@ describe('coin query', () => {
     const { data: { coins }} = await resp.json();
     expect(coins).to.deep.equal([
       {
-        "id": 1,
+        "id": "1",
         "name": "BitCoin",
         "code": "BTC",
         "active": true,
         "localAmount": "3.341",
         "localWallet": {
-          "id": 1
+          "id": "1"
         },
         "exchangeAmount": "0.023",
         "exchangeWallet": {
-          "id": 2
+          "id": "2"
         },
         "purchaseAmount": "0.001",
         "feeTolerance": "0",
         "portfolioWeight": 50
       },
       {
-        "id": 2,
+        "id": "2",
         "name": "Tether",
         "code": "USDT",
         "active": true,
@@ -60,7 +60,7 @@ describe('coin query', () => {
         "localWallet": null,
         "exchangeAmount": "524",
         "exchangeWallet": {
-          "id": 3
+          "id": "3"
         },
         "purchaseAmount": "0",
         "feeTolerance": "0",
@@ -71,7 +71,7 @@ describe('coin query', () => {
 
   it('should be able to look a coin up by ID', async () => {
     const query = encodeURIComponent(`{
-      coin(id:1) {
+      coin(id:"1") {
         code
       }
     }`);

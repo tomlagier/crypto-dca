@@ -25,12 +25,12 @@ describe('option query', () => {
     const { data: { options }} = await resp.json();
     expect(options).to.deep.equal([
       {
-        "id": 1,
+        "id": "1",
         "name": "invest_interval",
         "value": "100"
       },
       {
-        "id": 2,
+        "id": "2",
         "name": "auto_rebalance",
         "value": "true"
       }
@@ -40,7 +40,7 @@ describe('option query', () => {
   it('should be able to look a option up by ID', async () => {
     const query = encodeURIComponent(`
       {
-        option(id:1) {
+        option(id:"1") {
           name
         }
       }

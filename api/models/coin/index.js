@@ -1,5 +1,12 @@
+const { v4 } = require('uuid');
+
 module.exports = (sequelize, DataTypes) => {
   const Coin = sequelize.define('Coin', {
+    id: {
+      primaryKey: true,
+      type: DataTypes.STRING,
+      defaultValue: () => v4()
+    },
     feeTolerance: {
       type: DataTypes.STRING,
       defaultValue: "0"

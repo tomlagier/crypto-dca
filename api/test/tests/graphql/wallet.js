@@ -26,19 +26,19 @@ describe('wallet query', () => {
     const { data: { wallets }} = await resp.json();
     expect(wallets).to.deep.equal([
       {
-        "id": 1,
+        "id": "1",
         "name": "local BTC",
         "address": "abacadsf",
         "local": true
       },
       {
-        "id": 2,
+        "id": "2",
         "name": "remote BTC",
         "address": "asdfdcvzdsfasd",
         "local": false
       },
       {
-        "id": 3,
+        "id": "3",
         "name": "remote USDT",
         "address": "vczvsadf",
         "local": false
@@ -49,7 +49,7 @@ describe('wallet query', () => {
   it('should be able to look a wallet up by ID', async () => {
     const query = encodeURIComponent(`
       {
-        wallet(id:1) {
+        wallet(id:"1") {
           name
         }
       }

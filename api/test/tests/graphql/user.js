@@ -24,11 +24,11 @@ describe('user query', () => {
     const result = await resp.json();
     expect(result.data.users.length).to.equal(2);
     expect(result.data.users[0]).to.deep.equal({
-      id: 1,
+      id: '1',
       name: 'tomlagier'
     })
     expect(result.data.users[1]).to.deep.equal({
-      id: 2,
+      id: '2',
       name: 'marylagier'
     })
   });
@@ -36,7 +36,7 @@ describe('user query', () => {
   it('should be able to look a user up by ID', async () => {
     const query = encodeURIComponent(`
       {
-        user(id:1) {
+        user(id:"1") {
           name
         }
       }
@@ -66,7 +66,7 @@ describe('user query', () => {
   it('should be able to look up wallets, coins, options, and transactions by user', async () => {
     const query = encodeURIComponent(`
       {
-        user(id:1) {
+        user(id:"1") {
           wallets {
             name
           }
