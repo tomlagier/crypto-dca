@@ -44,5 +44,16 @@ module.exports = User => ({
       }),
       after: sort
     })
+  },
+  currentUser: {
+    type: userType,
+    resolve: (root, args, context, info) => {
+      const { user } = context;
+      return user ?
+        resolver(User)(root, {
+          id: user.id
+        }, context, info) :
+        null
+    }
   }
 })

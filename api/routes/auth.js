@@ -43,9 +43,16 @@ module.exports = function (app) {
     '/login',
     bodyParser.urlencoded({ extended: true }),
     passport.authenticate('local', {
-      successRedirect: '/',
-      failureRedirect: '/login',
       failureFlash: true
-    })
+    }),
+    (req, res) => res.send(req.user.id)
   );
+
+  app.post(
+    '/logout',
+    (req, res) => {
+      req.logout();
+      res.send();
+    }
+  )
 }

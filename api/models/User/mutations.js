@@ -23,7 +23,8 @@ module.exports = User => ({
       const user = await User.create({
         name,
         password
-      })
+      });
+
       return await resolver(User)(root, {id: user.id}, context, info);
     }
   }
