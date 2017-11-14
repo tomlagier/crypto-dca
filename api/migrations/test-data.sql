@@ -24,7 +24,7 @@ INSERT INTO "Wallets" VALUES ('2', 'remote BTC', 'asdfdcvzdsfasd', false, '2017-
 INSERT INTO "Wallets" VALUES ('3', 'remote USDT', 'vczvsadf', false, '2017-11-04 01:31:30.706+00', '2017-11-04 01:31:30.706+00', '1');
 
 INSERT INTO "Coins" VALUES ('1', '0', 'BitCoin', 'BTC', true, 50, '3.341', '0.023', '0.001', '2017-11-04 01:31:30.706+00', '2017-11-04 01:31:30.706+00', '1', '1', '2');
-INSERT INTO "Coins" VALUES ('2', '0', 'Tether', 'USDT', true, 0, '0', '524', '0', '2017-11-04 01:31:30.706+00', '2017-11-04 01:31:30.706+00', 1, NULL, '3');
+INSERT INTO "Coins" VALUES ('2', '0', 'Tether', 'USDT', true, 0, '0', '524', '0', '2017-11-04 01:31:30.706+00', '2017-11-04 01:31:30.706+00', '1', NULL, '3');
 
 INSERT INTO "Options" VALUES ('1', 'invest_interval', '100', '2017-11-04 01:31:30.706+00', '2017-11-04 01:31:30.706+00', '1');
 INSERT INTO "Options" VALUES ('2', 'auto_rebalance', 'true', '2017-11-04 01:31:30.706+00', '2017-11-04 01:31:30.706+00', '1');

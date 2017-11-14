@@ -1,13 +1,14 @@
 const { expect } = require('chai');
 const { describe, it, before, after } = require('mocha');
 const fetch = require('node-fetch');
-const runFileMigration = require('../../../helpers/run-file-migration');
+const runMigration = require('../../helpers/migration');
+const { name } = require('../../helpers/sort');
 
 describe('wallet query', () => {
   let migrate, db;
   before(async () => {
     db = require('../setup')();
-    migrate = runFileMigration('test-data.sql', db);
+    migrate = runMigration(db);
     await migrate.up();
   });
 
@@ -15,7 +16,6 @@ describe('wallet query', () => {
     const query = encodeURIComponent(`
       {
         wallets {
-          id,
           name,
           address,
           local
@@ -23,22 +23,21 @@ describe('wallet query', () => {
       }
     `);
     const resp = await fetch(`http://localhost:8088/graphql?query=${query}`)
-    const { data: { wallets }} = await resp.json();
-    expect(wallets).to.deep.equal([
+    const { data: { wallets } } = await resp.json();
+    expect(
+      wallets.sort(name)
+    ).to.deep.equal([
       {
-        "id": "1",
         "name": "local BTC",
         "address": "abacadsf",
         "local": true
       },
       {
-        "id": "2",
         "name": "remote BTC",
         "address": "asdfdcvzdsfasd",
         "local": false
       },
       {
-        "id": "3",
         "name": "remote USDT",
         "address": "vczvsadf",
         "local": false
@@ -47,15 +46,26 @@ describe('wallet query', () => {
   });
 
   it('should be able to look a wallet up by ID', async () => {
+    const idQuery = encodeURIComponent(`
+      {
+        walletSearch(query:"local BTC") {
+          id
+        }
+      }
+    `);
+    const resp = await fetch(`http://localhost:8088/graphql?query=${idQuery}`)
+    const { data: { walletSearch: [{id}] } } = await resp.json();
+
     const query = encodeURIComponent(`
       {
-        wallet(id:"1") {
+        wallet(id:"${id}") {
           name
         }
       }
     `);
-    const resp = await fetch(`http://localhost:8088/graphql?query=${query}`)
-    const {data: {wallet}} = await resp.json();
+
+    const resp2 = await fetch(`http://localhost:8088/graphql?query=${query}`)
+    const {data: {wallet}} = await resp2.json();
     expect(wallet).to.deep.equal({
       name: 'local BTC'
     })

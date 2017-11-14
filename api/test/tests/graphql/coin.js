@@ -1,30 +1,30 @@
 const { expect } = require('chai');
 const { describe, it, before, after } = require('mocha');
 const fetch = require('node-fetch');
-const runFileMigration = require('../../../helpers/run-file-migration');
+const runMigration = require('../../helpers/migration');
+const {name} = require('../../helpers/sort');
 
 describe('coin query', () => {
-  let migrate, db;
+  let db, migrate;
   before(async () => {
     db = require('../setup')();
-    migrate = runFileMigration('test-data.sql', db);
+    migrate = runMigration(db);
     await migrate.up();
   });
 
   it('should be able to query all coins', async () => {
     const query = encodeURIComponent(`{
       coins {
-        id
         name
         code
         active
         localAmount
         localWallet {
-          id
+          name
         }
         exchangeAmount
         exchangeWallet {
-          id
+          name
         }
         purchaseAmount
         feeTolerance
@@ -33,26 +33,26 @@ describe('coin query', () => {
     }`);
     const resp = await fetch(`http://localhost:8088/graphql?query=${query}`)
     const { data: { coins }} = await resp.json();
-    expect(coins).to.deep.equal([
+    expect(
+      coins.sort(name)
+    ).to.deep.equal([
       {
-        "id": "1",
         "name": "BitCoin",
         "code": "BTC",
         "active": true,
         "localAmount": "3.341",
         "localWallet": {
-          "id": "1"
+          "name": "local BTC"
         },
         "exchangeAmount": "0.023",
         "exchangeWallet": {
-          "id": "2"
+          "name": "remote BTC"
         },
         "purchaseAmount": "0.001",
         "feeTolerance": "0",
         "portfolioWeight": 50
       },
       {
-        "id": "2",
         "name": "Tether",
         "code": "USDT",
         "active": true,
@@ -60,7 +60,7 @@ describe('coin query', () => {
         "localWallet": null,
         "exchangeAmount": "524",
         "exchangeWallet": {
-          "id": "3"
+          "name": "remote USDT"
         },
         "purchaseAmount": "0",
         "feeTolerance": "0",
@@ -70,13 +70,22 @@ describe('coin query', () => {
   });
 
   it('should be able to look a coin up by ID', async () => {
+    const idQuery = encodeURIComponent(`{
+      coinSearch(query:"bit") {
+        id
+      }
+    }`);
+    const resp = await fetch(`http://localhost:8088/graphql?query=${idQuery}`)
+      const {data: {coinSearch: [{id}]}} = await resp.json();
+
     const query = encodeURIComponent(`{
-      coin(id:"1") {
+      coin(id:"${id}") {
         code
       }
     }`);
-    const resp = await fetch(`http://localhost:8088/graphql?query=${query}`)
-    const {data: {coin}} = await resp.json();
+
+    const resp2 = await fetch(`http://localhost:8088/graphql?query=${query}`)
+    const {data: {coin}} = await resp2.json();
     expect(coin).to.deep.equal({
       "code": "BTC"
     })

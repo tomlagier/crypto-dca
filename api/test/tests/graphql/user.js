@@ -1,13 +1,14 @@
 const { expect } = require('chai');
 const { describe, it, before, after } = require('mocha');
 const fetch = require('node-fetch');
-const runFileMigration = require('../../../helpers/run-file-migration');
+const runMigration = require('../../helpers/migration');
+const {name} = require('../../helpers/sort');
 
 describe('user query', () => {
   let migrate, db;
   before(async () => {
     db = require('../setup')();
-    migrate = runFileMigration('test-data.sql', db);
+    migrate = runMigration(db);
     await migrate.up();
   });
 
@@ -15,36 +16,47 @@ describe('user query', () => {
     const query = encodeURIComponent(`
       {
         users {
-          id,
           name
         }
       }
     `);
     const resp = await fetch(`http://localhost:8088/graphql?query=${query}`)
-    const result = await resp.json();
-    expect(result.data.users.length).to.equal(2);
-    expect(result.data.users[0]).to.deep.equal({
-      id: '1',
-      name: 'tomlagier'
-    })
-    expect(result.data.users[1]).to.deep.equal({
-      id: '2',
-      name: 'marylagier'
-    })
+    const { data: { users } } = await resp.json();
+    expect(
+      users.sort(name)
+    ).to.deep.equal([
+      {
+        name: 'marylagier'
+      },
+      {
+        name: 'tomlagier'
+      }
+    ]);
   });
 
   it('should be able to look a user up by ID', async () => {
+    const idQuery = encodeURIComponent(`
+      {
+        userSearch(query:"mary") {
+          id
+        }
+      }
+    `);
+    const resp = await fetch(`http://localhost:8088/graphql?query=${idQuery}`)
+
+    const {data: {userSearch: [{id}]}} = await resp.json();
+
     const query = encodeURIComponent(`
       {
-        user(id:"1") {
+        user(id:"${id}") {
           name
         }
       }
     `);
-    const resp = await fetch(`http://localhost:8088/graphql?query=${query}`)
-    const result = await resp.json();
+    const resp2 = await fetch(`http://localhost:8088/graphql?query=${query}`)
+    const result = await resp2.json();
     expect(result.data.user).to.deep.equal({
-      name: 'tomlagier'
+      name: 'marylagier'
     })
   });
 
@@ -64,9 +76,19 @@ describe('user query', () => {
   });
 
   it('should be able to look up wallets, coins, options, and transactions by user', async () => {
+    const idQuery = encodeURIComponent(`
+      {
+        userSearch(query:"tom") {
+          id
+        }
+      }
+    `);
+    const resp = await fetch(`http://localhost:8088/graphql?query=${idQuery}`)
+    const {data: {userSearch: [{id}]}} = await resp.json();
+
     const query = encodeURIComponent(`
       {
-        user(id:"1") {
+        user(id:"${id}") {
           wallets {
             name
           }
@@ -82,7 +104,7 @@ describe('user query', () => {
         }
       }
     `);
-    const resp = await fetch(`http://localhost:8088/graphql?query=${query}`)
+    const resp2 = await fetch(`http://localhost:8088/graphql?query=${query}`)
     const {
       data: {
         user: {
@@ -92,27 +114,21 @@ describe('user query', () => {
           transactions
         }
       }
-    }= await resp.json();
-    expect(wallets, 'Wallets').to.deep.equal([
+    }= await resp2.json();
+    expect(wallets.sort(name), 'Wallets').to.deep.equal([
       { name: 'local BTC' },
       { name: 'remote BTC' },
       { name: 'remote USDT' }
     ]);
-    expect(coins, 'Coins, ').to.deep.equal([
+    expect(coins.sort(name), 'Coins, ').to.deep.equal([
       { name: 'BitCoin' },
       { name: 'Tether' }
     ]);
-    expect(options, 'Options').to.deep.equal([
-      { name: 'invest_interval' },
-      { name: 'auto_rebalance' }
+    expect(options.sort(name), 'Options').to.deep.equal([
+      { name: 'auto_rebalance' },
+      { name: 'invest_interval' }
     ]);
-    expect(transactions, 'Transactions').to.deep.equal([
-      { success: true },
-      { success: true },
-      { success: true },
-      { success: false },
-      { success: true }
-    ])
+    expect(transactions.length, 'Transactions').to.equal(5);
   });
 
   after(async () => {

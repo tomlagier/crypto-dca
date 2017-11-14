@@ -1,13 +1,14 @@
 const { expect } = require('chai');
 const { describe, it, before, after } = require('mocha');
 const fetch = require('node-fetch');
-const runFileMigration = require('../../../helpers/run-file-migration');
+const runMigration = require('../../helpers/migration');
+const { key } = require('../../helpers/sort');
 
 describe('transaction query', () => {
   let migrate, db;
   before(async () => {
     db = require('../setup')();
-    migrate = runFileMigration('test-data.sql', db);
+    migrate = runMigration(db);
     await migrate.up();
   });
 
@@ -15,153 +16,119 @@ describe('transaction query', () => {
     const query = encodeURIComponent(`
       {
         transactions {
-          id
+          startAmount
+          endAmount
           startCoin {
-            id
+            name
           }
           startAmount
           startWallet {
-            id
+            name
           }
           endCoin {
-            id
+            name
           }
           endAmount
           endWallet {
-            id
+            name
           }
-          success,
-          createdAt,
-          updatedAt
+          success
         }
       }
     `);
     const resp = await fetch(`http://localhost:8088/graphql?query=${query}`)
-    const { data: { transactions }} = await resp.json();
-    expect(transactions).to.deep.equal([
-      {
-        "id": "1",
-        "startCoin": {
-          "id": "2"
-        },
-        "startAmount": "500",
-        "startWallet": {
-          "id": "3"
-        },
-        "endCoin": {
-          "id": "1"
-        },
-        "endAmount": "0.153",
-        "endWallet": {
-          "id": "2"
-        },
-        "success": true,
-        "createdAt": "2017-11-04T01:31:30.706Z",
-        "updatedAt": "2017-11-04T01:31:30.706Z"
-      },
-      {
-        "id": "2",
-        "startCoin": {
-          "id": "2"
-        },
-        "startAmount": "500",
-        "startWallet": {
-          "id": "3"
-        },
-        "endCoin": {
-          "id": "1"
-        },
-        "endAmount": "0.167",
-        "endWallet": {
-          "id": "2"
-        },
-        "success": true,
-        "createdAt": "2017-11-04T01:31:30.706Z",
-        "updatedAt": "2017-11-04T01:31:30.706Z"
-      },
-      {
-        "id": "3",
-        "startCoin": {
-          "id": "2"
-        },
-        "startAmount": "500",
-        "startWallet": {
-          "id": "3"
-        },
-        "endCoin": {
-          "id": "1"
-        },
-        "endAmount": "0.091",
-        "endWallet": {
-          "id": "2"
-        },
-        "success": true,
-        "createdAt": "2017-11-04T01:31:30.706Z",
-        "updatedAt": "2017-11-04T01:31:30.706Z"
-      },
-      {
-        "id": "4",
-        "startCoin": {
-          "id": "2"
-        },
-        "startAmount": ".472",
-        "startWallet": {
-          "id": "2"
-        },
-        "endCoin": {
-          "id": "2"
-        },
-        "endAmount": "0.091",
-        "endWallet": {
-          "id": "1"
-        },
-        "success": false,
-        "createdAt": "2017-11-04T01:31:30.706Z",
-        "updatedAt": "2017-11-04T01:31:30.706Z"
-      },
-      {
-        "id": "5",
-        "startCoin": {
-          "id": "2"
-        },
-        "startAmount": ".472",
-        "startWallet": {
-          "id": "2"
-        },
-        "endCoin": {
-          "id": "2"
-        },
-        "endAmount": "0.091",
-        "endWallet": {
-          "id": "1"
-        },
-        "success": true,
-        "createdAt": "2017-11-04T01:31:30.706Z",
-        "updatedAt": "2017-11-04T01:31:30.706Z"
-      }
-    ])
+    const { data: { transactions } } = await resp.json();
+
+    expect(
+      transactions
+      .sort(key('endAmount'))
+    ).to.deep.equal([ { startAmount: '0.475',
+    endAmount: '0.475',
+    startCoin: { name: 'BitCoin' },
+    startWallet: { name: 'remote BTC' },
+    endCoin: { name: 'BitCoin' },
+    endWallet: { name: 'local BTC' },
+    success: true },
+  { startAmount: '0.472',
+    endAmount: '0.472',
+    startCoin: { name: 'BitCoin' },
+    startWallet: { name: 'remote BTC' },
+    endCoin: { name: 'BitCoin' },
+    endWallet: { name: 'local BTC' },
+    success: false },
+  { startAmount: '500',
+    endAmount: '0.167',
+    startCoin: { name: 'Tether' },
+    startWallet: { name: 'remote USDT' },
+    endCoin: { name: 'BitCoin' },
+    endWallet: { name: 'remote BTC' },
+    success: true },
+  { startAmount: '500',
+    endAmount: '0.153',
+    startCoin: { name: 'Tether' },
+    startWallet: { name: 'remote USDT' },
+    endCoin: { name: 'BitCoin' },
+    endWallet: { name: 'remote BTC' },
+    success: true },
+  { startAmount: '500',
+    endAmount: '0.091',
+    startCoin: { name: 'Tether' },
+    startWallet: { name: 'remote USDT' },
+    endCoin: { name: 'BitCoin' },
+    endWallet: { name: 'remote BTC' },
+    success: true } ])
   });
 
   it('should be able to look a transaction up by ID', async () => {
+    const idQuery = encodeURIComponent(`
+      {
+        transactions {
+          id,
+          endAmount
+        }
+      }
+    `)
+
+    const resp = await fetch(`http://localhost:8088/graphql?query=${idQuery}`)
+    const { data: { transactions } } = await
+    resp.json();
+
+    const [{ id }] = transactions.sort(key('endAmount'))
+
     const query = encodeURIComponent(`
       {
-        transaction(id:"1") {
+        transaction(id:"${id}") {
           startAmount
           endAmount
         }
       }
     `);
-    const resp = await fetch(`http://localhost:8088/graphql?query=${query}`)
-    const {data: {transaction}} = await resp.json();
+    const resp2 = await fetch(`http://localhost:8088/graphql?query=${query}`)
+    const { data: { transaction } } = await resp2.json();
     expect(transaction).to.deep.equal({
-      "startAmount": "500",
-      "endAmount": "0.153"
+      "startAmount": "0.475",
+      "endAmount": "0.475"
     })
   });
 
   it('should be able to look up the start and end coin and wallets', async () => {
+    const idQuery = encodeURIComponent(`
+      {
+        transactions {
+          id,
+          endAmount
+        }
+      }
+    `)
+
+    const resp = await fetch(`http://localhost:8088/graphql?query=${idQuery}`)
+    const { data: { transactions } } = await
+    resp.json();
+
+    const [{ id }] = transactions.sort(key('endAmount'))
+
     const query = encodeURIComponent(`{
-      transaction(id:"1") {
+      transaction(id:"${id}") {
         startWallet{
           name
         }
@@ -176,17 +143,17 @@ describe('transaction query', () => {
         }
       }
     }`);
-    const resp = await fetch(`http://localhost:8088/graphql?query=${query}`)
-    const {data: {transaction}} = await resp.json();
+    const resp2 = await fetch(`http://localhost:8088/graphql?query=${query}`)
+    const {data: {transaction}} = await resp2.json();
     expect(transaction).to.deep.equal({
       "startWallet": {
-        "name": "remote USDT"
-      },
-      "endWallet": {
         "name": "remote BTC"
       },
+      "endWallet": {
+        "name": "local BTC"
+      },
       "startCoin": {
-        "code": "USDT"
+        "code": "BTC"
       },
       "endCoin": {
         "code": "BTC"

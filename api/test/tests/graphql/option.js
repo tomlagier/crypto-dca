@@ -1,13 +1,14 @@
 const { expect } = require('chai');
 const { describe, it, before, after } = require('mocha');
 const fetch = require('node-fetch');
-const runFileMigration = require('../../../helpers/run-file-migration');
+const runMigration = require('../../helpers/migration');
+const { name } = require('../../helpers/sort');
 
 describe('option query', () => {
   let migrate, db;
   before(async () => {
     db = require('../setup')();
-    migrate = runFileMigration('test-data.sql', db);
+    migrate = runMigration(db);
     await migrate.up();
   });
 
@@ -15,7 +16,6 @@ describe('option query', () => {
     const query = encodeURIComponent(`
       {
         options {
-          id,
           name,
           value
         }
@@ -23,30 +23,40 @@ describe('option query', () => {
     `);
     const resp = await fetch(`http://localhost:8088/graphql?query=${query}`)
     const { data: { options }} = await resp.json();
-    expect(options).to.deep.equal([
+    expect(
+      options.sort(name)
+    ).to.deep.equal([
       {
-        "id": "1",
-        "name": "invest_interval",
-        "value": "100"
-      },
-      {
-        "id": "2",
         "name": "auto_rebalance",
         "value": "true"
+      },
+      {
+        "name": "invest_interval",
+        "value": "100"
       }
     ])
   });
 
   it('should be able to look a option up by ID', async () => {
+    const idQuery = encodeURIComponent(`
+      {
+        optionSearch(query:"interval") {
+          id
+        }
+      }
+    `);
+    const resp = await fetch(`http://localhost:8088/graphql?query=${idQuery}`)
+    const { data: { optionSearch: [{id}] } } = await resp.json();
+
     const query = encodeURIComponent(`
       {
-        option(id:"1") {
+        option(id:"${id}") {
           name
         }
       }
     `);
-    const resp = await fetch(`http://localhost:8088/graphql?query=${query}`)
-    const {data: {option}} = await resp.json();
+    const resp2 = await fetch(`http://localhost:8088/graphql?query=${query}`)
+    const {data: {option}} = await resp2.json();
     expect(option).to.deep.equal({
       name: 'invest_interval'
     })
