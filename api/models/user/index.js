@@ -42,6 +42,7 @@ module.exports = (sequelize, DataTypes) => {
 
   User.checkPassword = async function (name, password) {
     const user = await User.findOne({ where: { name } })
+    if (!user) return { user: null, validLogin: false };
     const validLogin = await user.checkPassword(password);
     return { user, validLogin };
   }

@@ -131,6 +131,58 @@ describe('user query', () => {
     expect(transactions.length, 'Transactions').to.equal(5);
   });
 
+  it('can create a user', async () => {
+    const data = JSON.stringify({
+      query: `mutation {
+        createUser(
+          name: "Test"
+          password: "Tester"
+        ) { name }
+      }`
+    })
+
+    var settings = {
+      "method": "POST",
+      "headers": {
+        "content-type": "application/json",
+        "cache-control": "no-cache"
+      },
+      "body": data
+    }
+
+    const resp = await fetch('http://localhost:8088/graphql', settings)
+    const { data: { createUser: { name } } } = await resp.json();
+    expect(name).to.equal('Test');
+  });
+
+  it('won\'t allow an existing username', async () => {
+    const data = JSON.stringify({
+      query: `mutation {
+        createUser(
+          name: "Test"
+          password: "Tester"
+        ) { name }
+      }`
+    })
+
+    var settings = {
+      "method": "POST",
+      "headers": {
+        "content-type": "application/json",
+        "cache-control": "no-cache"
+      },
+      "body": data
+    }
+
+    const resp = await fetch('http://localhost:8088/graphql', settings)
+    expect(resp.ok).to.be.ok;
+
+    const resp2 = await fetch('http://localhost:8088/graphql', settings)
+    expect(resp2.ok).to.be.ok;
+    const { errors: [{ message }] } = await resp2.json();
+    expect(message).to.equal('Validation error');
+  });
+
   after(async () => {
     await migrate.down();
   })

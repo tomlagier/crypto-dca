@@ -42,17 +42,15 @@ module.exports = function (app) {
   app.post(
     '/login',
     bodyParser.urlencoded({ extended: true }),
-    passport.authenticate('local', {
-      failureFlash: true
-    }),
+    passport.authenticate('local'),
     (req, res) => res.send(req.user.id)
   );
 
   app.post(
     '/logout',
-    (req, res) => {
+    async (req, res) => {
       req.logout();
-      res.send();
+      res.sendStatus(200);
     }
   )
 }

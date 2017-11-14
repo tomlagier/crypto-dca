@@ -5,7 +5,8 @@ module.exports = db => ({
       Transaction,
       Wallet,
       Coin,
-      Option
+      Option,
+      Session
     } = db;
 
     await User.sync();
@@ -13,6 +14,7 @@ module.exports = db => ({
     await Option.sync();
     await Coin.sync();
     await Transaction.sync();
+    await Session.sync();
 
     const [user] = await User.bulkCreate([
       {
@@ -23,7 +25,7 @@ module.exports = db => ({
         name: 'marylagier',
         password: 'test-password-2'
       }
-    ])
+    ], { individualHooks: true })
 
     const [
       localBtc,
