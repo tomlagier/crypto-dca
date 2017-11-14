@@ -91,18 +91,15 @@ The app contains a webserver for hosting the frontend, a little business logic f
     * Create wallet
     * Check wallet balance
     * Send local Tether to Bittrex
-* Figure out better test running situation
-* Fatten up my models
-* Finish model tests
 * Transaction search
-* Badly need to implement https://github.com/mickhansen/dataloader-sequelize
 * Need to think about authorization - can only query your own data? Maybe create some roles?
-* Also need logout
+* Need to make tests more efficient - move unit/IT to their own block and do seeding/teardown separately so we're not running into all these weird DB states
 
 ### Authentication
 * Handled through passport.js
 * Just using Local strategy for now
 * User context passed to resolvers
+* Message handling TBD
 
 ### Authorization
 * All objects should have UserID attached
