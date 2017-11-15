@@ -59,11 +59,14 @@
     "whatwg-fetch": "2.0.3"
   },
   "devDependencies": {
-    "create-react-app": "^1.4.3",
     "@types/jest": "^21.1.5",
     "@types/node": "^8.0.50",
     "@types/react": "^16.0.21",
-    "@types/react-dom": "^16.0.2"
+    "@types/react-dom": "^16.0.2",
+    "create-react-app": "^1.4.3",
+    "node-sass": "^4.6.1",
+    "sass-loader": "^6.0.6",
+    "webpack": "^3.5.1"
   },
   "jest": {
     "mapCoverage": true,

@@ -1,4 +1,4 @@
 FROM mhart/alpine-node:8
 WORKDIR www/
-RUN npm install
-CMD npm run start
+RUN apk add --update python make g++
+CMD npm install && npm run start

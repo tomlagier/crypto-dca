@@ -13,7 +13,8 @@ switch (NODE_ENV) {
       new winston.transports.File({
         filename: 'combined.log',
         level: 'error'
-      })
+      }),
+      new winston.transports.Console()
     ]; //No logging in test
     break;
   case 'production':
