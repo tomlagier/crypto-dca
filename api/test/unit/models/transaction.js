@@ -5,7 +5,7 @@ describe('transaction model', () => {
   let User, Coin, Transaction, Wallet, db;
 
   before(async () => {
-    db = require('../setup')();
+    db = require('../')();
     User = db.User;
     Coin = db.Coin;
     Transaction = db.Transaction;

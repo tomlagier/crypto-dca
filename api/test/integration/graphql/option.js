@@ -1,16 +1,9 @@
 const { expect } = require('chai');
-const { describe, it, before, after } = require('mocha');
+const { describe, it } = require('mocha');
 const fetch = require('node-fetch');
-const runMigration = require('../../helpers/migration');
 const { name } = require('../../helpers/sort');
 
 describe('option query', () => {
-  let migrate, db;
-  before(async () => {
-    db = require('../setup')();
-    migrate = runMigration(db);
-    await migrate.up();
-  });
 
   it('should be able to query all options', async () => {
     const query = encodeURIComponent(`
@@ -95,8 +88,4 @@ describe('option query', () => {
       }
     ])
   });
-
-  after(async () => {
-    await migrate.down();
-  })
 })

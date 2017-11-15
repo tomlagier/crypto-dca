@@ -1,18 +1,11 @@
 const { expect } = require('chai');
-const { describe, it, before, after } = require('mocha');
+const { describe, it } = require('mocha');
 const fetch = require('node-fetch');
-const runMigration = require('../../helpers/migration');
 
 const user = 'tomlagier';
 const password = 'test-password';
 
 describe('user creation', () => {
-  let db, migrate;
-  before(async () => {
-    db = require('../setup')();
-    migrate = runMigration(db);
-    await migrate.up();
-  });
 
   it('can log a user in', async () => {
     var data = `username=${user}&password=${password}`
@@ -116,9 +109,5 @@ describe('user creation', () => {
     const resp3 = await fetch(`http://localhost:8088/graphql?query=${query}`, settings2);
     const { data: { currentUser } } = await resp3.json();
     expect(currentUser).to.be.null;
-  })
-
-  after(async () => {
-    await migrate.down();
   })
 });

@@ -1,17 +1,9 @@
 const { expect } = require('chai');
-const { describe, it, before, after } = require('mocha');
+const { describe, it } = require('mocha');
 const fetch = require('node-fetch');
-const runMigration = require('../../helpers/migration');
 const {name} = require('../../helpers/sort');
 
 describe('coin query', () => {
-  let db, migrate;
-  before(async () => {
-    db = require('../setup')();
-    migrate = runMigration(db);
-    await migrate.up();
-  });
-
   it('should be able to query all coins', async () => {
     const query = encodeURIComponent(`{
       coins {
@@ -116,8 +108,4 @@ describe('coin query', () => {
       { "code": "USDT" }
     ])
   });
-
-  after(async () => {
-    await migrate.down();
-  })
 })

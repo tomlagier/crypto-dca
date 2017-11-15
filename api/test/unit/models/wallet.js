@@ -4,7 +4,7 @@ const { describe, it, before, beforeEach, afterEach } = require('mocha');
 describe('wallet model', () => {
   let User, Coin, Wallet, db;
   before(async () => {
-    db = require('../setup')();
+    db = require('../')();
     User = db.User;
     Coin = db.Coin;
     Wallet = db.Wallet;

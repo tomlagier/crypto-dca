@@ -4,7 +4,7 @@ const { describe, it, before, beforeEach, afterEach } = require('mocha');
 describe('option model', () => {
   let User, Option, db;
   before(async () => {
-    db = require('../setup')();
+    db = require('../')();
     User = db.User;
     Option = db.Option;
 

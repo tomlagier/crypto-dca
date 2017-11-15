@@ -3,7 +3,7 @@ const { describe, it, before } = require('mocha');
 describe('db connection', () => {
   let db;
   before(() => {
-    db = require('../setup')();
+    db = require('../')();
   })
 
   it('should be able to connect to the database', done => {

@@ -8,11 +8,12 @@
     "build": "npm run migrate",
     "start": "node index.js",
     "watch": "npm run migrate && nodemon index.js",
-    "test": "NODE_ENV=test mocha --exit ./test/tests/**/*.js",
     "migrate": "sequelize db:migrate",
     "create-dump": "node helpers/create-dump.js",
     "seed": "npx sequelize db:seed:all",
-    "watch-tests": "NODE_ENV=test mocha --exit --watch ./test/tests/**/*.js"
+    "test-unit": "NODE_ENV=test mocha --exit ./test/unit/**/*.js",
+    "test-integration": "NODE_ENV=test mocha --exit ./test/integration/**/*.js",
+    "watch-tests": "NODE_ENV=test mocha --exit --watch ./test/{unit,integration}/index.js"
   },
   "repository": {
     "type": "git",
