@@ -3,7 +3,7 @@ version: "3"
 services:
   # chron:
   #   build: ./chron
-  #   image: crypt-dca-chron:latest
+  #   image: crypto-dca-chron:latest
   #   container_name: crypto-dca-chron
   #   env_file: .env-chron
   #   ports:
@@ -13,11 +13,12 @@ services:
     build:
       context: ./app
       dockerfile: Dockerfile-dev
-    image: crypt-dca-app:latest
+    image: crypto-dca-app:latest
     container_name: crypto-dca-app
     env_file: config/.env
     volumes:
       - ./app:/www
+      - /www/node_modules
     ports:
       - 8087:8087
 
@@ -25,7 +26,7 @@ services:
     build:
       context: ./api
       dockerfile: Dockerfile-dev
-    image: crypt-dca-api:latest
+    image: crypto-dca-api:latest
     container_name: crypto-dca-api
     env_file: config/.env
     environment:
@@ -39,7 +40,7 @@ services:
     build:
       context: ./api
       dockerfile: Dockerfile-dev
-    image: crypt-dca-api:latest
+    image: crypto-dca-api:latest
     container_name: crypto-dca-api-test
     env_file: config/.env
     environment:
@@ -52,7 +53,7 @@ services:
     build:
       context: ./api
       dockerfile: Dockerfile-dev
-    image: crypt-dca-api:latest
+    image: crypto-dca-api:latest
     container_name: crypto-dca-api-debug
     env_file: config/.env
     environment:

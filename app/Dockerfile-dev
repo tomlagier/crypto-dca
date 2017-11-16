@@ -1,4 +1,5 @@
 FROM mhart/alpine-node:8
 WORKDIR www/
-RUN npm install
+COPY . .
+RUN apk add --update inotify-tools && npm install
 CMD npm run start

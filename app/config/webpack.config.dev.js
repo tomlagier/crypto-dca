@@ -164,9 +164,9 @@ module.exports = {
                 loader: require.resolve('css-loader'),
                 options: {
                   importLoaders: 1,
-                  // localIdentName: "[name]--[local]--[hash:base64:8]",
-                  // modules: true,
-                  // sourceMap: true
+                  localIdentName: "[name]--[local]--[hash:base64:8]",
+                  modules: true,
+                  sourceMap: true
                 },
               },
               {
@@ -177,13 +177,13 @@ module.exports = {
                   ident: 'postcss',
                   plugins: () => [
                     require('postcss-flexbugs-fixes'),
-                    // require('postcss-cssnext')({
-                    //   features: {
-                    //     customProperties: {
-                    //       variables: {},
-                    //     }
-                    //   }
-                    // })
+                    require('postcss-cssnext')({
+                      features: {
+                        customProperties: {
+                          variables: {},
+                        }
+                      }
+                    })
                   ],
                 },
               }
