@@ -1,5 +1,6 @@
 import * as React from 'react';
-import './App.scss';
+import './App.css';
+// import { Button } from 'react-toolbox/lib/button';
 
 const logo = require('./logo.svg');
 
@@ -12,7 +13,7 @@ class App extends React.Component {
           <h2>Welcome to React</h2>
         </div>
         <p className="App-intro">
-          To get started, do a funky dance.
+          To get started, do a funky dance 2.
         </p>
       </div>
     );

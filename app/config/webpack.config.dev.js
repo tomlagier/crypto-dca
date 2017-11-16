@@ -1,6 +1,5 @@
 'use strict';
 
-const autoprefixer = require('autoprefixer');
 const path = require('path');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
@@ -158,13 +157,16 @@ module.exports = {
           // In production, we use a plugin to extract that CSS to a file, but
           // in development "style" loader enables hot editing of CSS.
           {
-            test: /\.scss$/,
+            test: /\.css$/,
             use: [
               require.resolve('style-loader'),
               {
                 loader: require.resolve('css-loader'),
                 options: {
                   importLoaders: 1,
+                  // localIdentName: "[name]--[local]--[hash:base64:8]",
+                  // modules: true,
+                  // sourceMap: true
                 },
               },
               {
@@ -175,20 +177,15 @@ module.exports = {
                   ident: 'postcss',
                   plugins: () => [
                     require('postcss-flexbugs-fixes'),
-                    autoprefixer({
-                      browsers: [
-                        '>1%',
-                        'last 4 versions',
-                        'Firefox ESR',
-                        'not ie < 9', // React doesn't support IE8 anyway
-                      ],
-                      flexbox: 'no-2009',
-                    }),
+                    // require('postcss-cssnext')({
+                    //   features: {
+                    //     customProperties: {
+                    //       variables: {},
+                    //     }
+                    //   }
+                    // })
                   ],
                 },
-              },
-              {
-                loader: require.resolve('sass-loader')
               }
             ],
           },
