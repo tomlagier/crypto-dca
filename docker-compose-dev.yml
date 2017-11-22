@@ -17,8 +17,8 @@ services:
     container_name: crypto-dca-app
     env_file: config/.env
     volumes:
-      - ./app:/www
-      - /www/node_modules
+      - ./app:/usr/www
+      - ./app/node_modules:/tmp/node_modules
     ports:
       - 8087:8087
 

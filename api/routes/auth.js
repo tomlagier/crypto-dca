@@ -4,6 +4,13 @@ const expressSession = require('express-session');
 const Store = require('connect-session-sequelize')(expressSession.Store);
 const flash = require('express-flash');
 const LocalStrategy = require('passport-local').Strategy;
+const GithubStrategy = require('passport-github2').Strategy;
+const logger = require('../helpers/logger');
+const {
+  SESSION_KEY,
+  GITHUB_CLIENT_ID,
+  GITHUB_CLIENT_SECRET
+} = process.env;
 
 module.exports = function (app) {
   const db = require('../helpers/db').up();
@@ -18,6 +25,22 @@ module.exports = function (app) {
         });
     }
   ));
+
+  passport.use('github', new GithubStrategy({
+      clientID: GITHUB_CLIENT_ID,
+      clientSecret: GITHUB_CLIENT_SECRET,
+      callbackURL: 'http://localhost:8088/auth/github/callback',
+    },
+    async (accessToken, refreshToken, { _json: { login } }, done) => {
+      const [user] = await db.User.findOrCreate({
+        where: {
+          name: login
+        }
+      })
+      return done(null, user);
+    }
+  ));
+
   passport.serializeUser(function(user, done) {
     done(null, user.id);
   });
@@ -27,7 +50,7 @@ module.exports = function (app) {
   });
 
   app.use(expressSession({
-    secret: 'CHANGEME!',
+    secret: SESSION_KEY,
     store: new Store({
       db: db.sequelize
     }),
@@ -40,17 +63,32 @@ module.exports = function (app) {
   app.use(flash());
 
   app.post(
-    '/login',
+    '/auth/local',
     bodyParser.urlencoded({ extended: true }),
     passport.authenticate('local'),
     (req, res) => res.send(req.user.id)
+  );
+
+  app.get(
+    '/auth/github',
+    passport.authenticate('github', { scope: ['user:email'] })
+  );
+
+  app.get('/auth/github/callback',
+    passport.authenticate('github', {
+      successRedirect: 'http://localhost:8087'
+    }),
   );
 
   app.post(
     '/logout',
     async (req, res) => {
       req.logout();
-      res.sendStatus(200);
+      req.session.destroy(function (err) {
+        err && logger.error(err);
+        res.clearCookie('connect.sid');
+        res.sendStatus(200);
+      })
     }
   )
 }

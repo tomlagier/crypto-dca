@@ -1,5 +1,10 @@
-FROM mhart/alpine-node:8
-WORKDIR www/
+FROM mhart/alpine-node:9
+WORKDIR /usr/www/
+RUN apk add --update inotify-tools git
+COPY package.json package-lock.json /tmp/
+RUN cd /tmp && \
+ npm install && \
+ cd /usr/www/ && \
+ ln -s /tmp/node_modules
 COPY . .
-RUN apk add --update inotify-tools && npm install
 CMD npm run start

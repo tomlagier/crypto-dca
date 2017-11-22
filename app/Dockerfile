@@ -1,4 +1,4 @@
-FROM mhart/alpine-node:8
+FROM mhart/alpine-node:9
 RUN mkdir www/
 WORKDIR www/
 ADD . .
