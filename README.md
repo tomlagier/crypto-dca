@@ -83,17 +83,13 @@ The app contains a webserver for hosting the frontend, a little business logic f
 7. Pretty graphs about portfolio performance?
 
 ### To-do
-* Make omnicored RPC server more secure
-    * Cert based auth
-    * No open allowed IPs
-* Publish omnicored docker images
-* Create client actions as a part of the API
-    * Create wallet
-    * Check wallet balance
-    * Send local Tether to Bittrex
 * Transaction search
 * Need to think about authorization - can only query your own data? Maybe create some roles?
 * Need to make tests more efficient - move unit/IT to their own block and do seeding/teardown separately so we're not running into all these weird DB states
+* Migrate header to App Bar component
+* Migrate current structure to layout
+* Add PortfolioDashboard container
+* Add Settings container
 
 ### Authentication
 * Handled through passport.js
@@ -124,3 +120,6 @@ As a user, I want to...
     * the amount of each coin that has been transferred locally
     * the amount on each coin waiting to be spent
 * see all transactions that have happened
+
+
+

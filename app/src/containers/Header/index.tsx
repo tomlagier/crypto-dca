@@ -2,6 +2,7 @@ import * as React from 'react';
 import styles from './index.css';
 import LoggedIn from './LoggedIn';
 import LoggedOut from './LoggedOut';
+import { AppBar } from 'react-toolbox/lib/app_bar';
 import { graphql, withApollo, compose } from 'react-apollo';
 import { connect } from 'react-redux';
 import { actions } from '../../services/auth/state';
@@ -60,18 +61,11 @@ export class Header extends React.Component<HeaderProps, {}> {
     } = this.props;
 
     return (
-      <div className={appHeader}>
-        {user ?
-          <LoggedIn
-            name={user.name}
-            onClick={logOut}
-          /> :
-          <LoggedOut
-            loading={loading}
-            onClick={logIn}
-          />
-        }
-      </div>
+      <AppBar className={appHeader} title="Crypto DCA">
+        <Navigation type="horizontal">
+
+        </Navigation>
+      </AppBar>
     );
   }
 }
