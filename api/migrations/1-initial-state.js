@@ -12,7 +12,7 @@ module.exports = {
             .then(res)
             .catch(rej);
         });
-    })
+    });
   },
   down: (migration) => {
     return migration.dropAllTables();

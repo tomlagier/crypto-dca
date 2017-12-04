@@ -1,27 +1,16 @@
-import * as React from 'react';
+import React, { Component } from 'react';
 import styles from './index.css';
-import LoggedIn from './LoggedIn';
-import LoggedOut from './LoggedOut';
+import Profile from '../../components/Profile';
 import { AppBar } from 'react-toolbox/lib/app_bar';
-import { graphql, withApollo, compose } from 'react-apollo';
+import { Navigation } from 'react-toolbox/lib/navigation';
 import { connect } from 'react-redux';
+import { User, withUser } from '../../services/auth';
 import { actions } from '../../services/auth/state';
-import gql from 'graphql-tag';
+import { withApollo, compose } from 'react-apollo';
 
 const {
   ['App-header']: appHeader
 } = styles;
-
-interface User {
-  name: string;
-}
-
-interface CurrentUserProps {
-  data?: {
-    loading?: boolean;
-    currentUser?: User;
-  };
-}
 
 interface HeaderProps {
   user: User;
@@ -33,11 +22,9 @@ interface HeaderProps {
   logOut: Function;
 }
 
-const CURRENT_USER = gql`query { currentUser { id name }}`;
-const withUser = graphql<Response, CurrentUserProps>(CURRENT_USER, {
-  props: ({ data: { loading, currentUser } }: CurrentUserProps) =>
-    ({ loading, user: currentUser })
-});
+interface HeaderState {
+
+}
 
 const mapStateToProps = () => ({});
 const mapDispatchToProps = (
@@ -51,7 +38,7 @@ const mapDispatchToProps = (
   };
 };
 
-export class Header extends React.Component<HeaderProps, {}> {
+export class Header extends Component<HeaderProps, HeaderState> {
   render() {
     const {
       user,
@@ -63,8 +50,14 @@ export class Header extends React.Component<HeaderProps, {}> {
     return (
       <AppBar className={appHeader} title="Crypto DCA">
         <Navigation type="horizontal">
-
+          Some nav goes here
         </Navigation>
+        <Profile
+          user={user}
+          loading={loading}
+          logIn={logIn}
+          logOut={logOut}
+        />
       </AppBar>
     );
   }

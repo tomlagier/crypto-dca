@@ -18,6 +18,10 @@ module.exports = new GraphQLObjectType({
         type: new GraphQLNonNull(GraphQLString),
         description: 'The name of the user',
       },
+      avatar: {
+        type: GraphQLString,
+        description: 'Avatar image URL'
+      },
       ...require('../Wallet/queries')(User.Wallets),
       ...require('../Transaction/queries')(User.Transactions),
       ...require('../Coin/queries')(User.Coins),

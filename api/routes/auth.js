@@ -31,10 +31,17 @@ module.exports = function (app) {
       clientSecret: GITHUB_CLIENT_SECRET,
       callbackURL: 'http://localhost:8088/auth/github/callback',
     },
-    async (accessToken, refreshToken, { _json: { login } }, done) => {
+    async (accessToken, refreshToken, resp, done) => {
+      const {
+        _json: {
+          login, avatar_url
+        }
+      } = resp;
+
       const [user] = await db.User.findOrCreate({
         where: {
-          name: login
+          name: login,
+          avatar: avatar_url
         }
       })
       return done(null, user);
