@@ -2,7 +2,9 @@ import * as React from 'react';
 import styles from './index.css';
 import LoggedIn from './LoggedIn';
 import LoggedOut from './LoggedOut';
-import { graphql, withApollo } from 'react-apollo';
+import { graphql, withApollo, compose } from 'react-apollo';
+import { connect } from 'react-redux';
+import { actions } from '../../services/auth/state';
 import gql from 'graphql-tag';
 
 const {
@@ -15,7 +17,7 @@ interface User {
 
 interface CurrentUserProps {
   data?: {
-    loading?: Boolean;
+    loading?: boolean;
     currentUser?: User;
   };
 }
@@ -25,38 +27,57 @@ interface HeaderProps {
   client: {
     resetStore: Function
   };
+  loading: boolean;
+  logIn: Function;
+  logOut: Function;
 }
 
 const CURRENT_USER = gql`query { currentUser { id name }}`;
-const withUser = (header: any) => withApollo(
-  graphql<Response, CurrentUserProps>(CURRENT_USER, {
-    props: ({ data: { loading, currentUser } }: CurrentUserProps) => ({ loading, user: currentUser })
-  })(header)
-);
+const withUser = graphql<Response, CurrentUserProps>(CURRENT_USER, {
+  props: ({ data: { loading, currentUser } }: CurrentUserProps) =>
+    ({ loading, user: currentUser })
+});
 
-const logout = (resetStore: Function) => async () => {
-  await fetch('http://localhost:8088/logout', {
-    method: 'POST',
-    credentials: 'include'
-  });
-  resetStore();
+const mapStateToProps = () => ({});
+const mapDispatchToProps = (
+  dispatch: Function,
+  { client: { resetStore } }: HeaderProps
+) => {
+  return {
+    logIn: () => dispatch(actions.auth.logIn()),
+    logOut: () =>
+      dispatch(actions.auth.logOut(resetStore))
+  };
 };
 
 export class Header extends React.Component<HeaderProps, {}> {
   render() {
     const {
       user,
-      client
+      loading,
+      logIn,
+      logOut
     } = this.props;
 
     return (
       <div className={appHeader}>
         {user ?
-          <LoggedIn name={user.name} logout={logout(client.resetStore)} /> :
-          <LoggedOut />}
+          <LoggedIn
+            name={user.name}
+            onClick={logOut}
+          /> :
+          <LoggedOut
+            loading={loading}
+            onClick={logIn}
+          />
+        }
       </div>
     );
   }
 }
 
-export default withUser(Header);
+export default compose(
+  withApollo,
+  withUser,
+  connect(mapStateToProps, mapDispatchToProps)
+)(Header);

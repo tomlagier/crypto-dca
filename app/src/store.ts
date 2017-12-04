@@ -4,7 +4,7 @@ import { routerReducer, routerMiddleware } from 'react-router-redux';
 import createHistory from 'history/createBrowserHistory';
 
 // Reducers
-import user from './services/auth/state';
+import { default as user, logIn, logOut } from './services/auth/state';
 export const history = createHistory();
 
 const rootReducer = combineReducers({
@@ -13,7 +13,9 @@ const rootReducer = combineReducers({
 });
 
 // Epics
-const rootEpic = combineEpics();
+const rootEpic = combineEpics(
+    logIn, logOut
+);
 
 const composeEnhancers: Function = (<any> window).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 export const store = createStore(

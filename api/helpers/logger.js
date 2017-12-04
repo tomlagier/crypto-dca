@@ -14,7 +14,7 @@ switch (NODE_ENV) {
         filename: 'combined.log',
         level: 'error'
       }),
-      new winston.transports.Console()
+      // new winston.transports.Console()
     ]; //No logging in test
     break;
   case 'production':
@@ -29,6 +29,7 @@ switch (NODE_ENV) {
         level: 'verbose'
       })
     ]
+    break;
 }
 
 module.exports = winston.createLogger({

@@ -1,12 +1,15 @@
 import * as React from 'react';
 import { Button } from 'react-toolbox/lib/button';
-import { actions } from '../../../services/auth/state';
 
-export default () => (
+export default ({ loading, onClick }: {
+  loading: boolean,
+  onClick: Function
+}) => (
   <Button
     label="Log In"
-    onClick={actions.auth.logIn}
+    onClick={onClick}
     raised={true}
     primary={true}
+    disabled={loading}
   />
 );

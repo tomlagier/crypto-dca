@@ -108,8 +108,8 @@ The app contains a webserver for hosting the frontend, a little business logic f
 
 ### User stories
 As a user, I want to...
-* be able to create an account
-* be able to log in
+* [x] be able to create an account
+* [x] be able to log in
 * be able to add some coins to invest in
     * set a fee tolerance
     * set a percentage of the portfolio

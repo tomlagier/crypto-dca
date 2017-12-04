@@ -1,13 +1,13 @@
 import * as React from 'react';
-import styles from './App.css';
-import Header from './Header';
+import styles from './index.css';
+import Header from '../Header';
 
 const {
   App: appClass,
   ['App-intro']: appIntro,
 } = styles;
 
-class App extends React.Component {
+class CoinDashboard extends React.Component {
   render() {
     return (
       <div className={appClass}>
@@ -20,4 +20,4 @@ class App extends React.Component {
   }
 }
 
-export default App;
+export default CoinDashboard;

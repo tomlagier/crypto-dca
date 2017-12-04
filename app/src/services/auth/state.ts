@@ -1,35 +1,20 @@
 import { createActions } from 'redux-actions';
 import { FSA } from '../../types/fsa';
-// import { Epic } from 'redux-observable';
-// import { Observable } from 'rxjs';
+import { Epic } from 'redux-observable';
+import { Observable } from 'rxjs';
+import 'rxjs/add/operator/do';
+import 'rxjs/add/operator/mergeMap';
+
+const { defer } = Observable;
 
 // Actions
 export const LOG_IN = 'auth/LOG_IN';
-export const CHECK_LOGGED_IN = 'auth/CHECK_LOGGED_IN';
-export const LOGGED_IN = 'auth/LOGGED_IN';
 export const LOG_OUT = 'auth/LOG_OUT';
+export const LOGGED_OUT = 'auth/LOGGED_OUT';
 
 // Reducer
-interface User {
-  name?: string;
-}
-
-const initialState: User = {
-  name: undefined
-};
-
-export default function reducer(state: User = initialState, { type, payload }: FSA) {
+export default function reducer(state: {} = {}, { type, payload }: FSA) {
   switch (type) {
-    case LOGGED_IN:
-      return {
-        ...state,
-        user: payload
-      };
-    case LOG_OUT:
-      return {
-        ...state,
-        user: undefined
-      };
     default:
       return state;
   }
@@ -38,11 +23,31 @@ export default function reducer(state: User = initialState, { type, payload }: F
 // Action creators
 export const actions = createActions({
   auth: {
-    LOG_IN: () => window.location.href = 'http://localhost:8088/auth/github',
-    LOGGED_IN: (u: User) => u,
-    LOG_OUT: () => fetch('http://localhost:8088/logout', {
-      method: 'POST',
-      credentials: 'include'
-    })
+    LOG_IN: null,
+    LOG_OUT: (resetStore: Function) => resetStore,
+    LOGGED_OUT: null
   }
 });
+
+// Epics
+export const logIn: Epic<FSA, any> =
+  action$ => action$
+    .ofType(LOG_IN)
+    .do(() =>
+      window.location.href = 'http://localhost:8088/auth/github'
+    )
+    .ignoreElements();
+
+const { auth: { loggedOut } } = actions;
+export const logOut: Epic<FSA, any> =
+  action$ => action$
+    .ofType(LOG_OUT)
+    .mergeMap(({ payload: resetStore }) =>
+      defer(async () => {
+        await fetch('http://localhost:8088/logout', {
+          method: 'POST',
+          credentials: 'include'
+        });
+        resetStore();
+        return loggedOut();
+      }));
