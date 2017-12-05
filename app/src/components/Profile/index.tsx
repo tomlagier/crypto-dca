@@ -26,7 +26,7 @@ const Profile = (
   <div className={profileClass}>
     { user ?
       <LoggedIn
-        name={user.name}
+        user={user}
         onClick={logOut}
       /> :
       <LoggedOut

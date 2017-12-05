@@ -9,7 +9,7 @@ export default ({ loading, onClick }: {
     label="Log In"
     onClick={onClick}
     raised={true}
-    primary={true}
+    accent={true}
     disabled={loading}
   />
 );

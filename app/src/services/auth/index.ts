@@ -13,7 +13,7 @@ interface CurrentUserProps {
   };
 }
 
-const CURRENT_USER = gql`query { currentUser { id name }}`;
+const CURRENT_USER = gql`query { currentUser { id name avatar }}`;
 export const withUser = graphql<Response, CurrentUserProps>(CURRENT_USER, {
   props: ({ data: { loading, currentUser } }: CurrentUserProps) =>
     ({ loading, user: currentUser })

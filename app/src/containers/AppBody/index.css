@@ -1,0 +1,19 @@
+.AppBody {
+  & :global(.slide-enter) {
+    transform: translateX(-100%);
+  }
+
+  & :global(.slide-enter-active) {
+    transform: translateX(0);
+    transition: transform 0.3s ease-out;
+  }
+
+  & :global(.slide-exit) {
+    transform: translateX(0);
+  }
+
+  & :global(.slide-exit-active) {
+    transform: translateX(100%);
+    transition: transform 0.3s ease-out;
+  }
+}
