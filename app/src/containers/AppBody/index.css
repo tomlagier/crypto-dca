@@ -1,19 +1,45 @@
 .AppBody {
-  & :global(.slide-enter) {
-    transform: translateX(-100%);
+  position: relative;
+  width: 100%;
+  font-size: 0;
+
+  &.right {
+    & :global(.slide-enter) {
+      transform: translateX(100%);
+    }
+
+    & :global(.slide-enter-active) {
+      transform: translateX(0);
+      transition: transform 0.3s ease-out;
+    }
+
+    & :global(.slide-exit) {
+      transform: translateX(0);
+    }
+
+    & :global(.slide-exit-active) {
+      transition: transform 0.3s ease-out;
+      transform: translateX(-100%);
+    }
   }
 
-  & :global(.slide-enter-active) {
-    transform: translateX(0);
-    transition: transform 0.3s ease-out;
-  }
+  &.left {
+    & :global(.slide-enter) {
+      transform: translateX(-100%);
+    }
 
-  & :global(.slide-exit) {
-    transform: translateX(0);
-  }
+    & :global(.slide-enter-active) {
+      transform: translateX(0);
+      transition: transform 0.3s ease-out;
+    }
 
-  & :global(.slide-exit-active) {
-    transform: translateX(100%);
-    transition: transform 0.3s ease-out;
+    & :global(.slide-exit) {
+      transform: translateX(0);
+    }
+
+    & :global(.slide-exit-active) {
+      transition: transform 0.3s ease-out;
+      transform: translateX(100%);
+    }
   }
 }
