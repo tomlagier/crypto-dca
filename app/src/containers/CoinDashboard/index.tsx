@@ -2,14 +2,13 @@ import React, { Component } from 'react';
 import styles from './index.css';
 import { withApollo, compose } from 'react-apollo';
 import { connect } from 'react-redux';
-import { User, withUser } from '../../services/auth';
 
 const {
   CoinDashboard: coinDashboardClass
 } = styles;
 
 interface CoinDashboardProps {
-  user: User;
+
 }
 
 interface CoinDashboardState {
@@ -27,16 +26,9 @@ const mapDispatchToProps = (
 
 class CoinDashboard extends Component <CoinDashboardProps, CoinDashboardState> {
   render() {
-    const {
-      user
-    } = this.props;
-
     return (
       <div className={coinDashboardClass}>
-        { user ?
-          'Okay, I\'ll show you some stuff' :
-          'Log in you putz!'
-        }
+        {'Coin dashboard here'}
       </div>
     );
   }
@@ -44,6 +36,5 @@ class CoinDashboard extends Component <CoinDashboardProps, CoinDashboardState> {
 
 export default compose(
   withApollo,
-  withUser,
   connect(mapStateToProps, mapDispatchToProps)
 )(CoinDashboard);

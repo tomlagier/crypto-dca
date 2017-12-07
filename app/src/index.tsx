@@ -7,7 +7,7 @@ import { store, history } from './store';
 import client from './graphql';
 
 import Header from './containers/Header';
-import AppBody from './containers/AppBody';
+import AppContainer from './containers/AppContainer';
 import registerServiceWorker from './registerServiceWorker';
 import './index.css';
 
@@ -17,7 +17,7 @@ ReactDOM.render(
       <ConnectedRouter history={history}>
         <div className="main">
           <Header />
-          <AppBody />
+          <AppContainer />
         </div>
       </ConnectedRouter>
     </Provider>

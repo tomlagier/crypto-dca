@@ -4,6 +4,8 @@ import { Epic } from 'redux-observable';
 import { Observable } from 'rxjs';
 import 'rxjs/add/operator/do';
 import 'rxjs/add/operator/mergeMap';
+import { push } from 'react-router-redux';
+const { concat, of } = Observable;
 
 const { defer } = Observable;
 
@@ -49,5 +51,8 @@ export const logOut: Epic<FSA, any> =
           credentials: 'include'
         });
         resetStore();
-        return loggedOut();
-      }));
+      }))
+    .mergeMap(() => concat(
+      of(loggedOut()),
+      of(push('/'))
+    ));
