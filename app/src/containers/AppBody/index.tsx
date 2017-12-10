@@ -6,6 +6,7 @@ import CoinDashboard from '../CoinDashboard';
 import { TransitionGroup, CSSTransition } from 'react-transition-group';
 import { withRouter, Switch, Route } from 'react-router-dom';
 import { paths, indexFromPath } from '../../services/navigation';
+import classNames from 'classnames';
 
 const {
   HOME,
@@ -65,7 +66,9 @@ class AppBody extends Component<AppBodyProps, AppBodyState> {
 
     return (
       <TransitionGroup
-        className={`${appBodyClass} ${styles[direction]}`}
+        className={
+          classNames(appBodyClass, styles[direction])
+        }
       >
         <CSSTransition
           key={pathname}

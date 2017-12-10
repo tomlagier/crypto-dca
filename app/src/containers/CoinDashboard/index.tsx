@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import styles from './index.css';
 import { withApollo, compose } from 'react-apollo';
 import { connect } from 'react-redux';
+import Page from '../../components/Page';
 
 const {
   CoinDashboard: coinDashboardClass
@@ -27,9 +28,11 @@ const mapDispatchToProps = (
 class CoinDashboard extends Component <CoinDashboardProps, CoinDashboardState> {
   render() {
     return (
-      <div className={coinDashboardClass}>
-        {'Coin dashboard here'}
-      </div>
+      <Page
+        className={coinDashboardClass}
+        body={'coinDashboard body'}
+        sidebarOpen={false}
+      />
     );
   }
 }
