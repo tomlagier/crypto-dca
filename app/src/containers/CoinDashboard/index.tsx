@@ -4,12 +4,14 @@ import { withApollo, compose } from 'react-apollo';
 import { connect } from 'react-redux';
 import Page from '../../components/Page';
 import { Button } from 'react-toolbox/lib/button';
-import { Coin, withCoins } from '../../services/coins';
+import { Coin, withCoins, createCoin, deleteCoin } from '../../services/coins';
 
 const { CoinDashboard: coinDashboardClass } = styles;
 
 interface CoinDashboardProps {
   coins: Coin[];
+  createCoin: Function;
+  deleteCoin: Function;
 }
 
 interface CoinDashboardState {
@@ -46,9 +48,28 @@ class CoinDashboard extends Component<CoinDashboardProps, CoinDashboardState> {
   }
 
   renderBody() {
+    const { coins } = this.props;
     return (
       <div>
-        {JSON.stringify(this.props.coins)}
+        {coins && coins.map(coin => (
+          <div key={coin.id}>
+            <span>Name: {coin.name}</span>
+            <span>Code: {coin.code}</span>
+            <Button onClick={() => this.props.deleteCoin({ id: coin.id })}>
+              Delete
+            </Button>
+          </div>
+        ))}
+        <Button
+          onClick={() =>
+            this.props.createCoin({
+              name: 'Test',
+              code: 'TEST'
+            })
+          }
+        >
+          Add a coin
+        </Button>
         <Button onClick={this.toggleSidebar}>Toggle sidebar</Button>
       </div>
     );
@@ -74,5 +95,7 @@ class CoinDashboard extends Component<CoinDashboardProps, CoinDashboardState> {
 export default compose(
   withApollo,
   withCoins,
+  createCoin,
+  deleteCoin,
   connect(mapStateToProps, mapDispatchToProps)
 )(CoinDashboard);

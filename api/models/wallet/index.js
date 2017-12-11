@@ -18,6 +18,10 @@ module.exports = (sequelize, DataTypes) => {
     local: {
       type: DataTypes.BOOLEAN,
       allowNull: false
+    },
+    isDeleted: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false
     }
   });
 

@@ -38,6 +38,10 @@ module.exports = (sequelize, DataTypes) => {
     purchaseAmount: {
       type: DataTypes.STRING,
       defaultValue: "0"
+    },
+    isDeleted: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false
     }
   });
 

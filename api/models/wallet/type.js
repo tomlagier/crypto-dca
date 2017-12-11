@@ -25,7 +25,7 @@ module.exports = new GraphQLObjectType({
       local: {
         type: new GraphQLNonNull(GraphQLBoolean),
         description: 'Whether the wallet is local or on an exchange'
-      },
+      }
       // transactions: {
       //   type: new GraphQLList(Transaction),
       //   description: 'Transactions associated with this wallet'

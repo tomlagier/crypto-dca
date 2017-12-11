@@ -14,6 +14,10 @@ module.exports = (sequelize, DataTypes) => {
     value: {
       type: DataTypes.STRING,
       allowNull: false
+    },
+    isDeleted: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false
     }
   });
 

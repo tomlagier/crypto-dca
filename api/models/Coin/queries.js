@@ -7,7 +7,7 @@ const {
 const { Op: {or, iLike} } = require('sequelize');
 const coinType = require('./type');
 const sort = require('../../helpers/sort');
-const resolver = require('../../helpers/user-filter');
+const {withUserAndDeleted: resolver} = require('../../helpers/resolvers/filter');
 
 module.exports = Coin => ({
   coin: {
