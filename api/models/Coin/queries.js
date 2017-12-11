@@ -5,9 +5,9 @@ const {
 } = require('graphql');
 
 const { Op: {or, iLike} } = require('sequelize');
-const { resolver } = require('graphql-sequelize');
 const coinType = require('./type');
 const sort = require('../../helpers/sort');
+const resolver = require('../../helpers/user-filter');
 
 module.exports = Coin => ({
   coin: {
