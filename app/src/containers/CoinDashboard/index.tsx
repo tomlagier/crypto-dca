@@ -4,11 +4,12 @@ import { withApollo, compose } from 'react-apollo';
 import { connect } from 'react-redux';
 import Page from '../../components/Page';
 import { Button } from 'react-toolbox/lib/button';
-import { withCoins } from '../../services/coins';
+import { Coin, withCoins } from '../../services/coins';
 
 const { CoinDashboard: coinDashboardClass } = styles;
 
 interface CoinDashboardProps {
+  coins: Coin[];
 }
 
 interface CoinDashboardState {
@@ -47,6 +48,7 @@ class CoinDashboard extends Component<CoinDashboardProps, CoinDashboardState> {
   renderBody() {
     return (
       <div>
+        {JSON.stringify(this.props.coins)}
         <Button onClick={this.toggleSidebar}>Toggle sidebar</Button>
       </div>
     );
@@ -58,7 +60,6 @@ class CoinDashboard extends Component<CoinDashboardProps, CoinDashboardState> {
 
   render() {
     const { sidebarOpen } = this.state;
-    console.log(this.props);
     return (
       <Page
         className={coinDashboardClass}

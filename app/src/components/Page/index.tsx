@@ -3,7 +3,7 @@ import styles from './index.css';
 import { Layout, Panel, Sidebar } from 'react-toolbox/lib/layout';
 import classNames from 'classnames';
 
-const { Page: pageClass } = styles;
+const { Page: pageClass, Layout: pageLayoutClass } = styles;
 
 interface PageProps {
   sidebarOpen?: boolean;
@@ -19,7 +19,7 @@ const Page = ({
   className
 }: PageProps) => (
   <div className={classNames(pageClass, className)}>
-    <Layout>
+      <Layout className={pageLayoutClass}>
       <Panel>{body}</Panel>
         {sidebar &&
           <Sidebar pinned={sidebarOpen}>{sidebar}</Sidebar>}
