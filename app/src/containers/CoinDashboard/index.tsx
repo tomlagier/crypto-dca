@@ -3,8 +3,8 @@ import styles from './index.css';
 import { withApollo, compose } from 'react-apollo';
 import { connect } from 'react-redux';
 import Page from '../../components/Page';
-import { Button } from 'react-toolbox/lib/button';
 import { Coin, withCoins, createCoin, deleteCoin } from '../../services/coins';
+import CoinTable from '../../components/CoinTable';
 
 const { CoinDashboard: coinDashboardClass } = styles;
 
@@ -48,30 +48,14 @@ class CoinDashboard extends Component<CoinDashboardProps, CoinDashboardState> {
   }
 
   renderBody() {
-    const { coins } = this.props;
+    const { coins, createCoin: add, deleteCoin: remove } = this.props;
     return (
-      <div>
-        {coins && coins.map(coin => (
-          <div key={coin.id}>
-            <span>Name: {coin.name}</span>
-            <span>Code: {coin.code}</span>
-            <Button onClick={() => this.props.deleteCoin({ id: coin.id })}>
-              Delete
-            </Button>
-          </div>
-        ))}
-        <Button
-          onClick={() =>
-            this.props.createCoin({
-              name: 'Test',
-              code: 'TEST'
-            })
-          }
-        >
-          Add a coin
-        </Button>
-        <Button onClick={this.toggleSidebar}>Toggle sidebar</Button>
-      </div>
+      <CoinTable
+        coins={coins}
+        add={add}
+        remove={remove}
+        toggleSidebar={this.toggleSidebar}
+      />
     );
   }
 
