@@ -3,29 +3,52 @@ import styles from './index.css';
 import { withApollo, compose } from 'react-apollo';
 import { connect } from 'react-redux';
 import Page from '../../components/Page';
-import { Coin, withCoins, createCoin, deleteCoin } from '../../services/coins';
-import CoinTable from '../../components/CoinTable';
+import { Coin, withCoins, deleteCoin } from '../../services/coins';
+import CoinTable from '../../containers/CoinTable';
+import AddCoinSection from '../../components/AddCoinSection';
+import { CoinDashboardState, actions as coinDashboardActions } from '../../services/coin-dashboard/state';
 
 const { CoinDashboard: coinDashboardClass } = styles;
 
 interface CoinDashboardProps {
   coins: Coin[];
-  createCoin: Function;
-  deleteCoin: Function;
-}
-
-interface CoinDashboardState {
   sidebarOpen: boolean;
+  addDialogActive: boolean;
+  addCoin: Function;
+  createCoin: Function;
+  closeDialog: Function;
 }
 
 // Redux selectors
-const mapStateToProps = () => ({});
+const mapStateToProps = ({
+  coinDashboard: {
+    sidebarOpen,
+    addDialogActive
+  }
+}: {
+  coinDashboard: CoinDashboardState
+}) => ({
+  sidebarOpen,
+  addDialogActive
+});
 const mapDispatchToProps = (
   dispatch: Function
   // merged graphQL and own props
-) => ({});
+) => {
+  const {
+    coinDashboard: {
+      addCoin, saveNewCoin, closeDialog
+    }
+  } = coinDashboardActions;
 
-class CoinDashboard extends Component<CoinDashboardProps, CoinDashboardState> {
+  return {
+    createCoin: (coin: Coin) => dispatch(saveNewCoin(coin)),
+    addCoin: () => dispatch(addCoin()),
+    closeDialog: () => dispatch(closeDialog())
+  };
+};
+
+class CoinDashboard extends Component<CoinDashboardProps, {}> {
   constructor(props: CoinDashboardProps) {
     super(props);
     this.state = {
@@ -34,13 +57,7 @@ class CoinDashboard extends Component<CoinDashboardProps, CoinDashboardState> {
 
     this.renderBody = this.renderBody.bind(this);
     this.renderSidebar = this.renderSidebar.bind(this);
-    this.toggleSidebar = this.toggleSidebar.bind(this);
     this.hideSidebar = this.hideSidebar.bind(this);
-  }
-
-  toggleSidebar() {
-    const { sidebarOpen } = this.state;
-    this.setState({ sidebarOpen: !sidebarOpen });
   }
 
   hideSidebar() {
@@ -48,14 +65,27 @@ class CoinDashboard extends Component<CoinDashboardProps, CoinDashboardState> {
   }
 
   renderBody() {
-    const { coins, createCoin: add, deleteCoin: remove } = this.props;
+    const {
+      coins,
+      addCoin,
+      createCoin,
+      closeDialog,
+      addDialogActive: active
+    } = this.props;
     return (
-      <CoinTable
-        coins={coins}
-        add={add}
-        remove={remove}
-        toggleSidebar={this.toggleSidebar}
-      />
+      <div>
+        <CoinTable
+          coins={coins}
+          remove={deleteCoin}
+          toggleSidebar={() => { }}
+        />
+        <AddCoinSection
+          add={addCoin}
+          save={createCoin}
+          active={active}
+          close={closeDialog}
+        />
+      </div>
     );
   }
 
@@ -64,7 +94,7 @@ class CoinDashboard extends Component<CoinDashboardProps, CoinDashboardState> {
   }
 
   render() {
-    const { sidebarOpen } = this.state;
+    const { sidebarOpen } = this.props;
     return (
       <Page
         className={coinDashboardClass}
@@ -79,7 +109,5 @@ class CoinDashboard extends Component<CoinDashboardProps, CoinDashboardState> {
 export default compose(
   withApollo,
   withCoins,
-  createCoin,
-  deleteCoin,
   connect(mapStateToProps, mapDispatchToProps)
 )(CoinDashboard);

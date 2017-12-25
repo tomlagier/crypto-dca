@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import styles from './index.css';
-import { compose } from 'react-apollo';
+import { compose } from 'recompose';
 import { connect } from 'react-redux';
 import CoinDashboard from '../CoinDashboard';
 import { TransitionGroup, CSSTransition } from 'react-transition-group';

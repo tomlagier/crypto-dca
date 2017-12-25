@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import styles from './index.css';
-import { graphql, withApollo, compose } from 'react-apollo';
 import { connect } from 'react-redux';
 <% const className = `${camelEntityName}Class` %>
 const {
@@ -34,8 +33,4 @@ class <%= pascalEntityName %> extends Component <<%= props %>, <%= state %>> {
   }
 }
 
-export default compose(
-  withApollo,
-  // graphql selector
-  connect(mapStateToProps, mapDispatchToProps)
-)(<%= pascalEntityName %>);
+export default connect(mapStateToProps, mapDispatchToProps)(<%= pascalEntityName %>);
