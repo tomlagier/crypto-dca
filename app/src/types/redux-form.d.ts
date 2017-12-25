@@ -30,4 +30,5 @@ declare module 'redux-form' {
     formName: string
   ): (state: {}) => {};
   function getFormNames(): any;
+  function reset(formName: string): any;
 }

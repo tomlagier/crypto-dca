@@ -3,12 +3,13 @@ import { FSA } from '../../types/fsa';
 import { Coin } from '../coins';
 import { Observable } from 'rxjs';
 import { Epic } from 'redux-observable';
+import { reset } from 'redux-form';
 import 'rxjs/add/operator/mergeMap';
 import 'rxjs/add/operator/map';
 import { createCoin } from '../coins';
 // Remember to import your Observable operators
 
-const { defer } = Observable;
+const { defer, concat, of } = Observable;
 
 // Actions
 export const ADD_COIN = 'coinDashboard/ADD_COIN';
@@ -84,5 +85,8 @@ export const saveCoin: Epic<FSA, any> = action$ =>
     .mergeMap(({ payload: newCoin }) =>
       defer(async () => {
         await createCoin(newCoin);
-      }).map(response => saveCoinSuccess())
+      })
+    )
+    .mergeMap(() =>
+      concat(of(saveCoinSuccess()), of(reset('addCoin')))
     );
