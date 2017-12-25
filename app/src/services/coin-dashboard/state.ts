@@ -1,13 +1,20 @@
 import { createActions } from 'redux-actions';
 import { FSA } from '../../types/fsa';
 import { Coin } from '../coins';
-// import { Epic } from 'redux-observable';
-// import { Observable } from 'rxjs';
+import { Observable } from 'rxjs';
+import { Epic } from 'redux-observable';
+import 'rxjs/add/operator/mergeMap';
+import 'rxjs/add/operator/map';
+import { createCoin } from '../coins';
 // Remember to import your Observable operators
+
+const { defer } = Observable;
 
 // Actions
 export const ADD_COIN = 'coinDashboard/ADD_COIN';
 export const SAVE_NEW_COIN = 'coinDashboard/SAVE_NEW_COIN';
+export const SAVE_COIN_SUCCESS =
+  'coinDashboard/SAVE_COIN_SUCCESS';
 export const CLOSE_DIALOG = 'coinDashboard/CLOSE_DIALOG';
 export const REMOVE_COIN = 'coinDashboard/REMOVE_COIN';
 export const EDIT_COIN = 'coinDashboard/EDIT_COIN';
@@ -17,12 +24,14 @@ export interface CoinDashboardState {
   activeCoin?: Coin;
   addDialogActive: boolean;
   sidebarOpen: boolean;
+  saving: boolean;
 }
 
 const initialCoinDashboardState: CoinDashboardState = {
   sidebarOpen: false,
   addDialogActive: false,
-  activeCoin: null
+  activeCoin: null,
+  saving: false
 };
 
 // Reducer
@@ -41,10 +50,16 @@ export default function reducer(
         ...state,
         addDialogActive: false
       };
+    case SAVE_COIN_SUCCESS:
+      return {
+        ...state,
+        saving: false,
+        addDialogActive: false
+      };
     case SAVE_NEW_COIN:
       return {
         ...state,
-        addDialogActive: false
+        saving: true
       };
     default:
       return state;
@@ -54,10 +69,20 @@ export default function reducer(
 // Action creators
 export const actions = createActions({
   coinDashboard: {
-    ADD_COIN: (coin: Coin) => coin,
-    SAVE_NEW_COIN: () => { },
-    CLOSE_DIALOG: () => { }
+    ADD_COIN: () => {},
+    SAVE_NEW_COIN: (coin: Coin) => coin,
+    SAVE_COIN_SUCCESS: () => {},
+    CLOSE_DIALOG: () => {}
   }
 });
 
 // Epics
+const { coinDashboard: { saveCoinSuccess } } = actions;
+export const saveCoin: Epic<FSA, any> = action$ =>
+  action$
+    .ofType(SAVE_NEW_COIN)
+    .mergeMap(({ payload: newCoin }) =>
+      defer(async () => {
+        await createCoin(newCoin);
+      }).map(response => saveCoinSuccess())
+    );

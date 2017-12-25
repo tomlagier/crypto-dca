@@ -1,6 +1,7 @@
 declare module 'redux-form' {
   type anyProps = { [key: string]: {} };
   function Field(): React.Component<anyProps>;
+  function Form(): React.Component<anyProps>;
   function reduxForm({}): <T>(c: T) => T;
   function reducer(): object;
   interface SubmissionError {

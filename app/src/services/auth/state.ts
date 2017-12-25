@@ -5,9 +5,7 @@ import { Observable } from 'rxjs';
 import 'rxjs/add/operator/do';
 import 'rxjs/add/operator/mergeMap';
 import { push } from 'react-router-redux';
-const { concat, of } = Observable;
-
-const { defer } = Observable;
+const { concat, of, defer } = Observable;
 
 // Actions
 export const LOG_IN = 'auth/LOG_IN';
@@ -15,7 +13,10 @@ export const LOG_OUT = 'auth/LOG_OUT';
 export const LOGGED_OUT = 'auth/LOGGED_OUT';
 
 // Reducer
-export default function reducer(state: {} = {}, { type, payload }: FSA) {
+export default function reducer(
+  state: {} = {},
+  { type, payload }: FSA
+) {
   switch (type) {
     default:
       return state;
@@ -32,17 +33,19 @@ export const actions = createActions({
 });
 
 // Epics
-export const logIn: Epic<FSA, any> =
-  action$ => action$
+export const logIn: Epic<FSA, any> = action$ =>
+  action$
     .ofType(LOG_IN)
-    .do(() =>
-      window.location.href = 'http://localhost:8088/auth/github'
+    .do(
+      () =>
+        (window.location.href =
+          'http://localhost:8088/auth/github')
     )
     .ignoreElements();
 
 const { auth: { loggedOut } } = actions;
-export const logOut: Epic<FSA, any> =
-  action$ => action$
+export const logOut: Epic<FSA, any> = action$ =>
+  action$
     .ofType(LOG_OUT)
     .mergeMap(({ payload: resetStore }) =>
       defer(async () => {
@@ -51,8 +54,6 @@ export const logOut: Epic<FSA, any> =
           credentials: 'include'
         });
         resetStore();
-      }))
-    .mergeMap(() => concat(
-      of(loggedOut()),
-      of(push('/'))
-    ));
+      })
+    )
+    .mergeMap(() => concat(of(loggedOut()), of(push('/'))));
