@@ -1,12 +1,10 @@
-
 const {
   GraphQLNonNull,
-  GraphQLString,
-  GraphQLObjectType,
-  GraphQLBoolean
+  GraphQLString
 } = require('graphql');
 
 const coinType = require('./type');
+const deleteType = require('../../helpers/types/delete');
 const { resolver } = require('graphql-sequelize');
 
 module.exports = Coin => ({
@@ -22,36 +20,40 @@ module.exports = Coin => ({
         type: new GraphQLNonNull(GraphQLString)
       }
     },
-    resolve: async function (root, { name, code }, context, info) {
+    resolve: async function(
+      root,
+      { name, code },
+      context,
+      info
+    ) {
       const { user: { id } } = context;
       if (!id) return null;
 
       const coin = await Coin.create({
-        name, code, UserId: id
+        name,
+        code,
+        UserId: id
       });
-      return await resolver(Coin)(root, {
-        id: coin.id
-      }, context, info)
+      return await resolver(Coin)(
+        root,
+        {
+          id: coin.id
+        },
+        context,
+        info
+      );
     }
   },
   deleteCoin: {
-    type: new GraphQLObjectType({
-      name: 'DeleteSuccessful',
-      fields: {
-        success: {
-          type: GraphQLBoolean,
-          description: 'Whether delete was a success'
-        }
-      }
-    }),
+    type: deleteType,
     args: {
       id: {
         description: 'ID of coin',
         type: new GraphQLNonNull(GraphQLString)
       }
     },
-    resolve: async function (root, { id }, context, ) {
-      const { user: { id:userId } } = context;
+    resolve: async function(root, { id }, context) {
+      const { user: { id: userId } } = context;
       if (!id || !userId) return null;
 
       const coin = await Coin.findOne({
@@ -61,9 +63,10 @@ module.exports = Coin => ({
         }
       });
 
-      if (!coin) return {
-        success: false
-      };
+      if (!coin)
+        return {
+          success: false
+        };
 
       await coin.set('isDeleted', true).save();
       return { success: true };

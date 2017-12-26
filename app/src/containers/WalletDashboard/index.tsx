@@ -4,10 +4,12 @@ import { connect } from 'react-redux';
 import { withApollo, compose } from 'react-apollo';
 import {
   Wallet,
-  withWallets
+  withWallets,
+  deleteWallet
 } from '../../services/wallets';
 import Page from '../../components/Page';
 import AddWalletSection from '../../components/AddWalletSection';
+import WalletTable from '../../components/WalletTable';
 import {
   WalletDashboardState,
   actions as walletDashboardActions
@@ -79,7 +81,11 @@ class WalletDashboard extends Component<
 
     return (
       <div>
-        <div>{wallets}</div>
+        <WalletTable
+          wallets={wallets}
+          remove={deleteWallet}
+          toggleSidebar={() => {}}
+        />
         <AddWalletSection
           add={addWallet}
           save={createWallet}

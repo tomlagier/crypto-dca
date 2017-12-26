@@ -18,6 +18,12 @@ interface AddWalletDialogProps {
   errors?: GraphQLError[];
 }
 
+interface AddWalletForm {
+  name: string;
+  address: string;
+  local?: string;
+}
+
 const AddCoinDialog = ({
   active,
   add,
@@ -39,7 +45,16 @@ const AddCoinDialog = ({
           {message}
         </span>
       ))}
-    <Form onSubmit={handleSubmit(add)}>
+    <Form
+      onSubmit={handleSubmit(
+        ({ local, ...values }: AddWalletForm) => {
+          add({
+            ...values,
+            local: local === 'exchange' ? false : true
+          });
+        }
+      )}
+    >
       <Field
         name="name"
         label="Name (human readable)"

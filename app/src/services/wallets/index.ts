@@ -17,6 +17,7 @@ export interface WalletsProps {
 }
 
 export const walletFields = `
+  id
   name
   address
   local
@@ -84,6 +85,47 @@ export const createWallet = ({
       proxy.writeQuery({
         query: WALLETS,
         data: walletsQuery
+      });
+    }
+  });
+
+const DELETE_WALLET = gql`
+  mutation deleteWallet($id: String!) {
+    deleteWallet(id: $id) {
+      success
+    }
+  }
+`;
+
+interface DeleteWalletArgs {
+  id: string;
+}
+
+interface SuccessResponse {
+  success: boolean;
+}
+
+interface DeleteResponse {
+  data?: SuccessResponse;
+}
+
+export const deleteWallet = ({ id }: DeleteWalletArgs) =>
+  mutate({
+    mutation: DELETE_WALLET,
+    variables: { id },
+    update: (
+      proxy,
+      { data: { success } }: DeleteResponse
+    ) => {
+      const walletsQuery = proxy.readQuery({
+        query: WALLETS
+      }) as { wallets: Wallet[] };
+      const nextWallets = walletsQuery.wallets.filter(
+        wallet => wallet.id !== id
+      );
+      proxy.writeQuery({
+        query: WALLETS,
+        data: { wallets: nextWallets }
       });
     }
   });

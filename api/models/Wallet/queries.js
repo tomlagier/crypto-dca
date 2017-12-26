@@ -4,8 +4,10 @@ const {
   GraphQLList
 } = require('graphql');
 
-const { Op: {iLike} } = require('sequelize');
-const { resolver } = require('graphql-sequelize');
+const { Op: { iLike } } = require('sequelize');
+const {
+  withUserAndDeleted: resolver
+} = require('../../helpers/resolvers/filter');
 const walletType = require('./type');
 const sort = require('../../helpers/sort');
 
@@ -19,7 +21,7 @@ module.exports = Wallet => ({
       }
     },
     resolve: resolver(Wallet, {
-      after: result => result.length ? result[0] : result
+      after: result => (result.length ? result[0] : result)
     })
   },
   wallets: {
@@ -38,7 +40,7 @@ module.exports = Wallet => ({
       dataLoader: false,
       before: (findOptions, args) => ({
         where: {
-          name: { [iLike]: `%${args.query}%` },
+          name: { [iLike]: `%${args.query}%` }
         },
         order: [['name', 'ASC']],
         ...findOptions
@@ -46,4 +48,4 @@ module.exports = Wallet => ({
       after: sort
     })
   }
-})
+});

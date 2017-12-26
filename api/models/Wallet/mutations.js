@@ -5,6 +5,7 @@ const {
 } = require('graphql');
 
 const walletType = require('./type');
+const deleteType = require('../../helpers/types/delete');
 const { resolver } = require('graphql-sequelize');
 
 module.exports = Wallet => ({
@@ -48,6 +49,34 @@ module.exports = Wallet => ({
         context,
         info
       );
+    }
+  },
+  deleteWallet: {
+    type: deleteType,
+    args: {
+      id: {
+        description: 'ID of wallet',
+        type: new GraphQLNonNull(GraphQLString)
+      }
+    },
+    resolve: async function(root, { id }, context) {
+      const { user: { id: userId } } = context;
+      if (!id || !userId) return null;
+
+      const wallet = await Wallet.findOne({
+        where: {
+          id,
+          UserId: userId
+        }
+      });
+
+      if (!wallet)
+        return {
+          success: false
+        };
+
+      await wallet.set('isDeleted', true).save();
+      return { success: true };
     }
   }
 });
