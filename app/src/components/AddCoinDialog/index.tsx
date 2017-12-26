@@ -2,6 +2,11 @@ import * as React from 'react';
 import styles from './index.css';
 import { Dialog } from 'react-toolbox/lib/dialog';
 import { Button } from 'react-toolbox/lib/button';
+import { withApollo, compose } from 'react-apollo';
+import {
+  Wallet,
+  withWallets
+} from '../../services/wallets';
 import { reduxForm, Field, Form } from 'redux-form';
 import { GraphQLError } from '../../services/error';
 import Input from '../Input';
@@ -15,6 +20,8 @@ interface AddCoinDialogProps {
   submit?: Function;
   handleSubmit?: Function;
   errors?: GraphQLError[];
+  localWallets: Wallet[];
+  exchangeWallets: Wallet[];
 }
 
 const AddCoinDialog = ({
@@ -23,7 +30,9 @@ const AddCoinDialog = ({
   close,
   submit,
   handleSubmit,
-  errors
+  errors,
+  localWallets,
+  exchangeWallets
 }: AddCoinDialogProps) => (
   <Dialog
     active={active}
@@ -53,11 +62,40 @@ const AddCoinDialog = ({
         required={true}
         component={Input}
       />
+      Local:
+      {localWallets && JSON.stringify(localWallets)}
+      Exhcange:
+      {exchangeWallets && JSON.stringify(exchangeWallets)}
       <Button onClick={submit}>Submit</Button>
     </Form>
   </Dialog>
 );
 
-export default reduxForm({
-  form: 'addCoin'
-})(AddCoinDialog);
+interface FilterWalletsProps {
+  wallets: Wallet[];
+  [key: string]: any;
+}
+
+const filterWallets = (Component: any) => ({
+  wallets,
+  ...props
+}: FilterWalletsProps) => (
+  <Component
+    localWallets={
+      wallets && wallets.filter(wallet => wallet.local)
+    }
+    exchangeWallets={
+      wallets && wallets.filter(wallet => !wallet.local)
+    }
+    {...props}
+  />
+);
+
+export default compose(
+  withApollo,
+  withWallets,
+  filterWallets,
+  reduxForm({
+    form: 'addCoin'
+  })
+)(AddCoinDialog);
