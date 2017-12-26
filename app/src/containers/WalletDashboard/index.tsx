@@ -1,11 +1,18 @@
 import React, { Component } from 'react';
 import styles from './index.css';
 import { connect } from 'react-redux';
+import { withApollo, compose } from 'react-apollo';
+import {
+  Wallet,
+  withWallets
+} from '../../services/wallets';
 import Page from '../../components/Page';
 
 const { WalletDashboard: walletDashboardClass } = styles;
 
-interface WalletDashboardProps {}
+interface WalletDashboardProps {
+  wallets: Wallet[];
+}
 
 interface WalletDashboardState {}
 
@@ -28,7 +35,7 @@ class WalletDashboard extends Component<
     this.renderSidebar = this.renderSidebar.bind(this);
   }
   renderBody() {
-    return <div>some snizz</div>;
+    return <div>{this.props.wallets}</div>;
   }
   renderSidebar() {
     return <div>sidebar</div>;
@@ -45,6 +52,8 @@ class WalletDashboard extends Component<
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(
-  WalletDashboard
-);
+export default compose(
+  withApollo,
+  withWallets,
+  connect(mapStateToProps, mapDispatchToProps)
+)(WalletDashboard);

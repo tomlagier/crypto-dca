@@ -30,7 +30,7 @@ const WALLETS = gql`
   }
 `;
 
-export const withCoins = graphql<Response, WalletsProps>(
+export const withWallets = graphql<Response, WalletsProps>(
   WALLETS,
   {
     props: ({
