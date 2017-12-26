@@ -1,6 +1,6 @@
 import gql from 'graphql-tag';
 import { graphql } from 'react-apollo';
-import { Wallet } from '../wallets';
+import { Wallet, walletFields } from '../wallets';
 import { mutate } from '../../graphql';
 
 export interface Coin {
@@ -34,18 +34,11 @@ const coinFields = `
   localAmount
   exchangeAmount
   purchaseAmount
-`;
-
-const walletFields = `
   localWallet {
-    name
-    address
-    local
+    ${walletFields}
   }
   exchangeWallet {
-    name
-    address
-    local
+    ${walletFields}
   }
 `;
 
@@ -54,19 +47,23 @@ const COINS = gql`
   query {
     coins {
       ${coinFields}
-      ${walletFields}
     }
   }
 `;
-export const withCoins = graphql<Response, CoinsProps>(COINS, {
-  props: ({ data: { loading, coins } }: CoinsProps) => ({ loading, coins })
-});
+export const withCoins = graphql<Response, CoinsProps>(
+  COINS,
+  {
+    props: ({ data: { loading, coins } }: CoinsProps) => ({
+      loading,
+      coins
+    })
+  }
+);
 
 const CREATE_COIN = gql`
   mutation createCoin($name: String!, $code: String!) {
     createCoin(name: $name, code: $code) {
       ${coinFields}
-      ${walletFields}
     }
   }
 `;
@@ -82,17 +79,24 @@ interface CreateCoinResult {
   };
 }
 
-export const createCoin = ({ name, code }: CreateCoinArgs) => mutate({
-  mutation: CREATE_COIN,
-  variables: { name, code },
-  update: (proxy, { data: { createCoin: coin } }: CreateCoinResult) => {
-    const coinsQuery = proxy.readQuery({
-      query: COINS
-    }) as { coins: Coin[] };
-    coinsQuery.coins.push(coin);
-    proxy.writeQuery({ query: COINS, data: coinsQuery });
-  }
-});
+export const createCoin = ({
+  name,
+  code
+}: CreateCoinArgs) =>
+  mutate({
+    mutation: CREATE_COIN,
+    variables: { name, code },
+    update: (
+      proxy,
+      { data: { createCoin: coin } }: CreateCoinResult
+    ) => {
+      const coinsQuery = proxy.readQuery({
+        query: COINS
+      }) as { coins: Coin[] };
+      coinsQuery.coins.push(coin);
+      proxy.writeQuery({ query: COINS, data: coinsQuery });
+    }
+  });
 
 const DELETE_COIN = gql`
   mutation deleteCoin($id: String!) {
@@ -118,11 +122,19 @@ export const deleteCoin = ({ id }: DeleteCoinArgs) =>
   mutate({
     mutation: DELETE_COIN,
     variables: { id },
-    update: (proxy, { data: { success } }: DeleteResponse) => {
+    update: (
+      proxy,
+      { data: { success } }: DeleteResponse
+    ) => {
       const coinsQuery = proxy.readQuery({
         query: COINS
       }) as { coins: Coin[] };
-      const nextCoins = coinsQuery.coins.filter(coin => coin.id !== id);
-      proxy.writeQuery({ query: COINS, data: { coins: nextCoins } });
+      const nextCoins = coinsQuery.coins.filter(
+        coin => coin.id !== id
+      );
+      proxy.writeQuery({
+        query: COINS,
+        data: { coins: nextCoins }
+      });
     }
   });

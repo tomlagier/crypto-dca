@@ -5,7 +5,6 @@ import { Observable } from 'rxjs';
 import { Epic } from 'redux-observable';
 import { reset } from 'redux-form';
 import 'rxjs/add/operator/concatMap';
-import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 import { createCoin } from '../coins';
 import {
@@ -14,7 +13,7 @@ import {
 } from '../error';
 // Remember to import your Observable operators
 
-const { defer, concat, of } = Observable;
+const { defer, of } = Observable;
 
 // Actions
 export const ADD_COIN = 'coinDashboard/ADD_COIN';
@@ -100,17 +99,14 @@ const {
   coinDashboard: { saveCoinSuccess, saveCoinError }
 } = actions;
 export const saveCoin: Epic<FSA, any> = action$ =>
-  action$.ofType(SAVE_NEW_COIN).mergeMap(
-    ({ payload: newCoin }) =>
+  action$
+    .ofType(SAVE_NEW_COIN)
+    .mergeMap(({ payload: newCoin }) =>
       defer(() => createCoin(newCoin))
         .concatMap(result =>
-          concat(
-            of(saveCoinSuccess()),
-            of(reset('addCoin'))
-          )
+          of(saveCoinSuccess(), reset('addCoin'))
         )
         .catch(({ graphQLErrors }) =>
           of(saveCoinError(graphQLErrors))
         )
-    // Handle success and error separately
-  );
+    );

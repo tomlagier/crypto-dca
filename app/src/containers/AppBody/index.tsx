@@ -3,24 +3,28 @@ import styles from './index.css';
 import { compose } from 'recompose';
 import { connect } from 'react-redux';
 import CoinDashboard from '../CoinDashboard';
-import { TransitionGroup, CSSTransition } from 'react-transition-group';
-import { withRouter, Switch, Route } from 'react-router-dom';
-import { paths, indexFromPath } from '../../services/navigation';
+import WalletDashboard from '../WalletDashboard';
+import {
+  TransitionGroup,
+  CSSTransition
+} from 'react-transition-group';
+import {
+  withRouter,
+  Switch,
+  Route
+} from 'react-router-dom';
+import {
+  paths,
+  indexFromPath
+} from '../../services/navigation';
 import classNames from 'classnames';
 
-const {
-  HOME,
-  WALLETS,
-  TRANSACTIONS,
-  PORTFOLIO
-} = paths;
+const { HOME, WALLETS, TRANSACTIONS, PORTFOLIO } = paths;
 
-const {
-  AppBody: appBodyClass
-} = styles;
+const { AppBody: appBodyClass } = styles;
 
 interface AppBodyProps {
-  location: URL;
+  location: any;
 }
 
 interface AppBodyState {
@@ -32,11 +36,14 @@ interface AppBodyState {
 // Redux selectors
 const mapStateToProps = (state: AppBodyState) => ({});
 const mapDispatchToProps = (
-  dispatch: Function,
+  dispatch: Function
   // merged graphQL and own props
 ) => ({});
 
-class AppBody extends Component<AppBodyProps, AppBodyState> {
+class AppBody extends Component<
+  AppBodyProps,
+  AppBodyState
+> {
   constructor(props: AppBodyProps) {
     super(props);
     this.state = {
@@ -53,7 +60,8 @@ class AppBody extends Component<AppBodyProps, AppBodyState> {
     const nextIdx = indexFromPath(pathname);
     const lastIdx = indexFromPath(lastPathname);
 
-    const direction = lastIdx - nextIdx > 0 ? 'right' : 'left';
+    const direction =
+      lastIdx - nextIdx > 0 ? 'right' : 'left';
 
     if (direction !== this.state.direction) {
       this.setState({ direction });
@@ -61,25 +69,39 @@ class AppBody extends Component<AppBodyProps, AppBodyState> {
   }
 
   render() {
-    const { location: { pathname } } = this.props;
+    const { location } = this.props;
     const { direction } = this.state;
 
     return (
       <TransitionGroup
-        className={
-          classNames(appBodyClass, styles[direction])
-        }
+        className={classNames(
+          appBodyClass,
+          styles[direction]
+        )}
       >
         <CSSTransition
-          key={pathname}
+          key={location.pathname}
           timeout={300}
           classNames="slide"
         >
-          <Switch>
-            <Route exact={true} path={HOME} component={CoinDashboard} />
-            <Route path={WALLETS} component={CoinDashboard} />
-            <Route path={TRANSACTIONS} component={CoinDashboard} />
-            <Route path={PORTFOLIO} component={CoinDashboard} />
+          <Switch location={location}>
+            <Route
+              exact={true}
+              path={HOME}
+              component={CoinDashboard}
+            />
+            <Route
+              path={WALLETS}
+              component={WalletDashboard}
+            />
+            <Route
+              path={TRANSACTIONS}
+              component={CoinDashboard}
+            />
+            <Route
+              path={PORTFOLIO}
+              component={CoinDashboard}
+            />
           </Switch>
         </CSSTransition>
       </TransitionGroup>
