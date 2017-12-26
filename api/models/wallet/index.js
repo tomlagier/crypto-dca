@@ -25,12 +25,9 @@ module.exports = (sequelize, DataTypes) => {
     }
   });
 
-  Wallet.associate = function ({
-    User,
-    Wallet
-  }) {
+  Wallet.associate = function({ User, Wallet }) {
     Wallet.belongsTo(User);
-  }
+  };
 
   return Wallet;
 };

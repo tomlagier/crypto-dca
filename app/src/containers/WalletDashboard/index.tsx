@@ -7,23 +7,56 @@ import {
   withWallets
 } from '../../services/wallets';
 import Page from '../../components/Page';
+import AddWalletSection from '../../components/AddWalletSection';
+import {
+  WalletDashboardState,
+  actions as walletDashboardActions
+} from '../../services/wallet-dashboard/state';
+import { GraphQLError } from '../../services/error';
 
 const { WalletDashboard: walletDashboardClass } = styles;
 
 interface WalletDashboardProps {
   wallets: Wallet[];
+  addDialogActive: boolean;
+  addWallet: Function;
+  createWallet: Function;
+  closeDialog: Function;
+  errors: GraphQLError[];
 }
-
-interface WalletDashboardState {}
 
 // graphQL query and selector
 
 // Redux selectors
-const mapStateToProps = () => ({});
+const mapStateToProps = ({
+  walletDashboard: { sidebarOpen, addDialogActive, errors }
+}: {
+  walletDashboard: WalletDashboardState;
+}) => ({
+  sidebarOpen,
+  addDialogActive,
+  errors
+});
+
 const mapDispatchToProps = (
   dispatch: Function
   // merged graphQL and own props
-) => ({});
+) => {
+  const {
+    walletDashboard: {
+      addWallet,
+      saveNewWallet,
+      closeDialog
+    }
+  } = walletDashboardActions;
+
+  return {
+    createWallet: (wallet: Wallet) =>
+      dispatch(saveNewWallet(wallet)),
+    addWallet: () => dispatch(addWallet()),
+    closeDialog: () => dispatch(closeDialog())
+  };
+};
 
 class WalletDashboard extends Component<
   WalletDashboardProps,
@@ -35,7 +68,27 @@ class WalletDashboard extends Component<
     this.renderSidebar = this.renderSidebar.bind(this);
   }
   renderBody() {
-    return <div>{this.props.wallets}</div>;
+    const {
+      wallets,
+      addWallet,
+      createWallet,
+      closeDialog,
+      addDialogActive: active,
+      errors
+    } = this.props;
+
+    return (
+      <div>
+        <div>{wallets}</div>
+        <AddWalletSection
+          add={addWallet}
+          save={createWallet}
+          active={active}
+          close={closeDialog}
+          errors={errors}
+        />
+      </div>
+    );
   }
   renderSidebar() {
     return <div>sidebar</div>;

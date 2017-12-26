@@ -27,15 +27,26 @@ import {
   default as coinDashboard,
   saveCoin
 } from './services/coin-dashboard/state';
+
+import {
+  default as walletDashboard,
+  saveWallet
+} from './services/wallet-dashboard/state';
 const rootReducer = combineReducers({
   user,
   form: formReducer,
   router: routerReducer,
-  coinDashboard
+  coinDashboard,
+  walletDashboard
 });
 
 // Epics
-const rootEpic = combineEpics(logIn, logOut, saveCoin);
+const rootEpic = combineEpics(
+  logIn,
+  logOut,
+  saveCoin,
+  saveWallet
+);
 
 const composeEnhancers: Function =
   /* tslint:disable */

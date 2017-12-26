@@ -71,6 +71,8 @@ const CREATE_COIN = gql`
 interface CreateCoinArgs {
   name: string;
   code: string;
+  // localWalletId
+  // remoteWalletId
 }
 
 interface CreateCoinResult {
