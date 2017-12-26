@@ -3,10 +3,18 @@ import styles from './index.css';
 import { withApollo, compose } from 'react-apollo';
 import { connect } from 'react-redux';
 import Page from '../../components/Page';
-import { Coin, withCoins, deleteCoin } from '../../services/coins';
+import {
+  Coin,
+  withCoins,
+  deleteCoin
+} from '../../services/coins';
 import CoinTable from '../../containers/CoinTable';
 import AddCoinSection from '../../components/AddCoinSection';
-import { CoinDashboardState, actions as coinDashboardActions } from '../../services/coin-dashboard/state';
+import {
+  CoinDashboardState,
+  actions as coinDashboardActions
+} from '../../services/coin-dashboard/state';
+import { GraphQLError } from '../../services/error';
 
 const { CoinDashboard: coinDashboardClass } = styles;
 
@@ -17,28 +25,25 @@ interface CoinDashboardProps {
   addCoin: Function;
   createCoin: Function;
   closeDialog: Function;
+  errors: GraphQLError[];
 }
 
 // Redux selectors
 const mapStateToProps = ({
-  coinDashboard: {
-    sidebarOpen,
-    addDialogActive
-  }
+  coinDashboard: { sidebarOpen, addDialogActive, errors }
 }: {
-  coinDashboard: CoinDashboardState
+  coinDashboard: CoinDashboardState;
 }) => ({
   sidebarOpen,
-  addDialogActive
+  addDialogActive,
+  errors
 });
 const mapDispatchToProps = (
   dispatch: Function
   // merged graphQL and own props
 ) => {
   const {
-    coinDashboard: {
-      addCoin, saveNewCoin, closeDialog
-    }
+    coinDashboard: { addCoin, saveNewCoin, closeDialog }
   } = coinDashboardActions;
 
   return {
@@ -48,7 +53,10 @@ const mapDispatchToProps = (
   };
 };
 
-class CoinDashboard extends Component<CoinDashboardProps, {}> {
+class CoinDashboard extends Component<
+  CoinDashboardProps,
+  {}
+> {
   constructor(props: CoinDashboardProps) {
     super(props);
     this.state = {
@@ -70,20 +78,22 @@ class CoinDashboard extends Component<CoinDashboardProps, {}> {
       addCoin,
       createCoin,
       closeDialog,
-      addDialogActive: active
+      addDialogActive: active,
+      errors
     } = this.props;
     return (
       <div>
         <CoinTable
           coins={coins}
           remove={deleteCoin}
-          toggleSidebar={() => { }}
+          toggleSidebar={() => {}}
         />
         <AddCoinSection
           add={addCoin}
           save={createCoin}
           active={active}
           close={closeDialog}
+          errors={errors}
         />
       </div>
     );

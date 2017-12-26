@@ -9,7 +9,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     feeTolerance: {
       type: DataTypes.STRING,
-      defaultValue: "0"
+      defaultValue: '0'
     },
     name: {
       type: DataTypes.STRING,
@@ -17,7 +17,8 @@ module.exports = (sequelize, DataTypes) => {
     },
     code: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
+      unique: true
     },
     active: {
       type: DataTypes.BOOLEAN,
@@ -29,15 +30,15 @@ module.exports = (sequelize, DataTypes) => {
     },
     localAmount: {
       type: DataTypes.STRING,
-      defaultValue: "0"
+      defaultValue: '0'
     },
     exchangeAmount: {
       type: DataTypes.STRING,
-      defaultValue: "0"
+      defaultValue: '0'
     },
     purchaseAmount: {
       type: DataTypes.STRING,
-      defaultValue: "0"
+      defaultValue: '0'
     },
     isDeleted: {
       type: DataTypes.BOOLEAN,
@@ -45,11 +46,7 @@ module.exports = (sequelize, DataTypes) => {
     }
   });
 
-  Coin.associate = function ({
-    User,
-    Wallet,
-    Coin
-  }) {
+  Coin.associate = function({ User, Wallet, Coin }) {
     Coin.User = Coin.belongsTo(User);
     Coin.LocalWallet = Coin.belongsTo(Wallet, {
       as: 'localWallet'
@@ -57,7 +54,7 @@ module.exports = (sequelize, DataTypes) => {
     Coin.ExchangeWallet = Coin.belongsTo(Wallet, {
       as: 'exchangeWallet'
     });
-  }
+  };
 
   return Coin;
 };

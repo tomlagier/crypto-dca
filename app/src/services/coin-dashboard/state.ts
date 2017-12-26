@@ -4,9 +4,14 @@ import { Coin } from '../coins';
 import { Observable } from 'rxjs';
 import { Epic } from 'redux-observable';
 import { reset } from 'redux-form';
-import 'rxjs/add/operator/mergeMap';
+import 'rxjs/add/operator/concatMap';
 import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/catch';
 import { createCoin } from '../coins';
+import {
+  GraphQLErrorResponse,
+  GraphQLError
+} from '../error';
 // Remember to import your Observable operators
 
 const { defer, concat, of } = Observable;
@@ -16,6 +21,8 @@ export const ADD_COIN = 'coinDashboard/ADD_COIN';
 export const SAVE_NEW_COIN = 'coinDashboard/SAVE_NEW_COIN';
 export const SAVE_COIN_SUCCESS =
   'coinDashboard/SAVE_COIN_SUCCESS';
+export const SAVE_COIN_ERROR =
+  'coinDashboard/SAVE_COIN_ERROR';
 export const CLOSE_DIALOG = 'coinDashboard/CLOSE_DIALOG';
 export const REMOVE_COIN = 'coinDashboard/REMOVE_COIN';
 export const EDIT_COIN = 'coinDashboard/EDIT_COIN';
@@ -26,13 +33,15 @@ export interface CoinDashboardState {
   addDialogActive: boolean;
   sidebarOpen: boolean;
   saving: boolean;
+  errors?: GraphQLError[];
 }
 
 const initialCoinDashboardState: CoinDashboardState = {
   sidebarOpen: false,
   addDialogActive: false,
   activeCoin: null,
-  saving: false
+  saving: false,
+  errors: null
 };
 
 // Reducer
@@ -55,12 +64,20 @@ export default function reducer(
       return {
         ...state,
         saving: false,
-        addDialogActive: false
+        addDialogActive: false,
+        errors: null
+      };
+    case SAVE_COIN_ERROR:
+      return {
+        ...state,
+        saving: false,
+        errors: payload
       };
     case SAVE_NEW_COIN:
       return {
         ...state,
-        saving: true
+        saving: true,
+        errors: null
       };
     default:
       return state;
@@ -73,20 +90,27 @@ export const actions = createActions({
     ADD_COIN: () => {},
     SAVE_NEW_COIN: (coin: Coin) => coin,
     SAVE_COIN_SUCCESS: () => {},
+    SAVE_COIN_ERROR: (err: GraphQLErrorResponse) => err,
     CLOSE_DIALOG: () => {}
   }
 });
 
 // Epics
-const { coinDashboard: { saveCoinSuccess } } = actions;
+const {
+  coinDashboard: { saveCoinSuccess, saveCoinError }
+} = actions;
 export const saveCoin: Epic<FSA, any> = action$ =>
-  action$
-    .ofType(SAVE_NEW_COIN)
-    .mergeMap(({ payload: newCoin }) =>
-      defer(async () => {
-        await createCoin(newCoin);
-      })
-    )
-    .mergeMap(() =>
-      concat(of(saveCoinSuccess()), of(reset('addCoin')))
-    );
+  action$.ofType(SAVE_NEW_COIN).mergeMap(
+    ({ payload: newCoin }) =>
+      defer(() => createCoin(newCoin))
+        .concatMap(result =>
+          concat(
+            of(saveCoinSuccess()),
+            of(reset('addCoin'))
+          )
+        )
+        .catch(({ graphQLErrors }) =>
+          of(saveCoinError(graphQLErrors))
+        )
+    // Handle success and error separately
+  );
