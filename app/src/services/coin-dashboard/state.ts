@@ -9,7 +9,7 @@ import 'rxjs/add/operator/catch';
 import {
   GraphQLErrorResponse,
   GraphQLError
-} from '../error';
+} from '../../types/error';
 // Remember to import your Observable operators
 
 const { defer, of } = Observable;

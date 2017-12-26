@@ -8,8 +8,9 @@ import {
   withWallets
 } from '../../services/wallets';
 import { reduxForm, Field, Form } from 'redux-form';
-import { GraphQLError } from '../../services/error';
+import { GraphQLError } from '../../types/error';
 import Input from '../Input';
+import CreateWalletDropdown from '../CreateWalletDropdown';
 
 const { AddCoinDialog: addCoinDialogClass } = styles;
 
@@ -62,10 +63,16 @@ const AddCoinDialog = ({
         required={true}
         component={Input}
       />
-      Local:
-      {localWallets && JSON.stringify(localWallets)}
-      Exhcange:
-      {exchangeWallets && JSON.stringify(exchangeWallets)}
+      <h4>Local wallet</h4>
+      <CreateWalletDropdown
+        name="local"
+        wallets={localWallets}
+      />
+      <h4>Exchange wallet</h4>
+      <CreateWalletDropdown
+        name="exchange"
+        wallets={exchangeWallets}
+      />
       <Button onClick={submit}>Submit</Button>
     </Form>
   </Dialog>
@@ -96,6 +103,10 @@ export default compose(
   withWallets,
   filterWallets,
   reduxForm({
-    form: 'addCoin'
+    form: 'addCoin',
+    initialValues: {
+      localWallet: 'new',
+      exchangeWallet: 'new'
+    }
   })
 )(AddCoinDialog);

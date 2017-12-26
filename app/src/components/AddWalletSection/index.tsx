@@ -2,7 +2,7 @@ import * as React from 'react';
 import styles from './index.css';
 import AddWalletDialog from '../AddWalletDialog';
 import { Button } from 'react-toolbox/lib/button';
-import { GraphQLError } from '../../services/error';
+import { GraphQLError } from '../../types/error';
 
 const { AddWalletSection: addWalletSectionClass } = styles;
 

@@ -6,10 +6,19 @@ interface InputProps {
   [key: string]: any;
 }
 
-export default ({ input, meta, ...props }: InputProps) => (
-  <RTInput
-    {...input}
-    {...props}
-    error={meta.touched && meta.error}
-  />
-);
+export const RFControl = (Component: any) => ({
+  input,
+  meta,
+  defaultValue,
+  ...props
+}: InputProps) => {
+  return (
+    <Component
+      {...input}
+      {...props}
+      error={(meta.touched && meta.error) || ''}
+    />
+  );
+};
+
+export default RFControl(RTInput);

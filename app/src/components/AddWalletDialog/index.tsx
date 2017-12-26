@@ -2,10 +2,9 @@ import * as React from 'react';
 import styles from './index.css';
 import { Dialog } from 'react-toolbox/lib/dialog';
 import { Button } from 'react-toolbox/lib/button';
-import { reduxForm, Field, Form } from 'redux-form';
-import { GraphQLError } from '../../services/error';
-import Input from '../Input';
-import Radio from '../Radio';
+import { reduxForm, Form } from 'redux-form';
+import { GraphQLError } from '../../types/error';
+import AddWalletFieldGroup from '../AddWalletFieldGroup';
 
 const { AddWalletDialog: addWalletDialogClass } = styles;
 
@@ -55,36 +54,7 @@ const AddCoinDialog = ({
         }
       )}
     >
-      <Field
-        name="name"
-        label="Name (human readable)"
-        type="text"
-        required={true}
-        component={Input}
-      />
-      <Field
-        name="address"
-        label="Address (local or exchange)"
-        type="text"
-        required={true}
-        component={Input}
-      />
-      <Field
-        name="local"
-        label="Wallet location"
-        component={Radio}
-        defaultValue="local"
-        options={[
-          {
-            label: 'Local',
-            value: 'local'
-          },
-          {
-            label: 'Exchange',
-            value: 'exchange'
-          }
-        ]}
-      />
+      <AddWalletFieldGroup showExchange={true} />
       <Button onClick={submit}>Submit</Button>
     </Form>
   </Dialog>

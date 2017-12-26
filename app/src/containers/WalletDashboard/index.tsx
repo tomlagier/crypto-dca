@@ -14,7 +14,7 @@ import {
   WalletDashboardState,
   actions as walletDashboardActions
 } from '../../services/wallet-dashboard/state';
-import { GraphQLError } from '../../services/error';
+import { GraphQLError } from '../../types/error';
 
 const { WalletDashboard: walletDashboardClass } = styles;
 

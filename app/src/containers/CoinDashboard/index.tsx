@@ -14,7 +14,7 @@ import {
   CoinDashboardState,
   actions as coinDashboardActions
 } from '../../services/coin-dashboard/state';
-import { GraphQLError } from '../../services/error';
+import { GraphQLError } from '../../types/error';
 
 const { CoinDashboard: coinDashboardClass } = styles;
 

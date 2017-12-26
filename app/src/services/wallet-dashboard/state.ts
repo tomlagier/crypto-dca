@@ -9,7 +9,7 @@ import { Wallet, createWallet } from '../wallets';
 import {
   GraphQLErrorResponse,
   GraphQLError
-} from '../error';
+} from '../../types/error';
 // Remember to import your Observable operators
 
 const { defer, of } = Observable;

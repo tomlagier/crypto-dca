@@ -4,14 +4,9 @@ import {
   RadioGroup,
   RadioButton
 } from 'react-toolbox/lib/radio';
+import { Option } from '../../types/option';
 
 const { Radio: radioClass } = styles;
-
-interface RadioOption {
-  label: string;
-  value: string;
-  selected?: boolean;
-}
 
 interface RadioProps {
   defaultValue: string;
@@ -20,7 +15,7 @@ interface RadioProps {
     onChange: Function;
   };
   label: string;
-  options: RadioOption[];
+  options: Option[];
 }
 
 const Radio = ({
