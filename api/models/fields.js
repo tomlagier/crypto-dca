@@ -6,14 +6,17 @@ module.exports = [
   'Coin',
   'Transaction',
   'Option'
-].reduce(({ queries, mutations }, model) => ({
-  //Splat all queries and mutations on the top level
-  queries: {
-    ...require(`./${model}/queries`)(db[model]),
-    ...queries
-  },
-  mutations: {
-    ...require(`./${model}/mutations`)(db[model]),
-    ...mutations
-  }
-}), { queries: {}, mutations: {}});
+].reduce(
+  ({ queries, mutations }, model) => ({
+    //Splat all queries and mutations on the top level
+    queries: {
+      ...require(`./${model}/queries`)(db),
+      ...queries
+    },
+    mutations: {
+      ...require(`./${model}/mutations`)(db),
+      ...mutations
+    }
+  }),
+  { queries: {}, mutations: {} }
+);

@@ -4,12 +4,12 @@ const {
   GraphQLList
 } = require('graphql');
 
-const { Op: {iLike} } = require('sequelize');
+const { Op: { iLike } } = require('sequelize');
 const { resolver } = require('graphql-sequelize');
 const userType = require('./type');
 const sort = require('../../helpers/sort');
 
-module.exports = User => ({
+module.exports = ({ User }) => ({
   user: {
     type: userType,
     args: {
@@ -19,7 +19,7 @@ module.exports = User => ({
       }
     },
     resolve: resolver(User, {
-      after: result => result.length ? result[0] : result
+      after: result => (result.length ? result[0] : result)
     })
   },
   users: {
@@ -37,7 +37,7 @@ module.exports = User => ({
     resolve: resolver(User, {
       before: (findOptions, args) => ({
         where: {
-          name: { [iLike]: `%${args.query}%` },
+          name: { [iLike]: `%${args.query}%` }
         },
         order: [['name', 'ASC']],
         ...findOptions
@@ -49,11 +49,16 @@ module.exports = User => ({
     type: userType,
     resolve: (root, args, context, info) => {
       const { user } = context;
-      return user ?
-        resolver(User)(root, {
-          id: user.id
-        }, context, info) :
-        null
+      return user
+        ? resolver(User)(
+            root,
+            {
+              id: user.id
+            },
+            context,
+            info
+          )
+        : null;
     }
   }
-})
+});

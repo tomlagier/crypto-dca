@@ -8,7 +8,7 @@ const walletType = require('./type');
 const deleteType = require('../../helpers/types/delete');
 const { resolver } = require('graphql-sequelize');
 
-module.exports = Wallet => ({
+module.exports = ({ Wallet }) => ({
   createWallet: {
     type: walletType,
     args: {

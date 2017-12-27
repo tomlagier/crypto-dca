@@ -4,12 +4,14 @@ const {
   GraphQLList
 } = require('graphql');
 
-const { Op: {or, iLike} } = require('sequelize');
+const { Op: { or, iLike } } = require('sequelize');
 const coinType = require('./type');
 const sort = require('../../helpers/sort');
-const {withUserAndDeleted: resolver} = require('../../helpers/resolvers/filter');
+const {
+  withUserAndDeleted: resolver
+} = require('../../helpers/resolvers/filter');
 
-module.exports = Coin => ({
+module.exports = ({ Coin }) => ({
   coin: {
     type: coinType,
     args: {
@@ -19,7 +21,7 @@ module.exports = Coin => ({
       }
     },
     resolve: resolver(Coin, {
-      after: result => result.length ? result[0] : result
+      after: result => (result.length ? result[0] : result)
     })
   },
   coins: {
@@ -37,12 +39,14 @@ module.exports = Coin => ({
     resolve: resolver(Coin, {
       before: (findOptions, { query }) => ({
         where: {
-          [or]: [{
-            name: { [iLike]: `%${query}%` }
-          },
-          {
-            code: { [iLike]: `%${query}%` }
-          }]
+          [or]: [
+            {
+              name: { [iLike]: `%${query}%` }
+            },
+            {
+              code: { [iLike]: `%${query}%` }
+            }
+          ]
         },
         order: [['name', 'ASC']],
         ...findOptions
@@ -50,4 +54,4 @@ module.exports = Coin => ({
       after: sort
     })
   }
-})
+});

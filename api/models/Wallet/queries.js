@@ -11,7 +11,7 @@ const {
 const walletType = require('./type');
 const sort = require('../../helpers/sort');
 
-module.exports = Wallet => ({
+module.exports = ({ Wallet }) => ({
   wallet: {
     type: walletType,
     args: {

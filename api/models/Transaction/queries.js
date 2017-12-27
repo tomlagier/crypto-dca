@@ -9,7 +9,7 @@ const { resolver } = require('graphql-sequelize');
 const transactionType = require('./type');
 // const sort = require('../../helpers/sort');
 
-module.exports = Transaction => ({
+module.exports = ({ Transaction }) => ({
   transaction: {
     type: transactionType,
     args: {
@@ -19,13 +19,13 @@ module.exports = Transaction => ({
       }
     },
     resolve: resolver(Transaction, {
-      after: result => result.length ? result[0] : result
+      after: result => (result.length ? result[0] : result)
     })
   },
   transactions: {
     type: new GraphQLList(transactionType),
     resolve: resolver(Transaction)
-  },
+  }
   //TODO: this
   // transactionSearch: {
   //   type: new GraphQLList(Transaction),
@@ -47,4 +47,4 @@ module.exports = Transaction => ({
   //     after: sort
   //   })
   // }
-})
+});

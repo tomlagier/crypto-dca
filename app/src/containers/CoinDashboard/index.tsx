@@ -8,7 +8,7 @@ import {
   withCoins,
   deleteCoin
 } from '../../services/coins';
-import CoinTable from '../../containers/CoinTable';
+import CoinTable from '../../components/CoinTable';
 import AddCoinSection from '../../components/AddCoinSection';
 import {
   CoinDashboardState,

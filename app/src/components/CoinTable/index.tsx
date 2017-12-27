@@ -3,9 +3,7 @@ import styles from './index.css';
 import { Button } from 'react-toolbox/lib/button';
 import { Coin } from '../../services/coins';
 
-const {
-  CoinTable: coinTableClass
-} = styles;
+const { CoinTable: coinTableClass } = styles;
 
 interface CoinTableProps {
   coins: Coin[];
@@ -13,23 +11,33 @@ interface CoinTableProps {
   toggleSidebar: Function;
 }
 
-const CoinTable = (
-  {
-    coins,
-    remove,
-    toggleSidebar
-  }: CoinTableProps
-) => (
-    <div className={coinTableClass}>
-    {coins && coins.map(coin => (
-      <div key={coin.id}>
-        <span>Name: {coin.name}</span>
-        <span>Code: {coin.code}</span>
-        <Button onClick={() => remove({ id: coin.id })}>
-          Delete
-        </Button>
-      </div>
-    ))}
+const CoinTable = ({
+  coins,
+  remove,
+  toggleSidebar
+}: CoinTableProps) => (
+  <div className={coinTableClass}>
+    {coins &&
+      coins.map(coin => (
+        <div key={coin.id}>
+          <span>Name: {coin.name}</span>
+          <span>Code: {coin.code}</span>
+          {coin.localWallet && (
+            <span>
+              LocalWallet name: {coin.localWallet.name}
+            </span>
+          )}
+          {coin.exchangeWallet && (
+            <span>
+              ExchangeWallet name:
+              {coin.exchangeWallet.name}
+            </span>
+          )}
+          <Button onClick={() => remove({ id: coin.id })}>
+            Delete
+          </Button>
+        </div>
+      ))}
   </div>
 );
 

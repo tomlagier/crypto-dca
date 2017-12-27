@@ -1,13 +1,14 @@
 const {
   GraphQLNonNull,
-  GraphQLString
+  GraphQLString,
+  GraphQLUnionType
 } = require('graphql');
 
 const coinType = require('./type');
 const deleteType = require('../../helpers/types/delete');
 const { resolver } = require('graphql-sequelize');
 
-module.exports = Coin => ({
+module.exports = ({ Coin, Wallet }) => ({
   createCoin: {
     type: coinType,
     args: {
@@ -18,21 +19,49 @@ module.exports = Coin => ({
       code: {
         description: 'Code of coin',
         type: new GraphQLNonNull(GraphQLString)
+      },
+      localWalletId: {
+        description: 'ID of local wallet',
+        type: GraphQLString
+      },
+      exchangeWalletId: {
+        description: 'ID of exchange wallet',
+        type: GraphQLString
       }
     },
     resolve: async function(
       root,
-      { name, code },
+      { name, code, localWalletId, exchangeWalletId },
       context,
       info
     ) {
       const { user: { id } } = context;
       if (!id) return null;
 
+      const [
+        localWallet,
+        exchangeWallet
+      ] = await Promise.all([
+        Wallet.findOne({
+          where: {
+            UserId: id,
+            id: localWalletId
+          }
+        }),
+        Wallet.findOne({
+          where: {
+            UserId: id,
+            id: exchangeWalletId
+          }
+        })
+      ]);
+
       const coin = await Coin.create({
         name,
         code,
-        UserId: id
+        UserId: id,
+        localWalletId: localWallet.id,
+        exchangeWalletId: exchangeWallet.id
       });
       return await resolver(Coin)(
         root,

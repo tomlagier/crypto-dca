@@ -22,6 +22,9 @@ const WalletTable = ({
         <div key={wallet.id}>
           <span>Name: {wallet.name}</span>
           <span>Address: {wallet.address}</span>
+          <span>
+            Local?: {wallet.local ? 'true' : 'false'}
+          </span>
           <Button onClick={() => remove({ id: wallet.id })}>
             Delete
           </Button>

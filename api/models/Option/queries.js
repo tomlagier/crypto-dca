@@ -4,12 +4,12 @@ const {
   GraphQLList
 } = require('graphql');
 
-const { Op: {or, iLike} } = require('sequelize');
+const { Op: { or, iLike } } = require('sequelize');
 const { resolver } = require('graphql-sequelize');
 const optionType = require('./type');
 const sort = require('../../helpers/sort');
 
-module.exports = Option => ({
+module.exports = ({ Option }) => ({
   option: {
     type: optionType,
     args: {
@@ -19,7 +19,7 @@ module.exports = Option => ({
       }
     },
     resolve: resolver(Option, {
-      after: result => result.length ? result[0] : result
+      after: result => (result.length ? result[0] : result)
     })
   },
   options: {
@@ -30,19 +30,21 @@ module.exports = Option => ({
     type: new GraphQLList(optionType),
     args: {
       query: {
-        description: 'Fuzzy-matched name of option key or value',
+        description:
+          'Fuzzy-matched name of option key or value',
         type: new GraphQLNonNull(GraphQLString)
       }
     },
     resolve: resolver(Option, {
       before: (findOptions, { query }) => ({
         where: {
-          [or]: [{
-            name: { [iLike]: `%${query}%` }
-          },
-          {
-            value: { [iLike]: `%${query}%` }
-          }
+          [or]: [
+            {
+              name: { [iLike]: `%${query}%` }
+            },
+            {
+              value: { [iLike]: `%${query}%` }
+            }
           ]
         },
         order: [['name', 'ASC']]
@@ -50,4 +52,4 @@ module.exports = Option => ({
       after: sort
     })
   }
-})
+});
