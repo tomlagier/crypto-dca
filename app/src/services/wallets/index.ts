@@ -24,7 +24,7 @@ export const walletFields = `
 `;
 
 // graphQL query and selector
-const WALLETS = gql`
+export const WALLETS = gql`
   query {
     wallets {
       ${walletFields}

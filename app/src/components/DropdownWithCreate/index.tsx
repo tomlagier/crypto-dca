@@ -37,9 +37,9 @@ class DropdownWithCreate extends Component<
     this.handleChange = this.handleChange.bind(this);
   }
   getOptions() {
-    const { type, options } = this.props;
+    const { options } = this.props;
     const newItem = {
-      label: `New ${type}`,
+      label: 'new',
       value: 'new'
     };
 

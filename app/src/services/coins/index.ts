@@ -1,6 +1,6 @@
 import gql from 'graphql-tag';
 import { graphql } from 'react-apollo';
-import { Wallet, walletFields } from '../wallets';
+import { WALLETS, Wallet, walletFields } from '../wallets';
 import { mutate } from '../../graphql';
 
 export interface Coin {
@@ -66,14 +66,18 @@ const CREATE_COIN = gql`
   mutation createCoin(
     $name: String!,
     $code: String!,
-    $localWalletId: String!,
-    $exchangeWalletId: String!
+    $localWalletId: String,
+    $exchangeWalletId: String
+    $newLocalWallet: WalletInputType
+    $newExchangeWallet: WalletInputType
   ) {
     createCoin(
       name: $name,
       code: $code,
       localWalletId: $localWalletId,
       exchangeWalletId: $exchangeWalletId
+      newLocalWallet: $newLocalWallet
+      newExchangeWallet: $newExchangeWallet
     ) {
       ${coinFields}
     }
@@ -85,6 +89,8 @@ interface CreateCoinArgs {
   code: string;
   localWallet: string;
   exchangeWallet: string;
+  newLocalWallet: Wallet;
+  newExchangeWallet: Wallet;
 }
 
 interface CreateCoinResult {
@@ -97,15 +103,31 @@ export const createCoin = ({
   name,
   code,
   localWallet,
-  exchangeWallet
-}: CreateCoinArgs) =>
-  mutate({
+  exchangeWallet,
+  newLocalWallet,
+  newExchangeWallet
+}: CreateCoinArgs) => {
+  return mutate({
     mutation: CREATE_COIN,
     variables: {
       name,
       code,
-      localWalletId: localWallet,
-      exchangeWalletId: exchangeWallet
+      localWalletId:
+        localWallet !== 'new' ? localWallet : undefined,
+      exchangeWalletId:
+        exchangeWallet !== 'new'
+          ? exchangeWallet
+          : undefined,
+      newLocalWallet: newLocalWallet
+        ? Object.assign({}, newLocalWallet, {
+            local: true
+          })
+        : undefined,
+      newExchangeWallet: newExchangeWallet
+        ? Object.assign({}, newExchangeWallet, {
+            local: false
+          })
+        : undefined
     },
     update: (
       proxy,
@@ -116,8 +138,23 @@ export const createCoin = ({
       }) as { coins: Coin[] };
       coinsQuery.coins.push(coin);
       proxy.writeQuery({ query: COINS, data: coinsQuery });
+
+      const walletsQuery = proxy.readQuery({
+        query: WALLETS
+      }) as { wallets: Wallet[] };
+
+      newLocalWallet &&
+        walletsQuery.wallets.push(coin.localWallet);
+      newExchangeWallet &&
+        walletsQuery.wallets.push(coin.exchangeWallet);
+
+      proxy.writeQuery({
+        query: WALLETS,
+        data: walletsQuery
+      });
     }
   });
+};
 
 const DELETE_COIN = gql`
   mutation deleteCoin($id: String!) {

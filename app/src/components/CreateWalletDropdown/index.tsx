@@ -2,6 +2,7 @@ import * as React from 'react';
 import DropdownWithCreate from '../DropdownWithCreate';
 import AddWalletFieldGroup from '../AddWalletFieldGroup';
 import { Wallet } from '../../services/wallets';
+import { toTitleCase } from '../../utils/toTitleCase';
 
 interface CreateWalletDropdownProps {
   name: string;
@@ -23,7 +24,9 @@ const CreateWalletDropdown = ({
       }))
     }
     newForm={
-      <AddWalletFieldGroup prefix={`new${name}Wallet`} />
+      <AddWalletFieldGroup
+        prefix={`new${toTitleCase(name)}Wallet`}
+      />
     }
   />
 );

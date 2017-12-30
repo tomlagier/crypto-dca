@@ -1,12 +1,107 @@
 const {
   GraphQLNonNull,
   GraphQLString,
-  GraphQLUnionType
+  GraphQLInputObjectType,
+  GraphQLBoolean
 } = require('graphql');
 
 const coinType = require('./type');
 const deleteType = require('../../helpers/types/delete');
 const { resolver } = require('graphql-sequelize');
+
+const resolveWallets = async (
+  Wallet,
+  userId,
+  {
+    localWalletId,
+    exchangeWalletId,
+    newLocalWallet,
+    newExchangeWallet
+  }
+) => {
+  return await Promise.all([
+    resolveWallet(
+      Wallet,
+      userId,
+      localWalletId,
+      newLocalWallet
+    ),
+    resolveWallet(
+      Wallet,
+      userId,
+      exchangeWalletId,
+      newExchangeWallet
+    )
+  ]);
+};
+
+const resolveWallet = async (
+  Wallet,
+  userId,
+  id,
+  newWallet
+) => {
+  let wallet;
+  if (id && id !== 'new') {
+    wallet = await resolveExistingWallet(
+      Wallet,
+      userId,
+      id
+    );
+  } else if (newWallet) {
+    wallet = await createNewWallet(
+      Wallet,
+      userId,
+      newWallet
+    );
+  } else {
+    throw new Error(
+      'Missing wallet address (local or exchange)'
+    );
+  }
+
+  return wallet;
+};
+
+const resolveExistingWallet = async (
+  Wallet,
+  userId,
+  id
+) => {
+  return await Wallet.findOne({
+    where: {
+      UserId: userId,
+      id
+    }
+  });
+};
+
+const createNewWallet = async (
+  Wallet,
+  userId,
+  newWallet
+) => {
+  newWallet.UserId = userId;
+  return await Wallet.create(newWallet);
+};
+
+const walletInputType = new GraphQLInputObjectType({
+  name: 'WalletInputType',
+  fields: {
+    name: {
+      description: 'Name of coin',
+      type: new GraphQLNonNull(GraphQLString)
+    },
+    address: {
+      description: 'Address of coin',
+      type: new GraphQLNonNull(GraphQLString)
+    },
+    local: {
+      description: 'Whether the coin is local or remote',
+      type: new GraphQLNonNull(GraphQLBoolean)
+    }
+  }
+});
 
 module.exports = ({ Coin, Wallet }) => ({
   createCoin: {
@@ -27,34 +122,25 @@ module.exports = ({ Coin, Wallet }) => ({
       exchangeWalletId: {
         description: 'ID of exchange wallet',
         type: GraphQLString
+      },
+      newLocalWallet: {
+        description: 'New local wallet',
+        type: walletInputType
+      },
+      newExchangeWallet: {
+        description: 'New exchange wallet',
+        type: walletInputType
       }
     },
-    resolve: async function(
-      root,
-      { name, code, localWalletId, exchangeWalletId },
-      context,
-      info
-    ) {
+    resolve: async function(root, args, context, info) {
       const { user: { id } } = context;
       if (!id) return null;
 
+      const { name, code } = args;
       const [
         localWallet,
         exchangeWallet
-      ] = await Promise.all([
-        Wallet.findOne({
-          where: {
-            UserId: id,
-            id: localWalletId
-          }
-        }),
-        Wallet.findOne({
-          where: {
-            UserId: id,
-            id: exchangeWalletId
-          }
-        })
-      ]);
+      ] = await resolveWallets(Wallet, id, args);
 
       const coin = await Coin.create({
         name,
