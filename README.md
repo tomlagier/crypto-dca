@@ -100,11 +100,12 @@ The app contains a webserver for hosting the frontend, a little business logic f
 
 * Transaction search
 * Need to think about authorization - can only query your own data? Maybe create some roles?
+  * Only allowed access to own data for now, will worry about multi-tenant down the road
 * Need to make tests more efficient - move unit/IT to their own block and do seeding/teardown separately so we're not running into all these weird DB states
-* Migrate header to App Bar component
-* Migrate current structure to layout
 * Add PortfolioDashboard container
 * Add Settings container
+* Add sorting to tables
+* Add editing to table cells
 
 ### Authentication
 
