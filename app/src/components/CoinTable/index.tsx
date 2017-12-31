@@ -41,6 +41,7 @@ const CoinTable = ({
             coin={coin}
             remove={remove}
             initialValues={coin}
+            onSubmit={(values: any) => console.log(values)}
           />
         </TableRow>
       );

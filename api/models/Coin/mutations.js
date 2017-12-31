@@ -2,7 +2,8 @@ const {
   GraphQLNonNull,
   GraphQLString,
   GraphQLInputObjectType,
-  GraphQLBoolean
+  GraphQLBoolean,
+  GraphQLFloat
 } = require('graphql');
 
 const coinType = require('./type');
@@ -54,10 +55,6 @@ const resolveWallet = async (
       userId,
       newWallet
     );
-  } else {
-    throw new Error(
-      'Missing wallet address (local or exchange)'
-    );
   }
 
   return wallet;
@@ -104,16 +101,20 @@ const walletInputType = new GraphQLInputObjectType({
 });
 
 module.exports = ({ Coin, Wallet }) => ({
-  createCoin: {
+  upsertCoin: {
     type: coinType,
     args: {
+      id: {
+        description: 'ID of coin',
+        type: GraphQLString
+      },
       name: {
         description: 'Name of coin',
-        type: new GraphQLNonNull(GraphQLString)
+        type: GraphQLString
       },
       code: {
         description: 'Code of coin',
-        type: new GraphQLNonNull(GraphQLString)
+        type: GraphQLString
       },
       localWalletId: {
         description: 'ID of local wallet',
@@ -130,25 +131,57 @@ module.exports = ({ Coin, Wallet }) => ({
       newExchangeWallet: {
         description: 'New exchange wallet',
         type: walletInputType
+      },
+      feeTolerance: {
+        description:
+          'Allowable fee amount before transfer locally',
+        type: GraphQLString
+      },
+      active: {
+        description:
+          'Whether the coin is currently being purchased',
+        type: GraphQLBoolean
+      },
+      portfolioWeight: {
+        description:
+          'Amount of new purchase to allocate to coin',
+        type: GraphQLFloat
+      },
+      localAmount: {
+        description: 'Amount of coin held locally',
+        type: GraphQLString
+      },
+      exchangeAmount: {
+        description: 'Amount of coin held on exchange',
+        type: GraphQLString
+      },
+      purchaseAmount: {
+        description:
+          'Dollar amount saved towards next purchase',
+        type: GraphQLString
       }
     },
     resolve: async function(root, args, context, info) {
       const { user: { id } } = context;
       if (!id) return null;
 
-      const { name, code } = args;
       const [
         localWallet,
         exchangeWallet
       ] = await resolveWallets(Wallet, id, args);
 
-      const coin = await Coin.create({
-        name,
-        code,
-        UserId: id,
-        localWalletId: localWallet.id,
-        exchangeWalletId: exchangeWallet.id
-      });
+      const nextCoin = args;
+      nextCoin.UserId = id;
+
+      if (localWallet)
+        nextCoin.localWallet = localWallet.id;
+      if (exchangeWallet)
+        nextCoin.exchangeWallet = exchangeWallet.id;
+
+      const coin = nextCoin.id
+        ? await Coin.update(nextCoin)
+        : await Coin.create(nextCoin);
+
       return await resolver(Coin)(
         root,
         {

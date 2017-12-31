@@ -10,11 +10,16 @@ interface CoinRowProps {
   remove: Function;
   form: string;
   initialValues: Coin;
+  dirty?: boolean;
+  submit?: Function;
+  onSubmit: Function;
 }
 
 const CoinRow = ({
   coin: { id, name, code, localWallet, exchangeWallet },
-  remove
+  remove,
+  dirty,
+  submit
 }: CoinRowProps) => {
   return (
     <Fragment>
@@ -27,6 +32,9 @@ const CoinRow = ({
         {exchangeWallet && exchangeWallet.name}
       </TableCell>
       <TableCell>
+        {dirty && (
+          <Button onClick={() => submit()}>Save</Button>
+        )}
         <Button onClick={() => remove({ id })}>
           Delete
         </Button>

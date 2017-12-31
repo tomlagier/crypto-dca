@@ -63,7 +63,7 @@ export const withCoins = graphql<Response, CoinsProps>(
 // Unclear why localWallet and exchangeWallet need to be marked
 // required to be sent
 const CREATE_COIN = gql`
-  mutation createCoin(
+  mutation upsertCoin(
     $name: String!,
     $code: String!,
     $localWalletId: String,
@@ -71,7 +71,7 @@ const CREATE_COIN = gql`
     $newLocalWallet: WalletInputType
     $newExchangeWallet: WalletInputType
   ) {
-    createCoin(
+    upsertCoin(
       name: $name,
       code: $code,
       localWalletId: $localWalletId,
@@ -84,7 +84,7 @@ const CREATE_COIN = gql`
   }
 `;
 
-interface CreateCoinArgs {
+interface upsertCoinArgs {
   name: string;
   code: string;
   localWallet: string;
@@ -93,20 +93,20 @@ interface CreateCoinArgs {
   newExchangeWallet: Wallet;
 }
 
-interface CreateCoinResult {
+interface upsertCoinResult {
   data?: {
-    createCoin?: Coin;
+    upsertCoin?: Coin;
   };
 }
 
-export const createCoin = ({
+export const upsertCoin = ({
   name,
   code,
   localWallet,
   exchangeWallet,
   newLocalWallet,
   newExchangeWallet
-}: CreateCoinArgs) => {
+}: upsertCoinArgs) => {
   return mutate({
     mutation: CREATE_COIN,
     variables: {
@@ -131,7 +131,7 @@ export const createCoin = ({
     },
     update: (
       proxy,
-      { data: { createCoin: coin } }: CreateCoinResult
+      { data: { upsertCoin: coin } }: upsertCoinResult
     ) => {
       const coinsQuery = proxy.readQuery({
         query: COINS
