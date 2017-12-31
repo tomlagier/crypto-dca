@@ -6,12 +6,12 @@ const {
   POSTGRES_DEV_DB,
   POSTGRES_TEST_DB,
   POSTGRES_PROD_DB
-} = process.env
+} = process.env;
 
 const logging = message => logger.verbose(message);
 
 module.exports = {
-  development:{
+  development: {
     username: POSTGRES_USER,
     password: POSTGRES_PASSWORD,
     database: POSTGRES_DEV_DB,
@@ -35,4 +35,4 @@ module.exports = {
     dialect: 'postgres',
     logging
   }
-}
+};

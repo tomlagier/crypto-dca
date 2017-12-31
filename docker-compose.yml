@@ -14,6 +14,8 @@ services:
     image: crypto-dca-app:latest
     container_name: crypto-dca-app
     env_file: config/.env
+    environment:
+      - NODE_ENV=production
     ports:
       - 8087:8087
 
@@ -26,6 +28,8 @@ services:
       - NODE_ENV=production
     ports:
       - 8088:8088
+    depends_on:
+      - "db"
 
   db:
     build: ./db
