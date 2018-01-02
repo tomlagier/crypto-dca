@@ -5,7 +5,8 @@ import { Button } from 'react-toolbox/lib/button';
 import { withApollo, compose } from 'react-apollo';
 import {
   Wallet,
-  withWallets
+  withWallets,
+  filterWallets
 } from '../../services/wallets';
 import { reduxForm, Field, Form } from 'redux-form';
 import { GraphQLError } from '../../types/error';
@@ -67,35 +68,17 @@ const AddCoinDialog = ({
       <CreateWalletDropdown
         name="local"
         wallets={localWallets}
+        startNew={true}
       />
       <h4>Exchange wallet</h4>
       <CreateWalletDropdown
         name="exchange"
         wallets={exchangeWallets}
+        startNew={true}
       />
       <Button onClick={submit}>Submit</Button>
     </Form>
   </Dialog>
-);
-
-interface FilterWalletsProps {
-  wallets: Wallet[];
-  [key: string]: any;
-}
-
-const filterWallets = (Component: any) => ({
-  wallets,
-  ...props
-}: FilterWalletsProps) => (
-  <Component
-    localWallets={
-      wallets && wallets.filter(wallet => wallet.local)
-    }
-    exchangeWallets={
-      wallets && wallets.filter(wallet => !wallet.local)
-    }
-    {...props}
-  />
 );
 
 export default compose(

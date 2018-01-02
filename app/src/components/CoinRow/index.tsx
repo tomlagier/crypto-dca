@@ -1,9 +1,11 @@
 import { default as React, Fragment } from 'react';
 import { reduxForm } from 'redux-form';
 import { Coin } from '../../services/coins';
+import { Wallet } from '../../services/wallets';
 import { TableCell } from 'react-toolbox/lib/table';
 import { Button } from 'react-toolbox/lib/button';
 import EditableTableCell from '../EditableTableCell';
+import CreateWalletDropdown from '../CreateWalletDropdown';
 
 interface CoinRowProps {
   coin: Coin;
@@ -13,10 +15,14 @@ interface CoinRowProps {
   dirty?: boolean;
   submit?: Function;
   onSubmit: Function;
+  localWallets: Wallet[];
+  exchangeWallets: Wallet[];
 }
 
 const CoinRow = ({
   coin: { id, name, code, localWallet, exchangeWallet },
+  localWallets,
+  exchangeWallets,
   remove,
   dirty,
   submit
@@ -26,10 +32,22 @@ const CoinRow = ({
       <EditableTableCell name="name" value={name} />
       <EditableTableCell name="code" value={code} />
       <TableCell>
-        {localWallet && localWallet.name}
+        {localWallet && (
+          <CreateWalletDropdown
+            startNew={false}
+            name="local"
+            wallets={localWallets}
+          />
+        )}
       </TableCell>
       <TableCell>
-        {exchangeWallet && exchangeWallet.name}
+        {exchangeWallet && (
+          <CreateWalletDropdown
+            startNew={false}
+            name="exchange"
+            wallets={exchangeWallets}
+          />
+        )}
       </TableCell>
       <TableCell>
         {dirty && (

@@ -182,12 +182,20 @@ const UPDATE_COIN = gql`
   mutation updateCoin(
     $id: String
     $name: String,
-    $code: String
+    $code: String,
+    $localWalletId: String,
+    $exchangeWalletId: String
+    $newLocalWallet: WalletInputType
+    $newExchangeWallet: WalletInputType
   ) {
     updateCoin(
       id: $id
       name: $name,
-      code: $code
+      code: $code,
+      localWalletId: $localWalletId,
+      exchangeWalletId: $exchangeWalletId
+      newLocalWallet: $newLocalWallet
+      newExchangeWallet: $newExchangeWallet
     ) {
       ${coinFields}
     }
@@ -215,6 +223,12 @@ const updateExistingCoin = (
   );
 };
 
+interface UpdateCoinResult {
+  data?: {
+    updateCoin?: Coin;
+  };
+}
+
 export const updateCoin = (args: CreateCoinArgs) =>
   mutate({
     mutation: UPDATE_COIN,
@@ -225,10 +239,10 @@ export const updateCoin = (args: CreateCoinArgs) =>
     ),
     update: (
       proxy,
-      { data: { createCoin: coin } }: CreateCoinResult
+      { data: { updateCoin: coin } }: UpdateCoinResult
     ) => {
       updateExistingCoin(proxy, args);
-      // addNewWallets(proxy, coin, args);
+      addNewWallets(proxy, coin, args);
     }
   });
 

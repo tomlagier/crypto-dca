@@ -9,6 +9,12 @@ import {
 } from 'react-toolbox/lib/table';
 import CoinRow from '../CoinRow';
 import { updateCoin } from '../../services/coins';
+import {
+  Wallet,
+  withWallets,
+  filterWallets
+} from '../../services/wallets';
+import { withApollo, compose } from 'react-apollo';
 
 const { CoinTable: coinTableClass } = styles;
 
@@ -16,12 +22,16 @@ interface CoinTableProps {
   coins: Coin[];
   remove: Function;
   toggleSidebar: Function;
+  localWallets: Wallet[];
+  exchangeWallets: Wallet[];
 }
 
 const CoinTable = ({
   coins = [],
   remove,
-  toggleSidebar
+  toggleSidebar,
+  localWallets,
+  exchangeWallets
 }: CoinTableProps) => (
   <Table
     className={coinTableClass}
@@ -41,6 +51,8 @@ const CoinTable = ({
             form={coin.id}
             coin={coin}
             remove={remove}
+            localWallets={localWallets}
+            exchangeWallets={exchangeWallets}
             initialValues={Object.assign({}, coin, {
               localWallet: coin.localWallet.id,
               exchangeWallet: coin.exchangeWallet.id
@@ -55,4 +67,8 @@ const CoinTable = ({
   </Table>
 );
 
-export default CoinTable;
+export default compose(
+  withApollo,
+  withWallets,
+  filterWallets
+)(CoinTable);

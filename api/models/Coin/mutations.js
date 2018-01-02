@@ -100,85 +100,81 @@ const walletInputType = new GraphQLInputObjectType({
   }
 });
 
+const newCoinArgs = {
+  name: {
+    description: 'Name of coin',
+    type: GraphQLString
+  },
+  code: {
+    description: 'Code of coin',
+    type: GraphQLString
+  },
+  localWalletId: {
+    description: 'ID of local wallet',
+    type: GraphQLString
+  },
+  exchangeWalletId: {
+    description: 'ID of exchange wallet',
+    type: GraphQLString
+  },
+  newLocalWallet: {
+    description: 'New local wallet',
+    type: walletInputType
+  },
+  newExchangeWallet: {
+    description: 'New exchange wallet',
+    type: walletInputType
+  }
+};
+
+const coinResolver = (Coin, Wallet) =>
+  async function(root, args, context, info) {
+    const { user: { id } } = context;
+    if (!id) return null;
+
+    const [
+      localWallet,
+      exchangeWallet
+    ] = await resolveWallets(Wallet, id, args);
+
+    const nextCoin = args;
+
+    if (!nextCoin.id) {
+      nextCoin.UserId = id;
+    }
+
+    if (localWallet)
+      nextCoin.localWalletId = localWallet.id;
+    if (exchangeWallet)
+      nextCoin.exchangeWalletId = exchangeWallet.id;
+
+    const coin = nextCoin.id
+      ? await Coin.update(nextCoin, {
+          where: { id: nextCoin.id }
+        })
+      : await Coin.create(nextCoin);
+
+    return await resolver(Coin)(
+      root,
+      {
+        id: nextCoin.id || coin.id
+      },
+      context,
+      info
+    );
+  };
+
 module.exports = ({ Coin, Wallet }) => ({
   createCoin: {
     type: coinType,
-    args: {
-      name: {
-        description: 'Name of coin',
-        type: GraphQLString
-      },
-      code: {
-        description: 'Code of coin',
-        type: GraphQLString
-      },
-      localWalletId: {
-        description: 'ID of local wallet',
-        type: GraphQLString
-      },
-      exchangeWalletId: {
-        description: 'ID of exchange wallet',
-        type: GraphQLString
-      },
-      newLocalWallet: {
-        description: 'New local wallet',
-        type: walletInputType
-      },
-      newExchangeWallet: {
-        description: 'New exchange wallet',
-        type: walletInputType
-      }
-    },
-    resolve: async function(root, args, context, info) {
-      const { user: { id } } = context;
-      if (!id) return null;
-
-      const [
-        localWallet,
-        exchangeWallet
-      ] = await resolveWallets(Wallet, id, args);
-
-      const nextCoin = args;
-      nextCoin.UserId = id;
-
-      if (localWallet)
-        nextCoin.localWalletId = localWallet.id;
-      if (exchangeWallet)
-        nextCoin.exchangeWalletId = exchangeWallet.id;
-
-      const coin = await Coin.create(nextCoin);
-
-      return await resolver(Coin)(
-        root,
-        {
-          id: coin.id
-        },
-        context,
-        info
-      );
-    }
+    args: newCoinArgs,
+    resolve: coinResolver(Coin, Wallet)
   },
   updateCoin: {
     type: coinType,
-    args: {
+    args: Object.assign({}, newCoinArgs, {
       id: {
         description: 'ID of coin',
-        type: GraphQLString
-      },
-      name: {
-        description: 'Name of coin',
-        type: GraphQLString
-      },
-      code: {
-        description: 'Code of coin',
-        type: GraphQLString
-      },
-      localWalletId: {
-        description: 'ID of local wallet',
-        type: GraphQLString
-      },
-      exchangeWalletId: {
-        description: 'ID of exchange wallet',
         type: GraphQLString
       },
       feeTolerance: {
@@ -209,26 +205,8 @@ module.exports = ({ Coin, Wallet }) => ({
           'Dollar amount saved towards next purchase',
         type: GraphQLString
       }
-    },
-    resolve: async function(root, args, context, info) {
-      const { user: { id } } = context;
-      if (!id) return null;
-
-      const nextCoin = args;
-
-      await Coin.update(nextCoin, {
-        where: { id: nextCoin.id }
-      });
-
-      return await resolver(Coin)(
-        root,
-        {
-          id: nextCoin.id
-        },
-        context,
-        info
-      );
-    }
+    }),
+    resolve: coinResolver(Coin, Wallet)
   },
   deleteCoin: {
     type: deleteType,

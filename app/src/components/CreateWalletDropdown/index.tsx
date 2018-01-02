@@ -7,15 +7,18 @@ import { toTitleCase } from '../../utils/toTitleCase';
 interface CreateWalletDropdownProps {
   name: string;
   wallets: Wallet[];
+  startNew: boolean;
 }
 
 const CreateWalletDropdown = ({
   name,
-  wallets
+  wallets,
+  startNew
 }: CreateWalletDropdownProps) => (
   <DropdownWithCreate
     type="wallet"
     name={`${name}Wallet`}
+    startNew={startNew}
     options={
       wallets &&
       wallets.map(wallet => ({

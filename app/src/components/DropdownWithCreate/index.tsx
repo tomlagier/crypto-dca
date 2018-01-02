@@ -15,6 +15,7 @@ interface DropdownWithCreateProps {
   options: Option[];
   newForm: JSX.Element;
   onChange?: Function;
+  startNew: boolean;
 }
 
 interface DropdownWithCreateState {
@@ -22,20 +23,22 @@ interface DropdownWithCreateState {
   currentValue: string;
 }
 
-class DropdownWithCreate extends Component<
+export class DropdownWithCreate extends Component<
   DropdownWithCreateProps,
   DropdownWithCreateState
 > {
   constructor(props: DropdownWithCreateProps) {
     super(props);
+
     this.state = {
-      newSelected: true,
-      currentValue: 'new'
+      newSelected: props.startNew,
+      currentValue: props.startNew ? 'new' : null
     };
 
     this.getOptions = this.getOptions.bind(this);
     this.handleChange = this.handleChange.bind(this);
   }
+
   getOptions() {
     const { options } = this.props;
     const newItem = {
@@ -71,5 +74,3 @@ class DropdownWithCreate extends Component<
     );
   }
 }
-
-export default DropdownWithCreate;

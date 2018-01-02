@@ -1,3 +1,4 @@
+import * as React from 'react';
 import gql from 'graphql-tag';
 import { graphql } from 'react-apollo';
 import { mutate } from '../../graphql';
@@ -129,3 +130,22 @@ export const deleteWallet = ({ id }: DeleteWalletArgs) =>
       });
     }
   });
+interface FilterWalletsProps {
+  wallets: Wallet[];
+  [key: string]: any;
+}
+
+export const filterWallets = (Component: any) => ({
+  wallets,
+  ...props
+}: FilterWalletsProps) => (
+  <Component
+    localWallets={
+      wallets && wallets.filter(wallet => wallet.local)
+    }
+    exchangeWallets={
+      wallets && wallets.filter(wallet => !wallet.local)
+    }
+    {...props}
+  />
+);
