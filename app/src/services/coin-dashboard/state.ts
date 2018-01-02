@@ -1,6 +1,6 @@
 import { createActions } from 'redux-actions';
 import { FSA } from '../../types/fsa';
-import { Coin, upsertCoin } from '../coins';
+import { Coin, createCoin } from '../coins';
 import { Observable } from 'rxjs';
 import { Epic } from 'redux-observable';
 import { reset } from 'redux-form';
@@ -101,7 +101,7 @@ export const saveCoin: Epic<FSA, any> = action$ =>
   action$
     .ofType(SAVE_NEW_COIN)
     .mergeMap(({ payload: newCoin }) =>
-      defer(() => upsertCoin(newCoin))
+      defer(() => createCoin(newCoin))
         .concatMap(result =>
           of(saveCoinSuccess(), reset('addCoin'))
         )

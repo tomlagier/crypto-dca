@@ -42,7 +42,7 @@ const coinFields = `
   }
 `;
 
-// graphQL query and selector
+// Create coin
 const COINS = gql`
   query {
     coins {
@@ -60,10 +60,8 @@ export const withCoins = graphql<Response, CoinsProps>(
   }
 );
 
-// Unclear why localWallet and exchangeWallet need to be marked
-// required to be sent
 const CREATE_COIN = gql`
-  mutation upsertCoin(
+  mutation createCoin(
     $name: String!,
     $code: String!,
     $localWalletId: String,
@@ -71,7 +69,7 @@ const CREATE_COIN = gql`
     $newLocalWallet: WalletInputType
     $newExchangeWallet: WalletInputType
   ) {
-    upsertCoin(
+    createCoin(
       name: $name,
       code: $code,
       localWalletId: $localWalletId,
@@ -84,78 +82,157 @@ const CREATE_COIN = gql`
   }
 `;
 
-interface upsertCoinArgs {
-  name: string;
-  code: string;
-  localWallet: string;
-  exchangeWallet: string;
-  newLocalWallet: Wallet;
-  newExchangeWallet: Wallet;
-}
+type CreateCoinArgs = {
+  localWallet?: string | Wallet;
+  exchangeWallet?: string | Wallet;
+  newLocalWallet?: Wallet;
+  newExchangeWallet?: Wallet;
+} & Coin;
 
-interface upsertCoinResult {
+interface CreateCoinResult {
   data?: {
-    upsertCoin?: Coin;
+    createCoin?: Coin;
   };
 }
 
-export const upsertCoin = ({
-  name,
-  code,
+const resolveWalletsFromResponse = (
+  args: CreateCoinArgs,
+  existingCoin: Coin
+) => ({
+  localWallet:
+    args.localWallet === existingCoin.localWallet.id
+      ? existingCoin.localWallet
+      : args.localWallet,
+  exchangeWallet:
+    args.exchangeWallet === existingCoin.exchangeWallet.id
+      ? existingCoin.exchangeWallet
+      : args.exchangeWallet
+});
+
+const getWalletsFromArgs = ({
   localWallet,
   exchangeWallet,
   newLocalWallet,
   newExchangeWallet
-}: upsertCoinArgs) => {
-  return mutate({
-    mutation: CREATE_COIN,
-    variables: {
-      name,
-      code,
-      localWalletId:
-        localWallet !== 'new' ? localWallet : undefined,
-      exchangeWalletId:
-        exchangeWallet !== 'new'
-          ? exchangeWallet
-          : undefined,
-      newLocalWallet: newLocalWallet
-        ? Object.assign({}, newLocalWallet, {
-            local: true
-          })
-        : undefined,
-      newExchangeWallet: newExchangeWallet
-        ? Object.assign({}, newExchangeWallet, {
-            local: false
-          })
-        : undefined
-    },
-    update: (
-      proxy,
-      { data: { upsertCoin: coin } }: upsertCoinResult
-    ) => {
-      const coinsQuery = proxy.readQuery({
-        query: COINS
-      }) as { coins: Coin[] };
-      coinsQuery.coins.push(coin);
-      proxy.writeQuery({ query: COINS, data: coinsQuery });
+}: CreateCoinArgs) => ({
+  localWalletId:
+    localWallet !== 'new' ? localWallet : undefined,
+  exchangeWalletId:
+    exchangeWallet !== 'new' ? exchangeWallet : undefined,
+  newLocalWallet: newLocalWallet
+    ? Object.assign({}, newLocalWallet, {
+        local: true
+      })
+    : undefined,
+  newExchangeWallet: newExchangeWallet
+    ? Object.assign({}, newExchangeWallet, {
+        local: false
+      })
+    : undefined
+});
 
-      const walletsQuery = proxy.readQuery({
-        query: WALLETS
-      }) as { wallets: Wallet[] };
+const addNewCoin = (proxy: any, coin: Coin) => {
+  const coinsQuery = proxy.readQuery({
+    query: COINS
+  }) as { coins: Coin[] };
 
-      newLocalWallet &&
-        walletsQuery.wallets.push(coin.localWallet);
-      newExchangeWallet &&
-        walletsQuery.wallets.push(coin.exchangeWallet);
+  coinsQuery.coins.push(coin);
+  proxy.writeQuery({ query: COINS, data: coinsQuery });
+};
 
-      proxy.writeQuery({
-        query: WALLETS,
-        data: walletsQuery
-      });
-    }
+const addNewWallets = (
+  proxy: any,
+  coin: Coin,
+  args: CreateCoinArgs
+) => {
+  const walletsQuery = proxy.readQuery({
+    query: WALLETS
+  }) as { wallets: Wallet[] };
+
+  args.newLocalWallet &&
+    walletsQuery.wallets.push(coin.localWallet);
+  args.newExchangeWallet &&
+    walletsQuery.wallets.push(coin.exchangeWallet);
+
+  proxy.writeQuery({
+    query: WALLETS,
+    data: walletsQuery
   });
 };
 
+export const createCoin = (args: CreateCoinArgs) =>
+  mutate({
+    mutation: CREATE_COIN,
+    variables: Object.assign(
+      {},
+      args,
+      getWalletsFromArgs(args)
+    ),
+    update: (
+      proxy,
+      { data: { createCoin: coin } }: CreateCoinResult
+    ) => {
+      addNewCoin(proxy, coin);
+      addNewWallets(proxy, coin, args);
+    }
+  });
+
+// Update coin
+const UPDATE_COIN = gql`
+  mutation updateCoin(
+    $id: String
+    $name: String,
+    $code: String
+  ) {
+    updateCoin(
+      id: $id
+      name: $name,
+      code: $code
+    ) {
+      ${coinFields}
+    }
+  }
+`;
+
+const updateExistingCoin = (
+  proxy: any,
+  args: CreateCoinArgs
+) => {
+  const coinsQuery = proxy.readQuery({
+    query: COINS
+  }) as { coins: Coin[] };
+
+  const existingCoin = coinsQuery.coins.find(
+    searchCoin => searchCoin.id === args.id
+  );
+
+  const idx = coinsQuery.coins.indexOf(existingCoin);
+  coinsQuery.coins[idx] = Object.assign(
+    {},
+    existingCoin,
+    args,
+    resolveWalletsFromResponse(args, existingCoin)
+  );
+};
+
+export const updateCoin = (args: CreateCoinArgs) =>
+  mutate({
+    mutation: UPDATE_COIN,
+    variables: Object.assign(
+      {},
+      args,
+      getWalletsFromArgs(args)
+    ),
+    update: (
+      proxy,
+      { data: { createCoin: coin } }: CreateCoinResult
+    ) => {
+      updateExistingCoin(proxy, args);
+      // addNewWallets(proxy, coin, args);
+    }
+  });
+
+// Delete coin
 const DELETE_COIN = gql`
   mutation deleteCoin($id: String!) {
     deleteCoin(id: $id) {

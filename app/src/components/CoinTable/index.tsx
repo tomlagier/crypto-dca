@@ -8,6 +8,7 @@ import {
   TableRow
 } from 'react-toolbox/lib/table';
 import CoinRow from '../CoinRow';
+import { updateCoin } from '../../services/coins';
 
 const { CoinTable: coinTableClass } = styles;
 
@@ -40,8 +41,13 @@ const CoinTable = ({
             form={coin.id}
             coin={coin}
             remove={remove}
-            initialValues={coin}
-            onSubmit={(values: any) => console.log(values)}
+            initialValues={Object.assign({}, coin, {
+              localWallet: coin.localWallet.id,
+              exchangeWallet: coin.exchangeWallet.id
+            })}
+            onSubmit={(newCoin: Coin) =>
+              updateCoin(newCoin)
+            }
           />
         </TableRow>
       );

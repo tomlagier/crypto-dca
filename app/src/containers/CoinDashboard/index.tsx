@@ -23,7 +23,7 @@ interface CoinDashboardProps {
   sidebarOpen: boolean;
   addDialogActive: boolean;
   addCoin: Function;
-  upsertCoin: Function;
+  createCoin: Function;
   closeDialog: Function;
   errors: GraphQLError[];
 }
@@ -47,7 +47,7 @@ const mapDispatchToProps = (
   } = coinDashboardActions;
 
   return {
-    upsertCoin: (coin: Coin) => dispatch(saveNewCoin(coin)),
+    createCoin: (coin: Coin) => dispatch(saveNewCoin(coin)),
     addCoin: () => dispatch(addCoin()),
     closeDialog: () => dispatch(closeDialog())
   };
@@ -76,7 +76,7 @@ class CoinDashboard extends Component<
     const {
       coins,
       addCoin,
-      upsertCoin,
+      createCoin,
       closeDialog,
       addDialogActive: active,
       errors
@@ -90,7 +90,7 @@ class CoinDashboard extends Component<
         />
         <AddCoinSection
           add={addCoin}
-          save={upsertCoin}
+          save={createCoin}
           active={active}
           close={closeDialog}
           errors={errors}

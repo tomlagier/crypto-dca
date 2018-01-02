@@ -101,13 +101,9 @@ const walletInputType = new GraphQLInputObjectType({
 });
 
 module.exports = ({ Coin, Wallet }) => ({
-  upsertCoin: {
+  createCoin: {
     type: coinType,
     args: {
-      id: {
-        description: 'ID of coin',
-        type: GraphQLString
-      },
       name: {
         description: 'Name of coin',
         type: GraphQLString
@@ -131,6 +127,59 @@ module.exports = ({ Coin, Wallet }) => ({
       newExchangeWallet: {
         description: 'New exchange wallet',
         type: walletInputType
+      }
+    },
+    resolve: async function(root, args, context, info) {
+      const { user: { id } } = context;
+      if (!id) return null;
+
+      const [
+        localWallet,
+        exchangeWallet
+      ] = await resolveWallets(Wallet, id, args);
+
+      const nextCoin = args;
+      nextCoin.UserId = id;
+
+      if (localWallet)
+        nextCoin.localWalletId = localWallet.id;
+      if (exchangeWallet)
+        nextCoin.exchangeWalletId = exchangeWallet.id;
+
+      const coin = await Coin.create(nextCoin);
+
+      return await resolver(Coin)(
+        root,
+        {
+          id: coin.id
+        },
+        context,
+        info
+      );
+    }
+  },
+  updateCoin: {
+    type: coinType,
+    args: {
+      id: {
+        description: 'ID of coin',
+        type: GraphQLString
+      },
+      name: {
+        description: 'Name of coin',
+        type: GraphQLString
+      },
+      code: {
+        description: 'Code of coin',
+        type: GraphQLString
+      },
+      localWalletId: {
+        description: 'ID of local wallet',
+        type: GraphQLString
+      },
+      exchangeWalletId: {
+        description: 'ID of exchange wallet',
+        type: GraphQLString
       },
       feeTolerance: {
         description:
@@ -165,27 +214,16 @@ module.exports = ({ Coin, Wallet }) => ({
       const { user: { id } } = context;
       if (!id) return null;
 
-      const [
-        localWallet,
-        exchangeWallet
-      ] = await resolveWallets(Wallet, id, args);
-
       const nextCoin = args;
-      nextCoin.UserId = id;
 
-      if (localWallet)
-        nextCoin.localWallet = localWallet.id;
-      if (exchangeWallet)
-        nextCoin.exchangeWallet = exchangeWallet.id;
-
-      const coin = nextCoin.id
-        ? await Coin.update(nextCoin)
-        : await Coin.create(nextCoin);
+      await Coin.update(nextCoin, {
+        where: { id: nextCoin.id }
+      });
 
       return await resolver(Coin)(
         root,
         {
-          id: coin.id
+          id: nextCoin.id
         },
         context,
         info
