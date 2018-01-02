@@ -15,15 +15,16 @@ interface DropdownWithCreateProps {
   options: Option[];
   newForm: JSX.Element;
   onChange?: Function;
-  startNew: boolean;
+  current?: string;
 }
 
 interface DropdownWithCreateState {
   newSelected: boolean;
   currentValue: string;
+  initialValue: string;
 }
 
-export class DropdownWithCreate extends Component<
+export default class DropdownWithCreate extends Component<
   DropdownWithCreateProps,
   DropdownWithCreateState
 > {
@@ -31,8 +32,9 @@ export class DropdownWithCreate extends Component<
     super(props);
 
     this.state = {
-      newSelected: props.startNew,
-      currentValue: props.startNew ? 'new' : null
+      newSelected: !props.current,
+      currentValue: props.current || 'new',
+      initialValue: props.current
     };
 
     this.getOptions = this.getOptions.bind(this);
@@ -48,6 +50,25 @@ export class DropdownWithCreate extends Component<
 
     return [newItem, ...options];
   }
+
+  // Dumb hack to hide form when we successfully create
+  componentWillReceiveProps({
+    current
+  }: DropdownWithCreateProps) {
+    const { newSelected, initialValue } = this.state;
+    if (
+      current &&
+      initialValue &&
+      newSelected &&
+      current !== initialValue
+    ) {
+      this.setState({
+        newSelected: false,
+        initialValue: current
+      });
+    }
+  }
+
   handleChange(e: any, value: string) {
     this.setState({
       currentValue: value,

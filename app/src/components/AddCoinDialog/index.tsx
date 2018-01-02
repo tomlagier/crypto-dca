@@ -68,13 +68,11 @@ const AddCoinDialog = ({
       <CreateWalletDropdown
         name="local"
         wallets={localWallets}
-        startNew={true}
       />
       <h4>Exchange wallet</h4>
       <CreateWalletDropdown
         name="exchange"
         wallets={exchangeWallets}
-        startNew={true}
       />
       <Button onClick={submit}>Submit</Button>
     </Form>

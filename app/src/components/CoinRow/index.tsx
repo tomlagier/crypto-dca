@@ -34,18 +34,18 @@ const CoinRow = ({
       <TableCell>
         {localWallet && (
           <CreateWalletDropdown
-            startNew={false}
             name="local"
             wallets={localWallets}
+            current={localWallet.id}
           />
         )}
       </TableCell>
       <TableCell>
         {exchangeWallet && (
           <CreateWalletDropdown
-            startNew={false}
             name="exchange"
             wallets={exchangeWallets}
+            current={exchangeWallet.id}
           />
         )}
       </TableCell>
@@ -61,4 +61,6 @@ const CoinRow = ({
   );
 };
 
-export default reduxForm({})(CoinRow);
+export default reduxForm({
+  enableReinitialize: true
+})(CoinRow);
