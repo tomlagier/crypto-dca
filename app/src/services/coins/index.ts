@@ -187,15 +187,27 @@ const UPDATE_COIN = gql`
     $exchangeWalletId: String
     $newLocalWallet: WalletInputType
     $newExchangeWallet: WalletInputType
+    $feeTolerance: String,
+    $active: Boolean,
+    $portfolioWeight: Float,
+    $localAmount: String,
+    $exchangeAmount: String,
+    $purchaseAmount: String
   ) {
     updateCoin(
       id: $id
       name: $name,
       code: $code,
       localWalletId: $localWalletId,
-      exchangeWalletId: $exchangeWalletId
-      newLocalWallet: $newLocalWallet
-      newExchangeWallet: $newExchangeWallet
+      exchangeWalletId: $exchangeWalletId,
+      newLocalWallet: $newLocalWallet,
+      newExchangeWallet: $newExchangeWallet,
+      feeTolerance: $feeTolerance,
+      active: $active,
+      portfolioWeight: $portfolioWeight,
+      localAmount: $localAmount,
+      exchangeAmount: $exchangeAmount,
+      purchaseAmount: $purchaseAmount
     ) {
       ${coinFields}
     }

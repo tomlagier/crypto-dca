@@ -1,9 +1,10 @@
 import { default as React, Fragment } from 'react';
-import { reduxForm } from 'redux-form';
+import { reduxForm, Field } from 'redux-form';
 import { Coin } from '../../services/coins';
 import { Wallet } from '../../services/wallets';
 import { TableCell } from 'react-toolbox/lib/table';
 import { Button } from 'react-toolbox/lib/button';
+import { RFCheckbox } from '../Input';
 import EditableTableCell from '../EditableTableCell';
 import CreateWalletDropdown from '../CreateWalletDropdown';
 
@@ -20,7 +21,19 @@ interface CoinRowProps {
 }
 
 const CoinRow = ({
-  coin: { id, name, code, localWallet, exchangeWallet },
+  coin: {
+    id,
+    active,
+    name,
+    code,
+    localWallet,
+    exchangeWallet,
+    feeTolerance,
+    portfolioWeight,
+    localAmount,
+    exchangeAmount,
+    purchaseAmount
+  },
   localWallets,
   exchangeWallets,
   remove,
@@ -29,25 +42,45 @@ const CoinRow = ({
 }: CoinRowProps) => {
   return (
     <Fragment>
+      <TableCell>
+        <Field
+          name="active"
+          component={RFCheckbox}
+          value={active}
+        />
+      </TableCell>
       <EditableTableCell name="name" value={name} />
       <EditableTableCell name="code" value={code} />
+      <EditableTableCell
+        name="feeTolerance"
+        value={feeTolerance}
+      />
+      <EditableTableCell
+        name="portfolioWeight"
+        value={portfolioWeight.toString()}
+      />
+      <TableCell>{localAmount}</TableCell>
+      <TableCell>{exchangeAmount}</TableCell>
+      <TableCell>{purchaseAmount}</TableCell>
       <TableCell>
-        {localWallet && (
-          <CreateWalletDropdown
-            name="local"
-            wallets={localWallets}
-            current={localWallet.id}
-          />
-        )}
+        {localWallet &&
+          localWallets && (
+            <CreateWalletDropdown
+              name="local"
+              wallets={localWallets}
+              current={localWallet.id}
+            />
+          )}
       </TableCell>
       <TableCell>
-        {exchangeWallet && (
-          <CreateWalletDropdown
-            name="exchange"
-            wallets={exchangeWallets}
-            current={exchangeWallet.id}
-          />
-        )}
+        {exchangeWallet &&
+          exchangeWallets && (
+            <CreateWalletDropdown
+              name="exchange"
+              wallets={exchangeWallets}
+              current={exchangeWallet.id}
+            />
+          )}
       </TableCell>
       <TableCell>
         {dirty && (

@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { Input as RTInput } from 'react-toolbox/lib/input';
+import { Checkbox as RTCheckbox } from 'react-toolbox/lib/checkbox';
 
 interface InputProps {
   name: string;
@@ -22,3 +23,9 @@ export const RFControl = (Component: any) => ({
 };
 
 export default RFControl(RTInput);
+
+export const RFCheckbox = RFControl(
+  ({ value, ...props }: InputProps) => (
+    <RTCheckbox {...props} checked={value} />
+  )
+);

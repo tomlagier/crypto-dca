@@ -39,8 +39,14 @@ const CoinTable = ({
     selectable={false}
   >
     <TableHead>
+      <TableCell>Active</TableCell>
       <TableCell>Name</TableCell>
       <TableCell>Code</TableCell>
+      <TableCell>Fee Tolerance</TableCell>
+      <TableCell>Portfolio Weight</TableCell>
+      <TableCell>Local amount</TableCell>
+      <TableCell>Exchange amount</TableCell>
+      <TableCell>Pending</TableCell>
       <TableCell>Local Wallet</TableCell>
       <TableCell>Exchange Wallet</TableCell>
     </TableHead>

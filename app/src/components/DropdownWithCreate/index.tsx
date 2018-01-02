@@ -86,7 +86,6 @@ export default class DropdownWithCreate extends Component<
           source={this.getOptions()}
           required={true}
           defaultValue={currentValue}
-          value={currentValue}
           onChange={this.handleChange}
           component={RFControl(Dropdown)}
         />
