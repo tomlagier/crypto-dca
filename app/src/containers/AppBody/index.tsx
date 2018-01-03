@@ -61,7 +61,7 @@ class AppBody extends Component<
     const lastIdx = indexFromPath(lastPathname);
 
     const direction =
-      lastIdx - nextIdx > 0 ? 'right' : 'left';
+      lastIdx - nextIdx > 0 ? 'left' : 'right';
 
     if (direction !== this.state.direction) {
       this.setState({ direction });
