@@ -45,6 +45,7 @@ export const withWallets = graphql<Response, WalletsProps>(
   }
 );
 
+// Create
 interface CreateWalletArgs {
   name: string;
   address: string;
@@ -90,6 +91,68 @@ export const createWallet = ({
     }
   });
 
+// Update
+interface UpdateWalletArgs {
+  id: string;
+  name?: string;
+  address?: string;
+  local?: boolean;
+}
+
+interface UpdateWalletResult {
+  data?: {
+    updateWallet?: Wallet;
+  };
+}
+
+const UPDATE_WALLET = gql`
+  mutation updateWallet($id: String!, $name: String, $address: String, $local: Boolean) {
+    updateWallet(id: $id, name: $name, address: $address, local: $local) {
+      ${walletFields}
+    }
+  }
+`;
+
+const updateExistingWallet = (
+  proxy: any,
+  args: UpdateWalletArgs
+) => {
+  const walletsQuery = proxy.readQuery({
+    query: WALLETS
+  }) as { wallets: Wallet[] };
+  const { wallets } = walletsQuery;
+
+  const existingWallet = wallets.find(
+    searchWallet => searchWallet.id === args.id
+  );
+
+  const idx = wallets.indexOf(existingWallet);
+
+  walletsQuery.wallets[idx] = Object.assign(
+    {},
+    existingWallet,
+    args
+  );
+
+  proxy.writeQuery({
+    query: WALLETS,
+    data: walletsQuery
+  });
+};
+
+export const updateWallet = (args: UpdateWalletArgs) =>
+  mutate({
+    mutation: UPDATE_WALLET,
+    variables: args,
+    update: (
+      proxy,
+      { data: { updateWallet: wallet } }: UpdateWalletResult
+    ) => {
+      updateExistingWallet(proxy, args);
+    }
+  });
+
+// Delete
 const DELETE_WALLET = gql`
   mutation deleteWallet($id: String!) {
     deleteWallet(id: $id) {

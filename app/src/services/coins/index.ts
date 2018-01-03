@@ -233,6 +233,11 @@ const updateExistingCoin = (
     args,
     resolveWalletsFromResponse(args, existingCoin)
   );
+
+  proxy.writeQuery({
+    query: COINS,
+    data: coinsQuery
+  });
 };
 
 interface UpdateCoinResult {

@@ -14,7 +14,7 @@ interface RadioProps {
     value: string;
     onChange: Function;
   };
-  label: string;
+  label?: string;
   options: Option[];
 }
 
@@ -25,7 +25,7 @@ const Radio = ({
   label: formLabel
 }: RadioProps) => (
   <span>
-    <h4>{formLabel}</h4>
+    {formLabel && <h4>{formLabel}</h4>}
     <RadioGroup
       value={formValue || defaultValue}
       onChange={onChange}

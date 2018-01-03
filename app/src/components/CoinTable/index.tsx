@@ -50,26 +50,25 @@ const CoinTable = ({
       <TableCell>Local Wallet</TableCell>
       <TableCell>Exchange Wallet</TableCell>
     </TableHead>
-    {coins.map(coin => {
-      return (
-        <TableRow key={coin.id}>
-          <CoinRow
-            form={coin.id}
-            coin={coin}
-            remove={remove}
-            localWallets={localWallets}
-            exchangeWallets={exchangeWallets}
-            initialValues={Object.assign({}, coin, {
-              localWallet: coin.localWallet.id,
-              exchangeWallet: coin.exchangeWallet.id
-            })}
-            onSubmit={(newCoin: Coin) =>
-              updateCoin(newCoin)
-            }
-          />
-        </TableRow>
-      );
-    })}
+    {coins &&
+      coins.map(coin => {
+        return (
+          <TableRow key={coin.id}>
+            <CoinRow
+              form={coin.id}
+              coin={coin}
+              remove={remove}
+              localWallets={localWallets}
+              exchangeWallets={exchangeWallets}
+              initialValues={Object.assign({}, coin, {
+                localWallet: coin.localWallet.id,
+                exchangeWallet: coin.exchangeWallet.id
+              })}
+              onSubmit={updateCoin}
+            />
+          </TableRow>
+        );
+      })}
   </Table>
 );
 
