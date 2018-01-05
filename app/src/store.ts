@@ -24,9 +24,9 @@ import {
 export const history = createHistory();
 
 import {
-  default as coinDashboard,
+  default as homeDashboard,
   saveCoin
-} from './services/coin-dashboard/state';
+} from './services/home-dashboard/state';
 
 import {
   default as walletDashboard,
@@ -36,7 +36,7 @@ const rootReducer = combineReducers({
   user,
   form: formReducer,
   router: routerReducer,
-  coinDashboard,
+  homeDashboard,
   walletDashboard
 });
 

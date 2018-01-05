@@ -1,8 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import CoinDashboard from './';
+import HomeDashboard from './';
 
 it('renders without crashing', () => {
   const div = document.createElement('div');
-  ReactDOM.render(<CoinDashboard />, div);
+  ReactDOM.render(<HomeDashboard />, div);
 });

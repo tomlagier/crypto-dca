@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import styles from './index.css';
 import { compose } from 'recompose';
 import { connect } from 'react-redux';
-import CoinDashboard from '../CoinDashboard';
+import HomeDashboard from '../HomeDashboard';
 import WalletDashboard from '../WalletDashboard';
 import {
   TransitionGroup,
@@ -88,7 +88,7 @@ class AppBody extends Component<
             <Route
               exact={true}
               path={HOME}
-              component={CoinDashboard}
+              component={HomeDashboard}
             />
             <Route
               path={WALLETS}
@@ -96,11 +96,11 @@ class AppBody extends Component<
             />
             <Route
               path={TRANSACTIONS}
-              component={CoinDashboard}
+              component={() => <div>transactions</div>}
             />
             <Route
               path={PORTFOLIO}
-              component={CoinDashboard}
+              component={() => <div>portfolio</div>}
             />
           </Switch>
         </CSSTransition>

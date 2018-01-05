@@ -10,15 +10,16 @@ import {
 } from '../../services/coins';
 import CoinTable from '../../components/CoinTable';
 import AddCoinSection from '../../components/AddCoinSection';
+import HomeOptions from '../../components/HomeOptions';
 import {
-  CoinDashboardState,
-  actions as coinDashboardActions
-} from '../../services/coin-dashboard/state';
+  HomeDashboardState,
+  actions as homeDashboardActions
+} from '../../services/home-dashboard/state';
 import { GraphQLError } from '../../types/error';
 
-const { CoinDashboard: coinDashboardClass } = styles;
+const { HomeDashboard: homeDashboardClass } = styles;
 
-interface CoinDashboardProps {
+interface HomeDashboardProps {
   coins: Coin[];
   sidebarOpen: boolean;
   addDialogActive: boolean;
@@ -30,9 +31,9 @@ interface CoinDashboardProps {
 
 // Redux selectors
 const mapStateToProps = ({
-  coinDashboard: { sidebarOpen, addDialogActive, errors }
+  homeDashboard: { sidebarOpen, addDialogActive, errors }
 }: {
-  coinDashboard: CoinDashboardState;
+  homeDashboard: HomeDashboardState;
 }) => ({
   sidebarOpen,
   addDialogActive,
@@ -43,8 +44,8 @@ const mapDispatchToProps = (
   // merged graphQL and own props
 ) => {
   const {
-    coinDashboard: { addCoin, saveNewCoin, closeDialog }
-  } = coinDashboardActions;
+    homeDashboard: { addCoin, saveNewCoin, closeDialog }
+  } = homeDashboardActions;
 
   return {
     createCoin: (coin: Coin) => dispatch(saveNewCoin(coin)),
@@ -53,11 +54,11 @@ const mapDispatchToProps = (
   };
 };
 
-class CoinDashboard extends Component<
-  CoinDashboardProps,
+class HomeDashboard extends Component<
+  HomeDashboardProps,
   {}
 > {
-  constructor(props: CoinDashboardProps) {
+  constructor(props: HomeDashboardProps) {
     super(props);
     this.state = {
       sidebarOpen: false
@@ -83,6 +84,7 @@ class CoinDashboard extends Component<
     } = this.props;
     return (
       <div>
+        <HomeOptions />
         <CoinTable
           coins={coins}
           remove={deleteCoin}
@@ -107,7 +109,7 @@ class CoinDashboard extends Component<
     const { sidebarOpen } = this.props;
     return (
       <Page
-        className={coinDashboardClass}
+        className={homeDashboardClass}
         body={this.renderBody()}
         sidebarOpen={sidebarOpen}
         sidebar={this.renderSidebar()}
@@ -120,4 +122,4 @@ export default compose(
   withApollo,
   withCoins,
   connect(mapStateToProps, mapDispatchToProps)
-)(CoinDashboard);
+)(HomeDashboard);

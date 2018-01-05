@@ -15,18 +15,18 @@ import {
 const { defer, of } = Observable;
 
 // Actions
-export const ADD_COIN = 'coinDashboard/ADD_COIN';
-export const SAVE_NEW_COIN = 'coinDashboard/SAVE_NEW_COIN';
+export const ADD_COIN = 'homeDashboard/ADD_COIN';
+export const SAVE_NEW_COIN = 'homeDashboard/SAVE_NEW_COIN';
 export const SAVE_COIN_SUCCESS =
-  'coinDashboard/SAVE_COIN_SUCCESS';
+  'homeDashboard/SAVE_COIN_SUCCESS';
 export const SAVE_COIN_ERROR =
-  'coinDashboard/SAVE_COIN_ERROR';
-export const CLOSE_DIALOG = 'coinDashboard/CLOSE_DIALOG';
-export const REMOVE_COIN = 'coinDashboard/REMOVE_COIN';
-export const EDIT_COIN = 'coinDashboard/EDIT_COIN';
-export const SAVE_EDITS = 'coinDashboard/SAVE_EDITS';
+  'homeDashboard/SAVE_COIN_ERROR';
+export const CLOSE_DIALOG = 'homeDashboard/CLOSE_DIALOG';
+export const REMOVE_COIN = 'homeDashboard/REMOVE_COIN';
+export const EDIT_COIN = 'homeDashboard/EDIT_COIN';
+export const SAVE_EDITS = 'homeDashboard/SAVE_EDITS';
 
-export interface CoinDashboardState {
+export interface HomeDashboardState {
   activeCoin?: Coin;
   addDialogActive: boolean;
   sidebarOpen: boolean;
@@ -34,7 +34,7 @@ export interface CoinDashboardState {
   errors?: GraphQLError[];
 }
 
-const initialCoinDashboardState: CoinDashboardState = {
+const initialHomeDashboardState: HomeDashboardState = {
   sidebarOpen: false,
   addDialogActive: false,
   activeCoin: null,
@@ -44,7 +44,7 @@ const initialCoinDashboardState: CoinDashboardState = {
 
 // Reducer
 export default function reducer(
-  state: CoinDashboardState = initialCoinDashboardState,
+  state: HomeDashboardState = initialHomeDashboardState,
   { type, payload }: FSA
 ) {
   switch (type) {
@@ -84,7 +84,7 @@ export default function reducer(
 
 // Action creators
 export const actions = createActions({
-  coinDashboard: {
+  homeDashboard: {
     ADD_COIN: () => {},
     SAVE_NEW_COIN: (coin: Coin) => coin,
     SAVE_COIN_SUCCESS: () => {},
@@ -95,7 +95,7 @@ export const actions = createActions({
 
 // Epics
 const {
-  coinDashboard: { saveCoinSuccess, saveCoinError }
+  homeDashboard: { saveCoinSuccess, saveCoinError }
 } = actions;
 export const saveCoin: Epic<FSA, any> = action$ =>
   action$
