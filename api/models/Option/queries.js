@@ -5,7 +5,9 @@ const {
 } = require('graphql');
 
 const { Op: { or, iLike } } = require('sequelize');
-const { resolver } = require('graphql-sequelize');
+const {
+  withUserAndDeleted: resolver
+} = require('../../helpers/resolvers/filter');
 const optionType = require('./type');
 const sort = require('../../helpers/sort');
 
@@ -24,7 +26,21 @@ module.exports = ({ Option }) => ({
   },
   options: {
     type: new GraphQLList(optionType),
-    resolve: resolver(Option)
+    args: {
+      names: {
+        description: 'List option names to retrieve',
+        type: new GraphQLList(GraphQLString)
+      }
+    },
+    resolve: resolver(Option, {
+      before: (findOptions, { names }) => ({
+        where: {
+          [or]: names.map(name => {
+            name;
+          })
+        }
+      })
+    })
   },
   optionSearch: {
     type: new GraphQLList(optionType),
