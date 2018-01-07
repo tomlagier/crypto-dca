@@ -35,9 +35,9 @@ module.exports = ({ Option }) => ({
     resolve: resolver(Option, {
       before: (findOptions, { names }) => ({
         where: {
-          [or]: names.map(name => {
-            name;
-          })
+          [or]: names.map(name => ({
+            name
+          }))
         }
       })
     })

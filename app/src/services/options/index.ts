@@ -79,20 +79,30 @@ export const updateOptions = ({
       const names = options.map(option => option.name);
       const optionsQuery = proxy.readQuery({
         query: OPTIONS,
-        variables: { options: names }
+        variables: { names }
       }) as { options: Option[] };
 
+      const nextOptions = [...optionsQuery.options];
+
       upsertOptions.forEach(option => {
+        let updatedOption = false;
         optionsQuery.options.forEach((localOption, i) => {
           if (localOption.name === option.name) {
-            optionsQuery.options[i] = option;
+            nextOptions[i] = option;
+            updatedOption = true;
           }
         });
+
+        if (!updatedOption) {
+          nextOptions.push(option);
+        }
       });
+
+      optionsQuery.options = nextOptions;
 
       proxy.writeQuery({
         query: OPTIONS,
-        variables: { options: names },
+        variables: { names },
         data: optionsQuery
       });
     }

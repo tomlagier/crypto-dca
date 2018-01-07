@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { default as React, Fragment } from 'react';
 import styles from './index.css';
 import { Button } from 'react-toolbox/lib/button';
 import { Field, reduxForm } from 'redux-form';
@@ -44,6 +44,7 @@ const HomeOptions = ({
 
 const HomeOptionsForm = reduxForm({
   form: 'homeOptions',
+  enableReinitialize: true,
   onSubmit: (options: any) =>
     updateOptions({
       options: Object.entries(options).map(
@@ -76,14 +77,18 @@ const HomeOptionsWithOptions = ({
     : {};
 
   return (
-    <HomeOptionsForm
-      initialValues={{
-        purchaseEnabled: purchaseEnabled === 'true',
-        spendAmount,
-        interval
-      }}
-      {...props}
-    />
+    <Fragment>
+      {options && (
+        <HomeOptionsForm
+          initialValues={{
+            purchaseEnabled: purchaseEnabled === 'true',
+            spendAmount,
+            interval
+          }}
+          {...props}
+        />
+      )}
+    </Fragment>
   );
 };
 

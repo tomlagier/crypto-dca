@@ -48,7 +48,15 @@ module.exports = ({ Option }) => ({
       const { user: { id: userId } } = context;
       if (!userId) return null;
 
-      const newOptions = await Option.bulkCreate(options);
+      const newOptions = await Promise.all(
+        options.map(option =>
+          Option.upsert(
+            Object.assign({}, option, {
+              UserId: userId
+            })
+          )
+        )
+      );
 
       return resolver(Option)(
         root,

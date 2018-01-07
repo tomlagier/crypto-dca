@@ -1,13 +1,12 @@
 const { resolver } = require('graphql-sequelize');
-const { Op: {and} } = require('sequelize');
-
+const { Op: { and } } = require('sequelize');
 
 const extendBefore = (before, filters) => {
   if (!before) {
     return findOptions => ({
       ...findOptions,
       where: { [and]: filters }
-    })
+    });
   }
 
   return (findOptions, args) => {
@@ -19,20 +18,17 @@ const extendBefore = (before, filters) => {
       return {
         ...nextBefore,
         where: { [and]: filters }
-      }
+      };
     }
 
     return {
       ...nextBefore,
       where: {
-        [and]: [
-          ...filters,
-          where
-        ]
+        [and]: [...filters, where]
       }
-    }
-  }
-}
+    };
+  };
+};
 
 const getValidFilters = (filters, context) => {
   const validFilters = [];
@@ -45,23 +41,29 @@ const getValidFilters = (filters, context) => {
   }
 
   return validFilters;
-}
+};
 
-const resolverWithFilters = filters =>
-  (model, opts = {}) =>
-    (root, args, context = {}, info) => {
-      const validFilters = getValidFilters(filters, context);
-      const { before } = opts;
+const resolverWithFilters = filters => (
+  model,
+  opts = {}
+) => (root, args, context = {}, info) => {
+  const validFilters = getValidFilters(filters, context);
+  const { before } = opts;
 
-      if (!validFilters) return null;
+  if (!validFilters) return null;
 
-      const optsWithFilters = {
-        ...opts,
-        before: extendBefore(before, validFilters)
-      }
+  const optsWithFilters = {
+    ...opts,
+    before: extendBefore(before, validFilters)
+  };
 
-      return resolver(model, optsWithFilters)(root, args, context, info);
-    }
+  return resolver(model, optsWithFilters)(
+    root,
+    args,
+    context,
+    info
+  );
+};
 
 const userFilter = require('./user-filter');
 const deletedFilter = require('./deleted-filter');
@@ -69,5 +71,8 @@ module.exports = {
   resolverWithFilters,
   withUser: resolverWithFilters([userFilter]),
   withDeleted: resolverWithFilters([deletedFilter]),
-  withUserAndDeleted: resolverWithFilters([userFilter, deletedFilter])
+  withUserAndDeleted: resolverWithFilters([
+    userFilter,
+    deletedFilter
+  ])
 };
